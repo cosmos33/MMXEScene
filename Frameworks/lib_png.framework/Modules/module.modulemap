@@ -1,0 +1,6 @@
+framework module lib_png {
+  umbrella header "lib_png-umbrella.h"
+
+  export *
+  module * { export * }
+}

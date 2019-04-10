@@ -1,0 +1,6 @@
+framework module lib_jpeg {
+  umbrella header "lib_jpeg-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,6 @@
+framework module luasocket {
+  umbrella header "luasocket-umbrella.h"
+
+  export *
+  module * { export * }
+}

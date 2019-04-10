@@ -1,0 +1,36 @@
+#pragma once
+#include "XEPropertyObjectBase.h"
+
+class XEPropertyObjectModelMeshVertex
+	:public XEPropertyObjectBase
+{
+public:
+	XEPropertyObjectModelMeshVertex(){}
+	~XEPropertyObjectModelMeshVertex(){}
+
+	enum{
+		PROPERTY_MODELMESH_VERTEX_PICKSIZE_NODE = XEPropertyTree::USER_PROPRETY_INDEX,
+		PROPERTY_MODELMESH_VERTEX_AUTO_PICKSIZE_ENABLE,
+		PROPERTY_MODELMESH_VERTEX_PICKSIZE,
+		PROPERTY_MODELMESH_VERTEX_NODE,
+		PROPERTY_MODELMESH_VERTEX_PICK_SAME_POS_COUT,
+		PROPERTY_MODELMESH_VERTEX_PICKCOMBOX,
+		PROPERTY_MODELMESH_VERTEX_SKININDEX,
+		PROPERTY_MODELMESH_VERTEX_RAWMESHINDEX,
+		PROPERTY_MODELMESH_VERTEX_VERTEXINDEX,
+		PROPERTY_MODELMESH_VERTEX_POSTION,
+		PROPERTY_MODELMESH_VERTEX_NORMAL,
+		PROPERTY_MODELMESH_VERTEX_TANGENT,
+		PROPERTY_MODELMESH_VERTEX_BINORMAL,
+		PROPERTY_MODELMESH_VERTEX_LINE_NODE, 
+		PROPERTY_MODELMESH_VERTEX_AUTO_LINELENGTH_ENABLE, //auto line length.
+		PROPERTY_MODELMESH_VERTEX_MANUAL_LINELENGTH, // manual line length.
+	};
+
+public:
+	virtual xbool	GetPropertyTree(xint32 nFilter, XEPropertyTree &PropTree) override;
+	virtual	xbool	SetPropertyValue(const XEProperty &Node, xbool bNotifyPropertyChanged = xtrue) override;
+	virtual	xbool	GetPropertyValue(XEProperty &Node) override;
+};
+
+
