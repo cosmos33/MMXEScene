@@ -15,7 +15,7 @@
 #define XEPOINTLIGHTACTOR_H
 #include "XEActor.h"
 #include "XELightComponent.h"
-#include "XECanvas3DTextureComponent.h"
+#include "XE3DTextureComponent.h"
 
 
 class XEPointLightActor
@@ -28,6 +28,7 @@ public:
 	XE_ACTOR_CAST(XEPointLightActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEPointLightActor)
+	   
 	
 	virtual void Tick(xfloat32 fDels, xbool bForceTick = xtrue) override;
 	virtual void Render(XEViewport* pViewport) override;
@@ -39,8 +40,8 @@ private:
 	virtual void RenderDrawDebug(XEViewport* pViewport)override;
 	virtual void RenderDummyShape(XEViewport* pViewport)override;
 protected:
-	XECanvas3DTextureComponent m_Canvas3DTexture;
-	xfloat32                   m_fLastDummyRenderScale;
+	XE3DTextureComponent m_texture3D;
+	xfloat32             m_fLastDummyRenderScale;
 
 };
 

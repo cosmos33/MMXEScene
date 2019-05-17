@@ -13,9 +13,7 @@
 ******************************************************************************/
 #ifndef _XE_FACTORY_ACTOR_UTIL_H
 #define _XE_FACTORY_ACTOR_UTIL_H
-#include "XMemBase.h"
-#include "XArray.h"
-#include "XESingleton.h"
+#include "XEFactoryUtil.h"
 
 class XEActor;
 class XEWorld;
@@ -39,31 +37,26 @@ public:
     virtual const XString&    GetActorTypeName();
 };
 
-class XEActorFactoryManager
-: public XESingleton<XEActorFactoryManager>
+class XEActorFactoryManager :public XEFactoryManagerBase
 {
 public:
-	XEActorFactoryManager() :m_bIsCollected(xfalse){}
-    ~XEActorFactoryManager();
-	void                                  CollectFactory();
-	void                                  ReleaseFactory();
+	XEActorFactoryManager();
+	virtual ~XEActorFactoryManager();
+	virtual void                          CollectFactory() override;
+	virtual void                          ReleaseFactory() override;
+protected:
+	virtual IXEActorFactory*              GetFactoryForDerived(const XString &strActorTypeName);//warning, if you don't want to call this in your derived class, override it and return NULL
+public:
+	INSTANCE_FACTORY_IMPL(XEActorFactoryManager)
+	IXEActorFactory*                      GetFactory(const XString &strActorTypeName);
     IXEActorFactory::ActorFactoryArray&   GetFactoryList(){ return m_aActorFactories; }
-    IXEActorFactory*                      GetFactory(const XString &strActorTypeName);
     xbool                                 AddFactory(IXEActorFactory* pFactory);
-private:
+protected:
 	template<typename T>
 	xbool                                 _Register();
 	void                                  _RegSystemMetaCollisionChannel(const XString& strActorTypeName);
-private:
-    IXEActorFactory::ActorFactoryArray m_aActorFactories;
-	xbool m_bIsCollected;
-};
-
-template<typename T>
-class __ACTOR_AUTO_REG
-{
-public:
-	__ACTOR_AUTO_REG();
+protected:
+    IXEActorFactory::ActorFactoryArray     m_aActorFactories;
 };
 
 //implement with template.
@@ -97,15 +90,5 @@ xbool XEActorFactoryManager::_Register()
 	return xtrue;
 }
 
-template<typename T>
-__ACTOR_AUTO_REG<T>::__ACTOR_AUTO_REG()
-{
-	IXEActorFactory* pFactory = new XEActorFactory<T>();
-	if (!XEActorFactoryManager::GetInstance()->AddFactory(pFactory))
-		X_SAFEDELETE(pFactory);
-}
-
-//warning: use this in the executable-module-only(outer.)
-#define REGISTER_ACTOR_FACTORY(T) static __ACTOR_AUTO_REG<T> aar
 
 #endif // _XE_FACTORY_ACTOR_UTIL_H

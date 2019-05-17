@@ -28,7 +28,9 @@ public:
 	XE_ACTOR_CAST(XEAnimationMeshActor)
 		XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 		X_CLASS_DEF(XEAnimationMeshActor)
+		   
 		static const XString	ACTOR_TYPENAME;
+	  
 };
 
 #endif // XEANIMATIONMESHACTOR_H

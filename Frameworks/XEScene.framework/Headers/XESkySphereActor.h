@@ -43,7 +43,9 @@ public:
 	XE_ACTOR_CAST(XESkySphereActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XESkySphereActor)
+	   
 	static const XString	ACTOR_TYPENAME;
+	  
 public:
 	xbool               Present(XEViewport* pViewport, const xchar* pSkyName = NULL);
 	void                Absent();

@@ -33,7 +33,7 @@ public:
 	virtual void                                           Tick(xfloat32 fInterval) override;//in milliseconds.
 	virtual void                                           Apply() override;
 	virtual void                                           Release() override;
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                                           MarkApplyFromUndoCacheData(){ m_eApplyCacheMark = ACMT_UNDO; } //for apply-inner used.
 	virtual void                                           MarkApplyFromRedoCacheData(){ m_eApplyCacheMark = ACMT_REDO; } //for apply-inner used.
 	xbool                                                  LoadDistributionFromStackCache();
@@ -67,7 +67,7 @@ public:
 	X_FORCEINLINE MatFxState                               GetState()const { return m_eMatFxState; }
 	XEVariant                                              Eval(xfloat32 fInVal);//fInval is in the range of [0,1]
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet                            GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy)override;
 	xbool                                                  SaveDistributionToFile(const xchar* pFilePath);
 	xbool                                                  RemoveCurveFile();
@@ -99,7 +99,7 @@ protected:
 		XRawDistributionVector*                            m_pDistributionVector;
 	};
 protected:
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	//for windows only.[redo/undo for curve]
 	enum ApplyCacheMarkType{ ACMT_NONE, ACMT_UNDO, ACMT_REDO};
 	struct sDistributionCache

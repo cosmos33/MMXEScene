@@ -16,7 +16,7 @@
 
 #include "XEActor.h"
 #include "XESceneARAdsVideoComponent.h"
-#include "XECanvas3DTextureComponent.h"
+#include "XE3DTextureComponent.h"
 
 
 class XESceneARAdsVideoActor :public XEActor
@@ -32,9 +32,11 @@ public:
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	XE_ACTOR_CAST(XESceneARAdsVideoActor)
 	X_CLASS_DEF(XESceneARAdsVideoActor)
+	   
 	static const XString	ACTOR_TYPENAME;
+	  
 protected:
-	XECanvas3DTextureComponent   m_Canvas3DTexture;
+	XE3DTextureComponent   m_texture3D;
 };
 
 #endif // XESCENEARADSVIDEOACTOR_H

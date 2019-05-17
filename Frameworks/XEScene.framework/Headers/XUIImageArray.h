@@ -58,6 +58,20 @@ public:
 	void						SetActualFrameNum(xint32 nNum){ m_nActualFrameNum = nNum; }
 	xint32						GetActualFrameNum()const{ return m_nActualFrameNum; }
 
+	// metaball
+	// time limited, so terrible code
+	void						SetMetaballEnabled(xbool bEnable);
+	xbool						IsMetaballEnabled()const;
+	void						SetMetaballRadius(xfloat32 fRadius);
+	xfloat32					GetMetaballRadius()const;
+	void						SetMetaballRadiusExtent(xfloat32 fRadiusExtent);
+	xfloat32					GetMetaballRadiusExtent()const;
+	void						SetMetaballEnergyThreshold(xfloat32 fEnergyThreshold);
+	xfloat32					GetMetaballEnergyThreshold()const;
+	void						SetMetaballColor(const XCOLORBASE& color);
+	const XCOLORBASE&			GetMetaballColor()const;
+	void						SetExtraParam(const xfloat32* fParam, xint32 nParamNumber);
+
 protected:
 	virtual xbool				Init() override;
 	virtual xbool				Init(const XString& strTextureName, TextureResType texType = TextureResType::XUI_LOCAL);
@@ -81,6 +95,13 @@ protected:
 	XVECTOR2					m_vUVTile;
 	xfloat32					m_fFPS;
 	xint32						m_nActualFrameNum;
+
+	// metaball
+	xbool						m_bMetaballEnabled;
+	xfloat32					m_fMetaballRadius;
+	xfloat32					m_fMetaballRadiusExtent;
+	xfloat32					m_fMetaballThreshold;
+	XCOLORBASE					m_clrMetaball;
 };
 
 #endif

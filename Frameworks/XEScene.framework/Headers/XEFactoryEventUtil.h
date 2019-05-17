@@ -13,8 +13,7 @@
 #define _XE_FACTORY_EVENT_UTILITY_H
 
 #include "XEEventBase.h"
-#include "XArray.h"
-#include "XESingleton.h"
+#include "XEFactoryUtil.h"
 
 class IXEEventFactory : public XMemBase
 {
@@ -35,31 +34,24 @@ public:
 	virtual const XString&	                          GetEventTypeName() override;
 };
 
-class XEEventFactoryManager
-	: public XESingleton<XEEventFactoryManager>
+class XEEventFactoryManager:public XEFactoryManagerBase
 {
 public:
-	XEEventFactoryManager() :m_bIsCollected(xfalse){}
-	~XEEventFactoryManager();
-	void                                              CollectFactory();
-	void                                              ReleaseFactory();
+	XEEventFactoryManager();
+	virtual ~XEEventFactoryManager();
+public:
+	virtual void                                      CollectFactory() override;
+	virtual void                                      ReleaseFactory() override;
+public:
+	INSTANCE_FACTORY_IMPL(XEEventFactoryManager)
 	IXEEventFactory*	                              GetFactory(const XString &strEventTypeName);
 	xbool                                             AddFactory(IXEEventFactory* pFactory);
 	const IXEEventFactory::XEEventFactoryArray&       GetFactoryList() const;
-private:
+protected:
 	template<typename T>
 	xbool                                             _Register();
-
 private:
 	IXEEventFactory::XEEventFactoryArray m_aFactories;
-	xbool m_bIsCollected;
-};
-
-template<typename T>
-class __EVENT_AUTO_REG
-{
-public:
-	__EVENT_AUTO_REG();
 };
 
 //implement with template
@@ -87,16 +79,5 @@ xbool XEEventFactoryManager::_Register()
 	}
 	return xtrue;
 }
-
-template<typename T>
-__EVENT_AUTO_REG<T>::__EVENT_AUTO_REG()
-{
-	IXEEventFactory* pFactory = new XEEventFactory<T>();
-	if (!XEEventFactoryManager::GetInstance()->AddFactory(pFactory))
-		X_SAFEDELETE(pFactory);
-}
-
-//warning: use this in the executable-module-only(outer.)
-#define REGISTER_EVENT_FACTORY(T) static __EVENT_AUTO_REG<T> ar
 
 #endif // _XE_FACTORY_EVENT_UTILITY_H

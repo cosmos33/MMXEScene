@@ -41,7 +41,7 @@ public:
 public:
 	//can attach to the specific Material node with the variable: pMaterialParentNode, if it is NULL, will be attached to the container as a child node.
 	//FOR EDITOR ONLY
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	XEMatFxDistributionParameter*                 CreateMateriaFxCurveParameterNode(XEUserNode* pMaterialParentNode = NULL);   
 	void										  GetBindNode(XETreeNode::NodeList& nl);
 #endif

@@ -182,6 +182,10 @@ public:
     NativeTouchesCallback   OnNativeTouchesBeginEvent_Callback_v1;
     NativeTouchesCallback   OnNativeTouchesMoveEvent_Callback_v1;
     NativeTouchesCallback   OnNativeTouchesEndEvent_Callback_v1;
+    
+    // 移动的距离判定，默认20
+    virtual void            SetMoveJudgement_v1(xint32 nMoveJudgement);
+    virtual xint32          GetMoveJudgement_v1()const;
 private:
 	void					RecognizeClickOnBegin();
 	void					RecognizeOnMove(xint32 nNumber, intptr_t ids[], xfloat32 fPosX[], xfloat32 fPosY[]);
@@ -217,6 +221,8 @@ private:
     xfloat32 m_fPinchLastScale;
     xbool                   TrailIsLongPress(const TrailData* pTrailData);
     xbool                   TrailIsMoving(const TrailData* pTrailData);
+    
+    xint32  m_nMoveJudgement;
 };
 
 extern XGestureManager* g_pIXGestureManager;

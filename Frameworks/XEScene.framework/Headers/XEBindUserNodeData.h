@@ -30,7 +30,7 @@ private:
 	XString			                m_strBindUserNodeType;	
 	xbool				            m_bIsBindUserNode;//whether bind parent's usernode
 	XMATRIX4				        m_matTransform;
-	xint32			                m_nBindBoneIndex;//½öÓÃÓÚbone
+	xint32			                m_nBindBoneIndex;//ä»…ç”¨äºŽbone
 };
 
 #endif//_XE_BIND_USER_NODE_DATA_H_

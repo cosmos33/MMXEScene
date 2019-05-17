@@ -87,10 +87,11 @@ public:
 	XETriggerData&				GetTriggerData(xint32 nIndex);
 
 	const XArray<XETriggerData>& GetTriggerDataList() const{ return m_aTriggerEventDataArray; }
-	void						ResetTriggerData();//reset bFirstExec state after stop simulated.
-public:
 
-#if X_PLATFORM_WIN_DESKTOP
+	void						ResetTriggerData();//reset bFirstExec state after stop simulated.
+	
+public:
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	static xbool                BuildLuaScriptEntranceCodeFile(const XString& filePath);
 #endif
 protected:	
@@ -109,8 +110,10 @@ public:
 	XE_ACTOR_CAST(XETriggerBaseActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XETriggerBaseActor)
+	   
 	static const XString ACTOR_TYPENAME;
 	static XETriggerData DEFAULT_TRIGGER_DATA;
+	  
 protected:
 	XArray<XETriggerData>		m_aTriggerEventDataArray;
 	XArray<Listener*>			m_aListener; 

@@ -30,7 +30,7 @@ template<typename K, typename T>
 class XHashTable
 {
 public:
-	explicit				XHashTable(xint32 nInitialSize = 1024, xint32 nNewGranularity = 1024, xint32 nTableSize = 1024);// nTableSize = pow(2, n);
+	explicit				XHashTable(xint32 nInitialSize = 16, xint32 nNewGranularity = 16, xint32 nTableSize = 16);// nTableSize = pow(2, n);
 							XHashTable(const XHashTable<K, T>& other);
 							~XHashTable();
 

@@ -26,6 +26,7 @@ public:
 	XE_ACTOR_CAST(XEEnvLightActor)
     XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEEnvLightActor)
+	   
 
 	virtual void Tick(xfloat32 fDel, xbool bForceTick = xtrue) override;
 

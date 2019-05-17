@@ -25,7 +25,7 @@ public:
 	XESceneARAdsComponent();
 	~XESceneARAdsComponent(){}
 protected:
-	class DelayLoadDestroyer :public XEUtility::XEDelayDestroyer
+	class DelayLoadDestroyer :public XEUtility::XETemporalObject
 	{
 	public:
 		DelayLoadDestroyer() :m_pComponent(NULL){}
@@ -41,9 +41,9 @@ public:
 	virtual void                                Tick(xfloat32 fDel, xbool bForceTick = xtrue) override;
 	virtual void                                Deserialize(const XMLElement* pEleComponent) override;
 	virtual XMLElement*                         Serialize(XMLElement* pEleParent) override;
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                                GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
-#endif					
+#endif								            
 	xbool                                       LoadAsset(const xchar* pPath);
 	void                                        Unload();
 public:			

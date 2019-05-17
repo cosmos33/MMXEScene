@@ -20,8 +20,7 @@
 #include "XArray.h"
 
 // Online version number, Maximum four segments of the number, the maximum number of each is 99.
-#define ENGINE_CURR_VERSION "1.1.10"   
-
+#define ENGINE_CURR_VERSION "1.1.11"     // 1.1.11 - 2019-4-26 to build
 
 class XEEngine
 {
@@ -41,7 +40,7 @@ public:
 	static XEEngine*		     GetInstance();
 	static const XString		 GetEngineVersion();
 	static xint32				 GetEngineVersionValue();
-	static xint32				 ConverVersionStringToValue(const XString &strVersion);
+	
 
 	/*
 		pBaseDir: indicated the directory of the engine working environment.

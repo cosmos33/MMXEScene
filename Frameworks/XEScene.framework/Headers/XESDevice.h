@@ -8,12 +8,12 @@
 #ifndef XESDevice_h
 #define XESDevice_h
 
-#include "core/XESDefine.h"
-#include <stdio.h>
+#include "XESDefine.h"
+//#include <stdio.h>
 
 XESCENE_NAMESPACE_BEGIN
 
-class Device : public XMemBase {
+class Device {
 
 private:
     Device();
@@ -48,6 +48,13 @@ public:
      *  Sets the interval of acceleration motion.
      */
     static void SetAccelerationInterval(xfloat32 interval);
+
+
+    /**
+     * Get Device Information
+     * @return DeviceInfo
+     */
+    static XString GetDeviceInfo();
 
 };
 

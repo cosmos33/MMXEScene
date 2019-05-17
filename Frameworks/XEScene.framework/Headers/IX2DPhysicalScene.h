@@ -4,7 +4,9 @@
 #include "XMath3D.h"
 
 class IX2DRigidBody;
+class IX2DJoint;
 struct X2DRigidBodyDesc;
+struct X2DJointDesc;
 class IX2DPhysicalScene : public XMemBase
 {
 public:
@@ -41,6 +43,16 @@ public:
 	* 内部会Delete
 	*/
 	virtual void				DestroyBody(IX2DRigidBody* pBody) = 0;
+
+	/*
+	* 创建一个Joint
+	*/
+	virtual IX2DJoint*			CreateJoint(const X2DJointDesc& desc) = 0;
+	/*
+	* 删除一个Joint
+	* 内部会Delete
+	*/
+	virtual void				DestroyJoint(IX2DJoint* pJoint) = 0;
 };
 
 #endif

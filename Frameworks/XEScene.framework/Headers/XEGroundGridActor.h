@@ -19,7 +19,7 @@
 #include "XMath3D.h"
 #include "XTypes.h"
 
-#define X_STATIC_GROUND_GRID_NUM 32			// ��֤���м��߾ͱ�����ż��
+#define X_STATIC_GROUND_GRID_NUM 32
 #define X_STATIC_GROUND_GRID_SIZE 1.0f
 #define X_DYNAMIC_GROUND_GRID_NUM 32
 #define X_DYNAMIC_GROUND_SCALEPARAM 0.5f
@@ -35,6 +35,7 @@ public:
 	XE_ACTOR_CAST(XEGroundGridActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEGroundGridActor)
+	   
 	static const XString	    ACTOR_TYPENAME;
 	XEGroundGridActor();
 	virtual					    ~XEGroundGridActor();
@@ -44,6 +45,7 @@ public:
 	virtual void			    Tick(xfloat32 fDel, xbool bForceTick = xtrue) override {}
 	virtual void			    Render(XEViewport* pViewport) override;
 	virtual void                Initialize(XEWorld* pWorld) override;
+
 	virtual xbool               RayPick(XEHitResult& hr) override;
 	void				        SetDynamic(xbool bDynamic);
 	inline xbool			    IsDynamic() const { return m_bDynamic; }
@@ -54,8 +56,7 @@ public:
 	const XArray<XString>&      GetGridTypeDescs() const;
 	XCOLORBASE                  GetColor(){ return m_Color; };
 	void                        SetColor(const XCOLORBASE& color){ m_Color = color; };
-
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif // X_PLATFORM_WIN_DESKTOP
 
@@ -72,16 +73,16 @@ protected:
 							    
 // 	XVECTOR3				    m_Rows[2][X_GROUND_GRID_NUM + 1];
 // 	XVECTOR3				    m_Cols[2][X_GROUND_GRID_NUM + 1];
-	XArray<XVECTOR3>	    m_vRows[2];
-	XArray<XVECTOR3>	    m_vCols[2];
+	XArray<XVECTOR3>	     m_vRows[2];
+	XArray<XVECTOR3>	     m_vCols[2];
 
 	struct Vertex
 	{
 		XVECTOR3 vPos;
 		xfloat32 fA;
 	};
-	XArray<Vertex>		m_vVBPos;
-	XArray<xint32>		m_vIndex;
+	XArray<Vertex>		    m_vVBPos;
+	XArray<xint32>		    m_vIndex;
 
 	XVECTOR3				m_vCurCamerapos;
 	XVECTOR3				m_vCurCameradir;

@@ -47,7 +47,7 @@ public:
 	typedef XArray<SpawnParticle>  ParticleSystemPawnList;
 
 protected:
-	class InsDelayDestroyer :public XEUtility::XEDelayDestroyer
+	class InsDelayDestroyer :public XEUtility::XETemporalObject
 	{
 		friend class XEAnimMonNotifyParticleIns;
 	public:
@@ -77,7 +77,7 @@ public:
 	xbool                                     BindXESocketInstance();//will generate from its template.
 	void                                      UnbindXESocketInstance();
 	xbool                                     GetDefaultPawnTransform(XETransform& tf);
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet               GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif
 	void                                      OnSocketUpdate(const XMATRIX4& matWorld);//come from the socket-listeners.

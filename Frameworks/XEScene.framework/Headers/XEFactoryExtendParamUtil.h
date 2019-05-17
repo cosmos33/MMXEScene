@@ -14,13 +14,10 @@
 #ifndef _XE_FACTORY_EXTEND_PARAM_UTIL_H
 #define _XE_FACTORY_EXTEND_PARAM_UTIL_H
 #include "XMemBase.h"
-#include "XArray.h"
-#include "XESingleton.h"
+#include "XEFactoryUtil.h"
 #include "tinyxml2_XEngine.h"
 
 using namespace tinyxml2_XEngine;
-
-#define XE_EXT_PARAM_TYPE_DEF(T) virtual const XString &GetParamName()const override{return T;}
 
 class XEActor;
 class XEValueProperty;
@@ -36,12 +33,14 @@ public:
 	virtual const XString& GetParamName() const;
 	virtual XMLElement*    Serialize(XMLElement* pEleParent);
 	virtual void           Deserialize(const XMLElement* pEleExtendParam);
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEProperty*    CreateProperty(xint32 nParamIndex, xint32 nMemberIndex, XEProperty* pParent, XEPropertyObject* pPropertyObject){ return NULL; }
 	virtual xbool          SetValueProperty(xint32 nMemberIndex, const XEValueProperty* pProperty, XEPropertyObject* pPropertyObject){ return xfalse; }//can be nodes or values.
 	virtual void           GetValueProperty(xint32 nMemberIndex, XEValueProperty* pProperty, XEPropertyObject* pPropertyObject){}
-
 	virtual xint32         GetParamMemberCount(){ return 0; }
 	virtual XString        GetParamMemberName(xint32 nIndex){ return XString(); }
+#endif
+	virtual void           Tick(xfloat32 fDelMs){}
 public:
 	X_FORCEINLINE void     SetOwner(XEActor* pActor){ m_pActorOwner = pActor; }
 	X_FORCEINLINE XEActor* GetOwner(){ return m_pActorOwner; }
@@ -71,24 +70,27 @@ public:
 	virtual const XString&	   GetExtendParamName();
 };
 
-class XEExtendParamFactoryManager
-	: public XESingleton<XEExtendParamFactoryManager>
+class XEParamExtendFactoryManager:public XEFactoryManagerBase
 {
 public:
-	~XEExtendParamFactoryManager();
-	void                       ReleaseFactory();//be carefully to call this. don't call it if is possible. 
-	IXEExtendParamFactory*	   GetFactory(const XString &strParamName);
+	XEParamExtendFactoryManager();
+	virtual ~XEParamExtendFactoryManager();
+public:
+	virtual void               CollectFactory() override;
+	virtual void               ReleaseFactory() override;
+protected:
+	virtual IXEExtendParamFactory* GetFactoryForDerived(const XString &strParamName);//warning, if you don't want to call this in your derived class, override it and return NULL
+public:
+	INSTANCE_FACTORY_IMPL(XEParamExtendFactoryManager)
+	IXEExtendParamFactory*     GetFactory(const XString &strParamName);
 	xbool                      AddFactory(IXEExtendParamFactory* pFactory);
+protected:
+	template<typename T>
+	xbool                      _Register();
 private:
 	IXEExtendParamFactory::ExtendParamFactoryArray m_aExtendParamFactories;
 };
 
-template<typename T>
-class __EXTEND_PARAM_AUTO_REG
-{
-public:
-	__EXTEND_PARAM_AUTO_REG();
-};
 
 //implement with template.
 template<typename T>
@@ -105,15 +107,18 @@ const XString& XEExtendParamFactory<T>::GetExtendParamName()
 	return T::EXTEND_PARAM_NAME;
 }
 
+
 template<typename T>
-__EXTEND_PARAM_AUTO_REG<T>::__EXTEND_PARAM_AUTO_REG()
+xbool XEParamExtendFactoryManager::_Register()
 {
 	IXEExtendParamFactory* pFactory = new XEExtendParamFactory<T>();
-	if (!XEExtendParamFactoryManager::GetInstance()->AddFactory(pFactory))
+	if (!AddFactory(pFactory))
+	{
 		X_SAFEDELETE(pFactory);
+		return xfalse;
+	}
+	return xtrue;
 }
 
-//warning: use this in the executable-module-only(outer.)
-#define REGISTER_EXT_PARAM_FACTORY(T) static __EXTEND_PARAM_AUTO_REG<T> ar
-
+#define XE_EXT_PARAM_TYPE_DEF(T) virtual const XString &GetParamName()const override{return T;}
 #endif // _XE_FACTORY_EXTEND_PARAM_UTIL_H

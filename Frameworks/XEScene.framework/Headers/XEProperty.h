@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 
 @File         XEProperty.h
 
@@ -23,7 +23,7 @@
 #include "XArray.h"
 #include "XHashTable.h"
 #include "XEVariant.h"
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 #include "rapidjson/document.h"
 #endif
 
@@ -122,6 +122,7 @@ public:
 		XWT_BOOL,
 		XWT_INT,
 		XWT_INTBUTTON_ADD_DEL,
+		XWT_INTBUTTON_DEL,
 		XWT_STRING,
 		XWT_DESCVALUE,
 		XWT_TEXTURE,
@@ -138,7 +139,8 @@ public:
 		XWT_LONG_TEXT,
 		XWT_SLIDER,
 //		XWT_PHYSICAL_ASSET
-		XWT_TRANSFORM_SCALE,  //with a scale lock.
+		XWT_TRANSFORM_SCALE,  //with a scale lock.(x/y/z)
+		XWT_TRANSFORM_XY_SCALE,//with a scale lock.only x and y
 		XWT_PATH_CANDEL,
 		XWT_BUTTON_WITHICON,
 		XWT_DROP_POINTER,
@@ -148,7 +150,9 @@ public:
 		XWT_PLAY_ANIMATION_EVENT_DATA, //for trigger
 		XWT_PATH_NO_LOCATION_AND_QUICK_CHANGE_FILE,//no location and quick file change
 		XWT_SKINMODEL_NO_LOCATION_AND_QUICK_CHANGE_FILE,
-		XWT_PATH_CANDEL_NO_LOCATION_AND_QUICK_CHANGE_FILE
+		XWT_PATH_CANDEL_NO_LOCATION_AND_QUICK_CHANGE_FILE,//路径+文件对话框按钮+删除按钮
+		XWT_PATH_STRING_ONLY_CANDEL,//路径+删除按钮
+		XWT_LIST_STRING,
 	};
 
 	enum EWidgetRequestCode{
@@ -208,6 +212,7 @@ public:
 										PRO_SET_GET_VALUE(Bool, xbool, Bool, XWT_BOOL);
 										PRO_SET_GET_VALUE(Int, xint32, Int, XWT_INT);
 										PRO_SET_GET_VALUE(IntButtonAddDel, xint32, Int, XWT_INTBUTTON_ADD_DEL);
+										PRO_SET_GET_VALUE(IntButtomDel, xint32, Int, XWT_INTBUTTON_DEL);
 										PRO_SET_GET_VALUE(SinglePushButton, xint32, Int, XWT_SINGLE_PUSH_BUTTON);//single button.
 										PRO_SET_GET_VALUE_CONST(ShortcutCustomization,XString,String,XWT_SHORTCUT_CUSTOMIZATION)//customization.
 										PRO_SET_GET_VALUE_CONST(String, XString, String, XWT_STRING);
@@ -218,15 +223,16 @@ public:
 										PRO_SET_GET_VALUE_CONST(SkinModelOnlyPath, XString, String, XWT_SKINMODEL_NO_LOCATION_AND_QUICK_CHANGE_FILE);
 										PRO_SET_GET_VALUE_CONST(AutoSuffixAsset, XString, String, XWT_AUTO_SUFFIX_ASSET);
 										PRO_SET_GET_VALUE_CONST(ClothName, XString, String, XWT_CLOTH);
-// 										PRO_SET_GET_VALUE_CONST(PhysicalAsset, XString, String, XWT_PHYSICAL_ASSET);
 										PRO_SET_GET_VALUE_CONST(AssetPath, XString, String, XWT_PATH);
 										PRO_SET_GET_VALUE_CONST(CanDelAssetPath, XString, String, XWT_PATH_CANDEL)
 										PRO_SET_GET_VALUE_CONST(OnlyAssetPath, XString, String, XWT_PATH_NO_LOCATION_AND_QUICK_CHANGE_FILE);
 										PRO_SET_GET_VALUE_CONST(CanDelAndOnlyAssetPath, XString, String, XWT_PATH_CANDEL_NO_LOCATION_AND_QUICK_CHANGE_FILE);
+										PRO_SET_GET_VALUE_CONST(CanDelAndPathString, XString, String, XWT_PATH_STRING_ONLY_CANDEL);
 										PRO_SET_GET_VALUE_CONST(LongText, XString, String, XWT_LONG_TEXT);
 										PRO_SET_GET_VALUE_CONST(Sound, XString, String, XWT_SOUND);
 										PRO_SET_GET_VALUE_CONST(PlayAnimationEventData, XString, String, XWT_PLAY_ANIMATION_EVENT_DATA);
 										PRO_SET_GET_VALUE(TransformScale, XVECTOR3, VECTOR3, XWT_TRANSFORM_SCALE); 
+										PRO_SET_GET_VALUE(TransformXYScale, XVECTOR2, VECTOR2, XWT_TRANSFORM_XY_SCALE);
 										PRO_SET_GET_VALUE(ButtonWithIcon, xbool, Bool, XWT_BUTTON_WITHICON);
 										PRO_SET_GET_VALUE(ActorVisibleEventData, xbool, Bool, XWT_ACTOR_VISIBLE_EVENT_DATA);
 										PRO_SET_GET_VALUE(9Slice, XVECTOR4, VECTOR4, XWT_9SLICE);
@@ -248,6 +254,8 @@ public:
 	void								SetOptionalStrSelect(xint32 nCurSelect);
 	inline xint32						GetOptionalStrSelect() const { ASSERT(XWT_OPTIONALSTR == m_eWidgetType); return m_Value.GetInt(); }
 	
+	void								SetListString(const XArray<XString> &vListStr);
+	void								GetListString(XArray<XString> &vListStr) const;
 
 	xbool								SetVariant(const XEVariant &Value, EWidgetType type);
 	static xbool						ValidVariantOfType(const XEVariant &Value, EWidgetType type);
@@ -325,7 +333,7 @@ public:
 	inline XString						GetTreeName()const{ return m_Name; }
 	void								Clear();
 	void								GetAllProperty(XArray<XEProperty*>& aPropertys);
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	void                                GetTreeNodeJsonDesc(rapidjson::Document& doc, XEProperty* pNode = NULL);
 #endif
 
@@ -383,6 +391,7 @@ public:
 	virtual	xbool						SetPropertyValue(const XEProperty &Node,xbool bNotifyPropertyChanged = xtrue) { return xtrue; }
 	virtual	xbool						GetPropertyValue(XEProperty&Node) { return xtrue; }
 	virtual xbool						IsEqualPropertyValue(void* pSourceHandleObject, void* pDestHandleObject, XEProperty& Node){ return xfalse; }
+	virtual void						SetupExpandStatus(XEPropertyTree *pTree);//默认属性展开，若子类不想展开，可重写此函数
 	inline void							SetFilter(xint32 nFilter) { m_nFilter = nFilter; }
 	inline xint32						GetFilter() const { return m_nFilter; }
 	inline void                         SetTypeName(const XString& name){ m_strTypeName = name; }
@@ -399,7 +408,6 @@ protected:
 	xint32								m_nFilter;
 	XString                             m_strTypeName;
 	XHashTable<xint32,xbool>            m_mapAttrExpand;//expand-node-status
-	
 };
 
 
@@ -410,7 +418,7 @@ struct XEPropertyObjectSet
 	XArray<XEPropertyObject*>		    m_vObject;
 };
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 extern const XString c_szPropertyCollcetPath;
 #endif
 

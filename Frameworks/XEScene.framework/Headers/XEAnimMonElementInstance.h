@@ -33,7 +33,7 @@ public:
 	XEAnimMonElement*                 GetAnimMonElementTemplate();
 	virtual xint32                    GetActualDuration(){ return 0; }
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	XEPropertyObjectSet GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif
 };

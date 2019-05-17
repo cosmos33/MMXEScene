@@ -22,6 +22,8 @@
 
 + (void)updateObjectFeature:(NSArray<id<CVObjectFeature>> *)objectFeatures;
 
++ (void)updateSegmentationData:(id<CVSegmentationData>)segmentationData;
+
 + (void)lostAllCVFeatures;
 
 @end

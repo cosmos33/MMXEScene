@@ -27,7 +27,7 @@
 #define HIT_DEBUG_SHAPE_DISPALY 0
 #define ENABLE_LAZY_LOAD 0//if lazy load mode is enable, the hidden one on de-serializing will not be created into memory.
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 #include "XEFactoryPropertyObjectUtil.h"
 #include "XEPropertyObjectBase.h"
 #endif
@@ -66,9 +66,8 @@ public:
 
 	virtual xbool                RayPick(XEHitResult& hr, XEHitResultList& hitResultList);//including child.
 	virtual xbool                RayPick(XEHitResult& hr, XEHitResultList& hitResultList, XViewport* viewport, const XVECTOR2& vScreenPoint);//easy access, including child
-	
 	virtual xbool                RayPick(XEHitResult& hr);//self only.
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                 GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po);
 #endif
 	virtual void                 UpdateForSerialize(){};
@@ -81,6 +80,7 @@ public:
 	template<typename castType>
 	const castType*              CastActorComponent() const;
 	virtual void                 SetHidden(xbool bHide);
+    XEViewport*                  GetXEViewport() const;
 protected:
 	//translate to world-matrix impl
 	//Override this method for custom behavior.
@@ -89,8 +89,10 @@ protected:
 	virtual XMATRIX4             GetRawWorldTransformImpl() const{ return GetWorldTransform(); }
 	virtual XEWorld*             GetReceiverWorld() override{ return GetWorldOwner(); }
 	virtual void                 OnParentEmpty(const XEActorComponent* pParentComponent){}//need to do something necessary while parent is set to empty.
+	virtual	void				 SerializeTransform(XMLElement* pEleComponent);
+	virtual void                 DeserializeTransform(const XMLElement* pEleComponent);
 public:
-	xbool                        MergeToWorldTransform(const XMATRIX4& mat);
+	xbool                        MergeToWorldTransform(const XMATRIX4& mat);//may call by the thread.
 	xbool                        ApplyWorldTransform(const XMATRIX4& mat);
 	XMATRIX4                     GetRawWorldTransform() const;
 public:
@@ -111,8 +113,9 @@ public:
 	XETransform&                 GetTransfrom();
 
 	xbool                        IsSerialized(const XMLElement* pEleParent);
-	XEWorld*                     GetWorldOwner();//can be override.
-	X_EES_LINE const XEWorld*    GetWorldOwner() const;//can be override. 
+	//if bStandaloneOwnerWorldAsWell is set to true and the Actor owner is NULL, will return the standalone world which been setup with this function:SetWorldOwner
+	XEWorld*                     GetWorldOwner(xbool bStandaloneOwnerWorldAsWell = xtrue);
+	X_EES_LINE const XEWorld*    GetWorldOwner(xbool bStandaloneOwnerWorldAsWell = xtrue) const;//can be override. 
 	X_FORCEINLINE void           SetWorldOwner(XEWorld* pWorld){ m_pWorldOwner = pWorld; }
 public:
 	/** Get the forward (Z) vector (length 1.0) from this Component, in world space.  */
@@ -133,7 +136,7 @@ public:
 
 public:
 	//local changed, by delta
-	void                         DeltaLocalMove(const XVECTOR3& deltaMovement);
+	virtual void                 DeltaLocalMove(const XVECTOR3& deltaMovement);
 	void                         DeltaLocalRotation(const XVECTOR3& deltaRotateEuler);
 	void                         DeltaLocalScale(const XVECTOR3& deltaScale);
 public:
@@ -164,14 +167,17 @@ public:
 	XVECTOR3                     WorldToLocal(const XVECTOR3& position) const;
 	/// Convert a world space position or rotation to local space.
 	XVECTOR4                     WorldToLocal(const XVECTOR4& vector) const;
+
+	xbool                        MoveComponent(const XVECTOR3& vNewWorldLocation, const XQUATERNION& qNewWorldQuaternion);
+	xbool                        ScaleComponent(const XVECTOR3& vNewScale);
+	void                         UpdateWorldTransformCommon() const;
+	xfloat32                     GetDistanceToCamera(const XEWorld* pWorld = NULL) const;
+
 protected:
 	void                         UpdateWorldTransform() const;
 	void                         MarkTransformDirty();
-#if ENABLE_LAZY_LOAD
-	/* 应用延迟加载内容（引擎端） */
-	xbool                        ApplyLazyLoadContent();
-#endif
-#if X_PLATFORM_WIN_DESKTOP
+
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	enum ELostAssetType
 	{
 		ELAT_NONE,
@@ -188,11 +194,7 @@ protected:
 	xbool						 LoadAssetError(const xchar* szFilePath, ELostAssetType eType);
 	xbool						 IsExistAssetPath(const xchar* szFilePath);
 #endif
-public:
-	xbool                        MoveComponent(const XVECTOR3& vNewWorldLocation, const XQUATERNION& qNewWorldQuaternion);
-	xbool                        ScaleComponent(const XVECTOR3& vNewScale);
-	void                         UpdateWorldTransformCommon() const;
-	xfloat32                     GetDistanceToCamera(const XEWorld* pWorld = NULL) const;
+
 protected:
 	XEActorComponent*            m_pAttachParent;
 	XEActor*                     m_pActorOwner;
@@ -202,10 +204,12 @@ protected:
 	xbool                        m_bDeleted;//features of marking deleted of a component will be delay.
 	xbool                        m_bModified;
 	xbool                        m_bHidden;
+private:
 	XEWorld*                     m_pWorldOwner;//may belong to the world created by others.
-
-#if X_PLATFORM_WIN_DESKTOP
+    
 protected:
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
+
 	//properties
 	XEPropertyObjectSet          m_setProperty;
 	struct XELoadErrorData
@@ -221,11 +225,8 @@ protected:
 		XString                  strAudioAssetPathTemp;
 	};
 	XELoadErrorData				 m_LoadErrorInfoData;//
-#if ENABLE_LAZY_LOAD
-	//memory reduce
-	XString                      m_strLazyLoadContent;//in the lazy load mode if it is hidden
 #endif
-#endif
+    
 private:
 	mutable xbool                m_bTransformDirty;
 public:
@@ -235,6 +236,19 @@ public:
 #if HIT_DEBUG_SHAPE_DISPALY
 	XEHitResult                  renderHitResult;
 #endif
+
+
+protected:
+
+#if ENABLE_LAZY_LOAD
+	/* 应用延迟加载内容（引擎端） */
+	xbool                        ApplyLazyLoadContent();
+#endif
+	
+	//memory reduce
+	XString                      m_strLazyLoadContent;//in the lazy load mode if it is hidden
+
+
 };
 
 template<typename castType>

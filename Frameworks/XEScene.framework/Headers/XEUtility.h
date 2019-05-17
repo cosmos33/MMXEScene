@@ -26,12 +26,14 @@
 #include <string>
 #include "IXPhysicsRes.h"
 #include "XClass.h"
+#include "XEViewport.h"
 
 class XEWorld;
 class XEAnimatableModelComponent;
 class XEActorComponent;
 class XEModelComponent;
 class XEViewport;
+class XViewport;
 class XBaseCamera;
 class XESceneARAdsVideoComponent;
 class XEAnimCurveFlyController;
@@ -61,8 +63,21 @@ namespace XEUtility
 	void                                  MakeNameLegalForLua(std::string& szName);
 	XEAnimCurveFlyController*             GetCameraFlyAnimCurveController();
 	XEAnimCurveFlyController*             GetActorFlyAnimCurveController();
-	XEAnimCurveFlyController*             GetActorComponentFlyAnimCurveController();
-#if X_PLATFORM_WIN_DESKTOP
+	XEAnimCurveFlyController*             GetActorComponentFlyAnimCurveController();    
+    template<typename T>
+    void                                  GetRealPositionOfWindow(XEViewport* viewport, T& pos) { pos = pos * viewport->GetWindowScale(); }
+    
+    
+    //canvas & cast ray, etc.
+    //may consider the different platforms also.
+	void                                  CastRay(XViewport* pViewport, const XVECTOR3& vecScreenPoint, XVECTOR3& vecStart, XVECTOR3& vecDir);
+    xfloat32                              PointToLineDistance(const XVECTOR3& vecPoint, const XVECTOR3& vecLinePoint, const XVECTOR3& vecLineDirection, xfloat32* pFraction = NULL);
+    void			                      DrawString(xint32 x, xint32 y, const xchar* szString, const XCOLORBASE& clr);
+    void                                  DrawQuad(xint32 x, xint32 y, xint32 nWidth, xint32 nHeight, const XCOLORBASE& clr, xbool bSolid = xfalse, XMATRIX3 *pMat = NULL);
+    void                                  Render2DLine(xint32 xBegin, xint32 yBegin, xint32 xEnd, xint32 yEnd, const XCOLORBASE& clr, XMATRIX3 *pMat = NULL);
+    void                                  Render2DCircle(const XVECTOR2& vPos, xfloat32 fRadius, const XVECTOR2& vStartNormalizedDir,const XVECTOR2& vEndNormalizedDir, const XCOLORBASE& color, xbool bClockWise = xtrue, xbool bSolid = xfalse, XMATRIX3 *pMat = NULL);
+
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	xbool                                 GetActorAnimationSequenceResources(const XEActor* pAnimationActor, XArray<XString>& arrSeqRes);
 	xbool                                 GetComponentAnimationSequenceResources(const XEAnimatableModelComponent* pAnimatableComponent, XArray<XString>& arrSeqRes);
 	xbool                                 GetClothResources(const XEAnimatableModelComponent* pAnimatableComponent, XArray<XString>& arrClothRes);
@@ -82,6 +97,11 @@ namespace XEUtility
 	xbool                                 GetViewPointOfLookingLocationAtScreen(XEWorld* pWorld, XVECTOR2& vOutPointStart, XVECTOR2& vOutPointEnd, const XVECTOR3& vLocation, const xint32 nInnerPixel = 128);//if location is can be seen, return 0,else 1. output the direction(vOutPointStart,vOutPointEnd)
 	void                                  MakePathSimple(XArray<XString>& fullPaths);
 	XString                               GetAssetPackageValidPath(const xchar* pFullRelativeAssetPackagePath, const xchar* pEvalAssetPath, xbool bNoRepeatPortionPath = xfalse);//evaluate the input asset path for the relative package(usually come from worlds).
+	//create mesh applique
+	xbool								  GetSkinNames(IXModelInstance* pModelIns, XArray<XString>& aSkinNames);
+	xbool								  GetMeshNames(IXModelInstance* pModelIns, XArray<XString>& aMeshNames);
+	xbool								  IsExistActorInActorList(const XEActor* pActor, const XArray<XEActor*>& aActorList);
+
 	template<typename T>
 	XString                               GetArrayValidName(const XArray<T*>& arrData, const xchar* pPrefix = "ArrayValidName", const xint32 nMaxIndex = 0xffff)
 	{
@@ -136,49 +156,35 @@ namespace XEUtility
 
 X_EEB_BEGIN
 	typedef xbool(*checkItemMatch)(void* holder, MaterialInfo& materialInfo);
-	void                                  TravelMaterialParameter(IXModelInstance* pModelIns,void*  pHolder, checkItemMatch checkFunc);
+	void									TravelMaterialParameter(IXModelInstance* pModelIns,void*  pHolder, checkItemMatch checkFunc);
 X_EEB_END
 
 	//apply the specific value for the parameter.
-	xbool                                 ApplyMaterialParameter(IXModelInstance* pModelIns, const MaterialKey& mk, xint32 nParamIndex, xfloat32 fParamVal);
-	xbool                                 ApplyMaterialParameter(IXModelInstance* pModelIns, const MaterialKey& mk, const xchar* pTexPath);
+	xbool									ApplyMaterialParameter(IXModelInstance* pModelIns, const MaterialKey& mk, xint32 nParamIndex, xfloat32 fParamVal);
+	xbool									ApplyMaterialParameter(IXModelInstance* pModelIns, const MaterialKey& mk, const xchar* pTexPath);
 	//szMTPath/szTexPath full relative path to the engine root
 	//will match to the name
-	xbool                                 ApplyMaterialType(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szMTPath);
-	xbool								  ApplyMaterialTextureParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc, const xchar* szTexPath);
-	xbool                                 ApplyMaterialVectorParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc, const XVECTOR4& valueSlot);//as max as xvector4
-	xbool								  ApplyMaterialVectorParameterValue(IXMaterialInstance *pMaterialIns, const xchar* szParamDesc, const XVECTOR4& valueSlot);
+	xbool									ApplyMaterialType(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szMTPath);
+	xbool									ApplyMaterialTextureParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc, const xchar* szTexPath);
+	xbool									ApplyMaterialVectorParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc, const XVECTOR4& valueSlot);//as max as xvector4
+	xbool									ApplyMaterialVectorParameterValue(IXMaterialInstance *pMaterialIns, const xchar* szParamDesc, const XVECTOR4& valueSlot);
 	//get method
-	const xchar*                          GetMaterailType(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName);
-	const xchar*                          GetMaterailTextureParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc);
-	XVECTOR4                              GetMaterialVectorParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc);
-	MaterialInfo                          GetMaterialParamTypeValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc);
+	const xchar*							GetMaterailType(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName);
+	const xchar*							GetMaterailTextureParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc);
+	XVECTOR4								GetMaterialVectorParameterValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc);
+	MaterialInfo							GetMaterialParamTypeValue(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar* szMaterialInsName, const xchar* szParamDesc);
 
-	xbool								  ApplyMaterailInsParamToOther(const IXMaterialInstance *pSourceMaterialIns, IXMaterialInstance *pDestMaterialIns);
-	xbool								  GetRawMeshNameByMaterialInsName(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar *szMaterialInsName, xint32 nLod, XArray<XString> &vRawMeshName);
-
-
-	//////////////////////////////////////////////////////////////////////////
-	enum ESceneType
-	{
-		ST_DEFAULT = 0,//default scene
-		ST_FACE_TRACKER /*= 0*/,
-		ST_MOBILE_AR,
-		ST_ARADS,
-		ST_NUM
-	};
-
-	const XString&				GetSceneNameByType(ESceneType eType);
-	ESceneType					GetSceneTypeByName(const XString &str);
-	const XArray<XString>&		GetAllSceneType();
-
-
-	EConstraintMotion			GetConstraintMotionTypeByName(const XString& str);
-	const XArray<XString>&		GetConstraintMotionNameList();
+	xbool									ApplyMaterailInsParamToOther(const IXMaterialInstance *pSourceMaterialIns, IXMaterialInstance *pDestMaterialIns);
+	xbool									GetRawMeshNameByMaterialInsName(IXModelInstance* pModelIns, const xchar* szSkinName, const xchar *szMaterialInsName, xint32 nLod, XArray<XString> &vRawMeshName);
+		
+	EConstraintMotion						GetConstraintMotionTypeByName(const XString& str);
+	const XArray<XString>&					GetConstraintMotionNameList();
 
 	IXSkeletalPhysicsRes::EPhysResFitVertWeight		GetPhysResFitVertWeightTypeByName(const XString& str);
-	const XArray<XString>&		GetAllPhysResFitVertWeightType();
-	const XArray<XString>&		GetAllShapeMaterialParams();
+	const XArray<XString>&					GetAllPhysResFitVertWeightType();
+	const XArray<XString>&					GetAllShapeMaterialParams();
+
+
 
 	class XEBinaryString
 	{
@@ -194,27 +200,30 @@ X_EEB_END
 		xuint32		m_dwBufferSize;
 	};
 
-	//delay destroyer
-	class XEDelayDestroyer
+	//TemporalObject, usually for delay-destroying...
+	class XETemporalObject
 	{
 	public:
-		XEDelayDestroyer(){}
-		virtual ~XEDelayDestroyer(){}
+		XETemporalObject(){}
+		virtual ~XETemporalObject(){}
 		//functions that should be override.
 		virtual xbool ShouldBeDeleted() = 0;
 		virtual void  Release() = 0;
 		virtual void  Tick(xfloat32 fDel){}//in milliseconds.
 		virtual void  Render(XEViewport* pViewport){}
 	};
-	typedef XArray<XEDelayDestroyer*> DelayDestoryerList;
-
-
+	typedef XArray<XETemporalObject*> TemporalObjectList;
 	//vectors.
 	template<typename T, int n>
 	class XEVector
 	{
 	public:
-		XEVector(){ memset(m, 0, n * sizeof(T)); }
+		XEVector(){ Clear(); }
+		XEVector(const T& t){ for (xint32 i = 0; i < n; ++i) m[i] = t; }
+		XEVector(const T& t1, const T& t2){ if (1 <= n) m[0] = t1; if (2 <= n) m[1] = t2; }
+		XEVector(const T& t1, const T& t2, const T& t3){ if (1 <= n) m[0] = t1; if (2 <= n) m[1] = t2; if (3 <= n) m[2] = t3; }
+		XEVector(const T& t1, const T& t2, const T& t3, const T& t4){ if (1 <= n) m[0] = t1; if (2 <= n) m[1] = t2; if (3 <= n) m[2] = t3; if (4 <= n) m[3] = t4; }
+		void Clear(){ memset(m, 0, n * sizeof(T)); }
 		T m[n];
 		T* X(){ return 1 <= n ? &m[0] : NULL; }
 		T* Y(){ return 2 <= n ? &m[1] : NULL;  }
@@ -226,80 +235,192 @@ X_EEB_END
 		const T* W()const{ return 4 <= n ? &m[3] : NULL; }
 	};
 
+	template<typename T, int n>
+	class XEVectorM
+	{
+	public:
+        XEVectorM(){ Clear(); }
+        XEVectorM(const T& t){ for (xint32 i = 0; i < n; ++i) m[i] = t; }
+        XEVectorM(const T& t1, const T& t2){ if (1 <= n) m[0] = t1; if (2 <= n) m[1] = t2; }
+        XEVectorM(const T& t1, const T& t2, const T& t3){ if (1 <= n) m[0] = t1; if (2 <= n) m[1] = t2; if (3 <= n) m[2] = t3; }
+        XEVectorM(const T& t1, const T& t2, const T& t3, const T& t4){ if (1 <= n) m[0] = t1; if (2 <= n) m[1] = t2; if (3 <= n) m[2] = t3; if (4 <= n) m[3] = t4; }
+        void Clear(){ memset(m, 0, n * sizeof(T)); }
+        T m[n];
+        T* X(){ return 1 <= n ? &m[0] : NULL; }
+        T* Y(){ return 2 <= n ? &m[1] : NULL;  }
+        T* Z(){ return 3 <= n ? &m[2] : NULL;  }
+        T* W(){ return 4 <= n ? &m[3] : NULL;  }
+        const T* X()const{ return 1 <= n ? &m[0] : NULL; }
+        const T* Y()const{ return 2 <= n ? &m[1] : NULL; }
+        const T* Z()const{ return 3 <= n ? &m[2] : NULL; }
+        const T* W()const{ return 4 <= n ? &m[3] : NULL; }
+        
+		const XEVectorM& operator += (const XEVectorM& vec)
+		{
+			for (xint32 i = 0; i < n; ++i)
+				m[i] += vec.m[i];
+			return *this;
+		}
+		const XEVectorM& operator -= (const XEVectorM& vec)
+		{
+			for (xint32 i = 0; i < n; ++i)
+				m[i] -= vec.m[i];
+			return *this;
+		}
+		const XEVectorM& operator *= (const XEVectorM& vec)
+		{
+			for (xint32 i = 0; i < n; ++i)
+				m[i] *= vec.m[i];
+			return *this;
+		}
+		const XEVectorM& operator /= (const XEVectorM& vec)
+		{
+			for (xint32 i = 0; i < n; ++i)
+				m[i] /= vec.m[i];
+			return *this;
+		}
+		template<typename V = T>
+		const XEVectorM& operator *= (V v)
+		{
+			for (xint32 i = 0; i < n; ++i)
+				m[i] *= v;
+			return *this;
+		}
+		template<typename V = T>
+		const XEVectorM& operator /= (V v)
+		{
+			for (xint32 i = 0; i < n; ++i)
+				m[i] /= v;
+			return *this;
+		}
+		const XEVectorM& operator = (const XEVectorM& vec)
+		{
+			for (xint32 i = 0; i < n; ++i)
+				m[i] = vec.m[i];
+			return *this;
+		}
+		XEVectorM operator + () const
+		{
+			XEVectorM<T, n> val = *this;
+			return val;
+		}
+		XEVectorM operator - () const
+		{
+			XEVectorM<T, n> val = *this;
+			for (xint32 i = 0; i < n; ++i)
+				m[i] *= -1.f;
+			return val;
+		}
+	};
+
+	template<typename T, int n>
+	XEVectorM<T, n> operator + (const XEVectorM<T, n>& vec1, const XEVectorM<T, n>& vec2)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = vec1.m[i] + vec2.m[i];
+		return val;
+	}
+	template<typename T, int n>
+	XEVectorM<T, n> operator - (const XEVectorM<T, n>& vec1, const XEVectorM<T, n>& vec2)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = vec1.m[i] - vec2.m[i];
+		return val;
+	}
+	template<typename T, int n>
+	XEVectorM<T, n> operator * (const XEVectorM<T, n>& vec1, const XEVectorM<T, n>& vec2)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = vec1.m[i] * vec2.m[i];
+		return val;
+	}
+	template<typename T, typename V, int n>
+	XEVectorM<T, n> operator * (const V& v, const XEVectorM<T, n>& vec)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = v * vec.m[i];
+		return val;
+	}
+	template<typename T, typename V, int n>
+	XEVectorM<T, n> operator * (const XEVectorM<T, n>& vec, const V& v)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = vec.m[i] * v;
+		return val;
+	}
+
+	template<typename T, int n>
+	XEVectorM<T, n> operator / (const XEVectorM<T, n>& vec1, const XEVectorM<T, n>& vec2)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = vec1.m[i] / vec2.m[i];
+		return val;
+	}
+	template<typename T, typename V, int n>
+	XEVectorM<T, n> operator / (const XEVectorM<T, n>& vec, const V& v)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = vec.m[i] / v;
+		return val;
+	}
+	template<typename T, typename V, int n>
+	XEVector<T, n> operator / (const V& v, const XEVector<T, n>& vec)
+	{
+		XEVectorM<T, n> val;
+		for (xint32 i = 0; i < n; ++i)
+			val.m[i] = v / vec.m[i];
+		return val;
+	}
+	template<typename T, int n>
+	xbool operator == (const XEVectorM<T, n>& vec1, const XEVectorM<T, n>& vec2)
+	{
+		for (xint32 i = 0; i < n; ++i)
+			if (vec1.m[i] != vec2.m[i])
+				return xfalse;
+		return xtrue;
+	}
+	template<typename T, int n>
+	xbool operator != (const XEVectorM<T, n>& vec1, const XEVectorM<T, n>& vec2)
+	{
+		for (xint32 i = 0; i < n; ++i)
+			if (vec1.m[i] != vec2.m[i])
+				return xtrue;
+		return xfalse;
+	}
 X_EEB_BEGIN
 	extern const xfloat32            c_StanderCameraDis;
 	extern const xfloat32            c_StanderDirScale;
 	extern const xfloat32            c_StanderFadeDis;
 	extern const xfloat32            c_StanderOrthSize;
+    extern const xfloat32            c_ScreenResolutionDPIRatio;
 	extern const xint32              c_MaxParticleSystemFadingTime;//ms.
 	extern const xchar*	             c_PhyBodySuffix;
 	extern const xchar*	             c_PhyConstraintSuffix;
-	extern const xchar*              c_SupportPhysicsSkeletonSceneMinVersion;
 	extern const xchar*              c_szMacro_DEFAULTENABLE;
-X_EEB_END
+X_EEB_END	
 
-	//XEActorSerializeFlag
-	struct XEActorPropertySerializeFlag
-	{
-	public:
-		XEActorPropertySerializeFlag(xbool bCopyInProcessTemp = xfalse)
-			: bIsCopyProcess(bCopyInProcessTemp)
-		{ }
-
-		//actor serialize before start
-		void				 SetIsCopyProcess(xbool bCopyInProcessTemp){ bIsCopyProcess = bCopyInProcessTemp; }
-		void	             SetCopyActorName(const XString& strCurCopyActorName){ strCopyActorName = strCurCopyActorName; }
-		void				 AddChildActorNames(const XArray<XString>& aChildActorNameTemp);
-		void				 SetCopyActorFilterPath(const XString& strCurCopyActorFilterTemp){ strCopyActorFilterPath = strCurCopyActorFilterTemp; }
-		void				 SetParentActorName(const xchar* szParentActorName){ strParentActor = szParentActorName; }
-		//actor serialize before end
-
-		//actor serializing
-		xbool			     IsCopyProcess(){ return bIsCopyProcess; }
-		XString	             GetCopyActorName(){ return strCopyActorName; }
-		xbool				 IsExistChildActor(const XString& strChildActorName);
-		XString				 GetCopyActorFilter(){ return strCopyActorFilterPath; }
-		XString				 GetParentActorName(){ return strParentActor; }
-		//actor serializing
-
-		//actor serialize after start
-		void                 Reset();
-		//actor serialize after start
-
-		tinyxml2_XEngine::XMLElement*          Serialize(tinyxml2_XEngine::XMLElement* pEleParent);
-		void								   Deserialize(const tinyxml2_XEngine::XMLElement* pEleParent);
-
-	private:
-		xbool				 bIsCopyProcess;//no Serialize
-		XString	             strCopyActorName;//���ݴ�Actor������Actor Name
-		XString				 strCopyActorFilterPath;//save
-		XString				 strParentActor;//save
-		XArray<XString>		 aChildActorNames;//no Serialize
-	};
-
-	xbool					 IsExistActorInActorList(const XEActor* pActor, const XArray<XEActor*>& aActorList);
-
-	struct XESceneData
-	{
-		ESceneType				eSceneType;//such as face tracker, mobile ar ...
-		XString					strSceneVersion;//version
-		XESceneData() :eSceneType(ST_DEFAULT) //change to default. yanglj.
-			, strSceneVersion(XEUtility::c_SupportPhysicsSkeletonSceneMinVersion){}
-		XESceneData(ESceneType eType, XString strVersion) :eSceneType(eType), strSceneVersion(strVersion){}
-		xbool operator == (const XESceneData& sd)const{ return eSceneType == sd.eSceneType && strSceneVersion == sd.strSceneVersion; }
-	};
-
+	
 	//load skeletal phy res from file
-	IXPhysicsRes*			 LoadPhysicsResFromPhy(const xchar* szPhyPath, xbool bReload = xfalse);
-	IXPhysicsRes*			 CreatePhysicsRes(PhysicsResourceType eType, const xchar* szName, const xchar* szMdlPath, const IXSkeletalPhysicsRes::XPhysResCreateParams& Params);
+	IXPhysicsRes*								LoadPhysicsResFromPhy(const xchar* szPhyPath, xbool bReload = xfalse);
+	IXPhysicsRes*								CreatePhysicsRes(PhysicsResourceType eType, const xchar* szName, const xchar* szMdlPath, const IXSkeletalPhysicsRes::XPhysResCreateParams& Params); 
 
 
-	//create mesh applique
-	xbool		   GetSkinNames(IXModelInstance* pModelIns, XArray<XString>& aSkinNames);
-	xbool		   GetMeshNames(IXModelInstance* pModelIns, XArray<XString>& aMeshNames);
+	//////////////////////////////////////////////////////////////////////////
+	// version function
+	// conver version string to int, Condition: Maximum four segments of the number, the maximum number of each is 99.
+	xint32										ConverVersionStringToValue(const XString &strVersion);
+
 };
 
-typedef XEUtility::XEVector<xint32, 2> XEVector2i;
+typedef XEUtility::XEVectorM<xint32, 2> XEVector2i;
+typedef XEUtility::XEVectorM<xint32, 4> XEVector4i;
 typedef XEUtility::XEVector<std::string, 2> XEVector2s;
 
 #define ASSERT_ERROR(V,I) ASSERT(0&&V&&I)

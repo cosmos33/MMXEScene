@@ -25,18 +25,23 @@
 #include "IXPhysicsScene.h"
 #include "XEUtility.h"
 #include <functional>
-#if X_PLATFORM_WIN_DESKTOP
+#include "XEEngine.h"
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 #include "XEMessageLog.h"
 #endif
 
 X_EMG_BEGIN
 typedef std::function<void(XEActor*, xfloat32)>    OnActorTick;
 typedef std::function<void(XEActor*, XEViewport*)> OnActorRender;
+typedef std::function<void(XEWorld*)>              OnDeserializeFinished;
+typedef std::function<bool(XEWorld*)>              OnFrameSizeChangedFunc;
+typedef std::function<void(XMLElement*)>           OnFlushSceneData;//deserialize/serialize...
+
 X_ECB_AUTO(OnActorTick, void, XEActor*, xfloat32)
 X_ECB_AUTO(OnActorRender, void, XEActor*, XEViewport*)
 
 class XFileBase;
-
+class XEWorldParam;
 
 enum EWorldMode
 {
@@ -44,15 +49,47 @@ enum EWorldMode
 	WM_RUNTIME 
 };
 
-class XEWorldParam;
-
 class XEWorld 
-	: public XMemBase
+	: public XMemBase,public XEEngine::XEFrameListener
 {
 	friend class XEGame;
 public:
 	typedef XArray<XEActor*> XEActorList;
 	typedef XHashTable<XString, XEActor*> XEActorListFastR;//fast retrieving...
+
+	//////////////////////////////////////////////////////////////////////////
+	// version
+	X_EEB_BEGIN
+	static const xchar*              c_SupportPhysicsSkeletonSceneMinVersion;
+	static const xchar*				 c_SupportFaceTrackerActorSceneMinVersion;
+	static const xchar*				 c_CurrentSceneVersion;
+	X_EEB_END
+
+	//////////////////////////////////////////////////////////////////////////
+	enum ESceneType
+	{
+		ST_DEFAULT = 0,//default scene
+		ST_FACE_TRACKER /*= 0*/,
+		ST_MOBILE_AR,
+		ST_ARADS,
+		ST_NUM
+	};
+
+	static const XString&				GetSceneNameByType(ESceneType eType);
+	static ESceneType					GetSceneTypeByName(const XString &str);
+	static const XArray<XString>&		GetAllSceneType();
+
+	struct XESceneData
+	{
+		ESceneType				eSceneType;//such as face tracker, mobile ar ...
+		XString					strSceneVersion;//version
+		XESceneData() :eSceneType(ST_DEFAULT) //change to default. yanglj.
+			, strSceneVersion(c_CurrentSceneVersion){}
+		XESceneData(ESceneType eType, XString strVersion) :eSceneType(eType), strSceneVersion(strVersion){}
+		xbool operator == (const XESceneData& sd)const{ return eSceneType == sd.eSceneType && strSceneVersion == sd.strSceneVersion; }
+	};
+
+
 protected:
 	XEWorld();//only for XEGame creating.
 public:
@@ -81,6 +118,8 @@ public:
 	virtual void		                        DeleteActor(XEActor *pActor);
 
 	virtual XEActor*                            UpdateNameOfActor(const XString& strActorOldName, const XString& strActorNewName);
+
+	virtual void								MergeActorHiddenStatus(const XEActor* pCurSelectActor = NULL){}//merge request.
 	
 	inline xbool			                    IsTickable() { return m_bTickable; }
 	inline void                                 SetTickable(xbool bEnable){ m_bTickable = bEnable; }
@@ -108,14 +147,13 @@ public:
 	inline void                                 SetSceneAssetPath(const xchar* pAssetPath){ m_strSceneAssetPath = pAssetPath; }
 
 	XString                                     GetAssetPackage()const;///calculating the correct asset package.
-	void										SetAssetPackage(const xchar* pPackagePath);//xxxxx.what?s
+	void										SetAssetPackage(const xchar* pPackagePath);//xxxxx.what?
 
 	inline void                                 SetOnActorTickCallback(OnActorTick func){ m_pOnActorTick = func; }
 
 	inline void                                 SetOnActorRenderCallback(OnActorRender func){ m_pOnActorRender = func; }
 X_EEB_BEGIN
 	inline OnActorTick                          GetOnActorTickCallback(){ return m_pOnActorTick; }
-
 	inline OnActorRender                        GetOnActorRenderCallback(){ return m_pOnActorRender; }
 X_EEB_END
 
@@ -123,9 +161,9 @@ X_EEB_END
 	X_EES_LINE const XEActor*                   FindActor(const XString& strActorName) const;
 
 	xbool                                       HasActor(const XEActor* pActor, xbool bIgnoreDeleted = xtrue) const;
-	xint32                                      GetActorCount(const XString& strActorType = "");
+	xint32                                      GetActorCount(const XString& strActorType = "") const;
 
-	void                                        GetActorsOfType(const XString& strActorType, XArray<XEActor*>& actorList);
+	void                                        GetActorsOfType(const XString& strActorType, XArray<XEActor*>& actorList) const;
 	XString                                     GetActorValidName(const XString& strActorType);
 	xint32                                      GetActorValidOrder();
 	XEActorList&		                        GetAllActors() { return m_aActor; }
@@ -133,7 +171,11 @@ X_EEB_END
 	XEActorListFastR&                           GetActorFastMap(){ return m_mActorFastR; }
 	const XEActorListFastR&                     GetActorFastMap() const{ return m_mActorFastR; }
 	
-	void                                        AddDelayDestroyer(XEUtility::XEDelayDestroyer* pDestroyer);//will be delay destroyed.
+	void                                        AddTemporalObject(XEUtility::XETemporalObject* pDestroyer);//will be delay destroyed.
+	xbool                                       AddActorToRenderOrder(XEActor* pActor);//for semi-transparent-rendering...
+	xbool                                       RemoveActorFromRenderOrder(XEActor* pActor);
+	void                                        MakeActorInRenderOrderSafe();
+	X_EES_LINE void                             SortActorInRenderOrder();
 	xbool                                       RestoreActiveCamera(XEViewport *pViewport);//restore the active camera in this world.
 
 	const xchar*			                    GetPhysicsSceneName();//physics scene name
@@ -155,10 +197,11 @@ X_EEB_END
 	xbool					                    IsWorldPropertyModified();
 			
 	/** （default/facetracker/mobile_ar/arads） */
-	void				                        SetSceneType(XEUtility::ESceneType eSceneType){ m_SceneData.eSceneType = eSceneType; }
-	XEUtility::ESceneType				        GetSceneType(){ return m_SceneData.eSceneType; }
+	void				                        SetSceneType(ESceneType eSceneType){ m_SceneData.eSceneType = eSceneType; }
+	ESceneType									GetSceneType()const { return m_SceneData.eSceneType; }
 
-	xfloat32							        GetSceneVersion();
+	xint32										GetSceneVersionValue();
+	X_FORCEINLINE  XString						GetSceneVersion() { return m_SceneData.strSceneVersion; }
 	void								        SetSceneVersion(XString strVersion){ m_SceneData.strSceneVersion = strVersion; }
 	xbool                                       AttachBindingScriptAsset(const xchar* pAssetPath);//path will be fixed.
 
@@ -176,8 +219,9 @@ X_EEB_END
 
 protected:					                    
 	XEActorList                                 m_aActor;
+	XEActorList                                 m_aActorWithRenderOrder;//come from m_aActor
 	XEActorListFastR		                    m_mActorFastR;
-	XEUtility::DelayDestoryerList               m_aDelayDestroyer;//components that need to be delay destroyed in the world.
+	XEUtility::TemporalObjectList               m_aTemporalObj;//temporal objects that can be rendered/ticked in the world.
 	xbool					                    m_bTickState;
 	xbool                                       m_bTickable;
 	xbool										m_bTickPhysicsable;
@@ -188,7 +232,7 @@ protected:
 	IXPhysicsScene*			                    m_pPhysicsScene;// physical scene pointer
 	XCOLOR                                      m_uVpClearColor;
 	XEWorldParam*			                    m_pWorldParam;//world property setting
-	XEUtility::XESceneData						m_SceneData;
+	XEWorld::XESceneData						m_SceneData;
 	tinyxml2_XEngine::XMLDocument				m_CopyOrPasteDoc;//used to copy/paste selected actors
 	XHashTable<XString, XString>				m_aOriginNameInXMLToActorName;//clone actor
 	XEActorList									m_aSortActorListInClone;//clone actor
@@ -199,6 +243,9 @@ private:
 protected:
 	virtual void     		                    Serialize(tinyxml2_XEngine::XMLDocument& doc, xbool bIsModified = xtrue);
 	xbool										GetActorChildNameInActorList(XEActor* pActor, const XEActorList& aActors,XArray<XString>& childActorNamesInActorList);
+	virtual void								OnPreFrame();
+	virtual void								OnPostFrame();
+	virtual void								OnFrameSizeChanged();
 private:
 	void										SetParentActorForActor(XEActor* pActor, XEActorList& aSerlizeActors);//zsx:fix filterPath
 	void										InitActorsFromTempXml(XMLElement* pEleScene, XEActorList& aAddActors);
@@ -211,8 +258,8 @@ public:
  	virtual void								CopySelectedActors(const XEActorList& aActors,xbool bIsChangeCopyName = xtrue,xbool bIsResetActorProperty = xtrue);
  	virtual XEActorList							PasteSelectedActors();
 	void										ReAttachToActor(XEActor* pSourceActor, XEActor* pParentActor, void* pBindUesrNode);
-	XEViewport*                                 GetAttachedViewport();//to find the viewport where the world located.[in XEViewportManager]
-#if X_PLATFORM_WIN_DESKTOP
+	XEViewport*                                 GetAttachedViewport() const;//to find the viewport where the world located.[in XEViewportManager]
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                                GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po);
 	xbool										SetMessageLogListener(MessageLogListener* pListener);
 	xbool										ClearMessageLogListener();
@@ -221,11 +268,17 @@ public:
 #endif
 X_EEB_BEGIN
 	static xint32                               SortActors(XEActor*const* pLhs, XEActor*const* pRhs);
+	static xint32                               SortActorsWithRenderOrder(XEActor*const* pLhs, XEActor*const* pRhs);
 	OnActorTick                                 m_pOnActorTick;
 	OnActorRender                               m_pOnActorRender;
+	static OnDeserializeFinished				s_pOnDeserializeFinished;
+	static OnDeserializeFinished				s_pGetWinSizeDeserializeFinished;//序列化完成后，向外部的actor通知窗口尺寸
+	static OnFrameSizeChangedFunc				s_pOnFrameSizeChangedFunc;
+	static OnFlushSceneData                     s_pOnSceneDeserializeData;
+	static OnFlushSceneData                     s_pOnSceneSerializeData;
 X_EEB_END
 public:
-	static const XString    PHY_SCENE_SUFFIX;
+	static const XString						PHY_SCENE_SUFFIX;
 };
 
 #endif

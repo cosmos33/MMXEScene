@@ -93,7 +93,7 @@ protected:
 	XSkeleton*                            m_pSkeleton;
 	XArray<XEAnimtionTimeArea*>			  m_vPrimitiveArea;//primitive animations
 private:
-	class _TickRenderWorker :public XEUtility::XEDelayDestroyer
+	class _TickRenderWorker :public XEUtility::XETemporalObject
 	{
 	public:
 		_TickRenderWorker(XEAnimMontageTimeArea* ata) :bDone(xfalse), _ata(ata){}

@@ -40,7 +40,7 @@ public:
 	virtual ~XEModelComponent();
 protected:
 	//delay loading...
-	class DelayLoadDestroyer :public XEUtility::XEDelayDestroyer
+	class DelayLoadDestroyer :public XEUtility::XETemporalObject
 	{
 	public:
 		DelayLoadDestroyer() :m_pComponent(NULL){}
@@ -63,7 +63,7 @@ public:
 	virtual XMLElement*                                         Serialize(XMLElement* pEleParent) override;
 	virtual XCusAABB                                            GetCusAABB(xfloat32* pfRadius = NULL) const override;
 	virtual xbool                                               RayPick(XEHitResult& hr) override;
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                                                GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
 #endif								                            
 	//Cloth start---	

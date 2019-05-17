@@ -1,4 +1,4 @@
-﻿#ifndef _IX2DSHAPE_H_
+#ifndef _IX2DSHAPE_H_
 #define _IX2DSHAPE_H_
 
 #include "XMath3D.h"
@@ -26,12 +26,15 @@ public:
 
 class IX2DEdgeShape : public IX2DShape
 {
-
+public:
+    virtual void        Set(const XVECTOR2& v1, const XVECTOR2& v2) = 0;
+    virtual void        Get(XVECTOR2& v1, XVECTOR2& v2) const = 0;
 };
 
 class IX2DPolygonShape : public IX2DShape
 {
 public:
+	virtual void		Set(const XVECTOR2* points, xint32 nCnt) = 0;
 	virtual void		SetAsBox(xfloat32 hx, xfloat32 hy) = 0;
 	virtual void		SetAsBox(xfloat32 hx, xfloat32 hy, const XVECTOR2& vCenter, xfloat32 fAngle) = 0;
 };

@@ -118,7 +118,7 @@ public:
 	const XArray<XEAppliqueOperater*>&		GetAppliqueOperaters() const { return m_vAppliqueOperater; }
 	XArray<XEAppliqueOperater*>&			GetAppliqueOperaters(){ return m_vAppliqueOperater; };
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                            GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
 #endif
 

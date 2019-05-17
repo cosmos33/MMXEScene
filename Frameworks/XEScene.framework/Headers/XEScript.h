@@ -43,7 +43,7 @@ public:
 	X_FORCEINLINE void                            SetScriptAssetPath(const xchar* pAssetPath){ if( pAssetPath ) m_strScriptAssetPath = pAssetPath; }
 	X_FORCEINLINE void                            SetAutoRun(xbool bAuto){ m_bAutoRun = bAuto; }
 public:
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	xbool                                         BuildEntranceCodeFile();
 	xbool                                         SaveToCodeFile();
 #endif

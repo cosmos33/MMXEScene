@@ -42,7 +42,7 @@ public:
 		X_EES_LINE virtual void Ls_Flying(XEAnimCurveFlyController* pController, xfloat32 fCurTime, const XMATRIX4& mat4){}//you can do something with the controller, e.g, pause the flying at a pecific.
 	};
 private:
-	class TemporalObject :public XEUtility::XEDelayDestroyer
+	class TemporalObject :public XEUtility::XETemporalObject
 	{
 		friend class XEAnimCurveFlyController;
 	protected:

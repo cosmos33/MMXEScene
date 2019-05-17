@@ -44,13 +44,52 @@ public:
 		EDD_BOUNDINGBOX = 1 << 2/// draw bounding box
 	};
 
+	//XEActorSerializeFlag
+	struct XEActorPropertySerializeFlag
+	{
+	public:
+		XEActorPropertySerializeFlag(xbool bCopyInProcessTemp = xfalse)
+			: bIsCopyProcess(bCopyInProcessTemp)
+		{ }
+
+		//actor serialize before start
+		void									SetIsCopyProcess(xbool bCopyInProcessTemp){ bIsCopyProcess = bCopyInProcessTemp; }
+		void									SetCopyActorName(const XString& strCurCopyActorName){ strCopyActorName = strCurCopyActorName; }
+		void									AddChildActorNames(const XArray<XString>& aChildActorNameTemp);
+		void									SetCopyActorFilterPath(const XString& strCurCopyActorFilterTemp){ strCopyActorFilterPath = strCurCopyActorFilterTemp; }
+		void									SetParentActorName(const xchar* szParentActorName){ strParentActor = szParentActorName; }
+		//actor serialize before end
+
+		//actor serializing
+		xbool									IsCopyProcess(){ return bIsCopyProcess; }
+		XString									GetCopyActorName(){ return strCopyActorName; }
+		xbool									IsExistChildActor(const XString& strChildActorName);
+		XString									GetCopyActorFilter(){ return strCopyActorFilterPath; }
+		XString									GetParentActorName(){ return strParentActor; }
+		//actor serializing
+
+		//actor serialize after start
+		void									Reset();
+		//actor serialize after start
+
+		tinyxml2_XEngine::XMLElement*			Serialize(tinyxml2_XEngine::XMLElement* pEleParent);
+		void									Deserialize(const tinyxml2_XEngine::XMLElement* pEleParent);
+
+	private:
+		xbool				 bIsCopyProcess;//no Serialize
+		XString	             strCopyActorName;// Actor Name
+		XString				 strCopyActorFilterPath;//save
+		XString				 strParentActor;//save
+		XArray<XString>		 aChildActorNames;//no Serialize
+	};
+
 
 public:
 	XEActor();
 	virtual ~XEActor();
 
 protected:
-	class DelayLoadBindUserNodeDestroyer :public XEUtility::XEDelayDestroyer
+	class DelayLoadBindUserNodeDestroyer :public XEUtility::XETemporalObject
 	{
 	public:
 		DelayLoadBindUserNodeDestroyer() :m_pActor(NULL){}
@@ -70,6 +109,8 @@ public:
 	virtual void			     Serialize(XFileBase *pFile) {}
 
 	virtual void                 Initialize(XEWorld* pWorld);
+	X_EES_LINE virtual void      PostInitialized(){}//you may do something else later in this function. Elements in Array were ready.
+	virtual xfloat32             GetRenderOrderFactor()const;
 	virtual void                 Tick(xfloat32 fDelMs, xbool bForceTick = xtrue);// in milliseconds.
 
 
@@ -109,8 +150,12 @@ public:
 	virtual void                 SetActorRotation(const xfloat32 fRoll, const xfloat32 fYaw, const xfloat32 fPitch);//in radians.
 	virtual void                 SetActorRotation(const XQUATERNION& rot);
 
-#if X_PLATFORM_WIN_DESKTOP
-	virtual XEPropertyObjectSet  GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy);
+	virtual void                 SetDeleted(xbool bDelete);
+	virtual void                 SetHidden(xbool bHide);
+
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
+	virtual xbool                IsTransformMergeEditMode()const{ return xtrue; }
+	virtual XEPropertyObjectSet  GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy);	
 	XEPropertyObjectSet          GetPropertyObjectComponentTree(XEPropertyObjectProxy* pPropertyObjectProxy);
 #endif
 	template<typename castType>
@@ -122,8 +167,8 @@ protected:
 	virtual void                 RenderBoundingBox(XEViewport* pViewport);
 	virtual XEWorld*             GetReceiverWorld() override{ return GetOwner(); }
 public:
-	XEActorComponent*            GetRootComponent();
-	X_EES_LINE const XEActorComponent* GetRootComponent() const;
+	XEActorComponent*                    GetRootComponent();
+	X_EES_LINE const XEActorComponent*   GetRootComponent() const;
 	X_FORCEINLINE XEChildActorComponent* GetBelongToChildActorComponent() const{ return m_pAsChildActorComponent; }
 
 	XEActorComponent*            GetComponentOfIndex(xint32 nIndex);
@@ -140,9 +185,7 @@ public:
 	void                         SetActorScale(const XVECTOR3& sca);
 	XMATRIX4                     GetRawWorldTransform() const;
 	XMATRIX4                     GetWorldTransform() const;
-
 	xbool                        SetActorName(const XString& szActorName, XEWorld* pContext = NULL);
-
 	//zsx:fix filterPath bug
 	xbool						 ChangeSubActorFilterPath(const XString& strParentOriginName, const XString& strParentNewName);
 	xbool                        IsSerialized(const XMLElement* pEleParent);
@@ -164,9 +207,7 @@ public:
 	xint32                       SetMergeRenderHidden(xint32 nMergeBit, xbool bHidden);
 	xint32                       SetMergeRenderHiddenEnable(xint32 nMergeBit, xbool bEnable);
 	void                         ResetMergeRenderHidden();
-	void                         SetDeleted(xbool bDelete);
 	void                         UpdateLocalTransformForChildComponent();
-	void                         SetHidden(xbool bHide);
 	void                         SetTransformMergeMode(xbool bMerge, xbool bRecursion = xtrue);
 	xbool                        AttachBindingScriptAsset(const xchar* pAssetPath);//path will be fixed.
 	void                         DetachBindingScriptInstance();
@@ -209,7 +250,6 @@ public:
 	xint32                       m_nMergeHidden;
 	static const XString         ACTOR_TYPENAME;//will be set to "EmptyAcotr"
 	static const XString         RC_CHANNEL;
-	XString                      m_szActorName;//instance name, will generated automatically or set manually.
 	XE_EVENT_CHANNEL_TYPE_DEF(RC_CHANNEL)
 	X_CLASS_DEF(XEActor)
 
@@ -219,7 +259,9 @@ public:
 	X_FORCEINLINE void           SetBoundingBoxColor(XCOLOR clVal){ m_clBoundingBoxColor = clVal; }
 	X_FORCEINLINE XCOLOR         GetBoundingBoxColor(){ return m_clBoundingBoxColor; }
 	X_FORCEINLINE const XString& GetActorName() const { return m_szActorName; }
+
 	X_FORCEINLINE void           SetActorTickEnabled(bool bEnable){ m_bEnaleTick = bEnable; }
+	X_FORCEINLINE xbool          IsActorTickable()const{ return m_bEnaleTick; }
 	X_FORCEINLINE XEWorld*       GetOwner() const{ return m_pOwner; }
 	X_FORCEINLINE void           SetOrder(const xint32 nOrder){ m_nOrder = nOrder; }
 	X_FORCEINLINE xint32         GetOrder()const{ return m_nOrder; }
@@ -253,7 +295,7 @@ public:
 
 	X_FORCEINLINE XEScriptContainerInstance* GetScriptContainerInstance(){ return m_pScriptContainerInstance; }
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	X_FORCEINLINE void			 SetRenameActorFlag(xbool bIsCanRename){ m_bIsCanRename = bIsCanRename; }//Whether the actor supports renaming
 	X_FORCEINLINE xbool			 IsEnableRenameActor(){ return m_bIsCanRename; }
 #endif
@@ -264,8 +306,9 @@ public:
 	XEBindUserNodeData&			 GetBindUserNodeData();
 	void					     SetUpdateTranfromFromUserNode(xbool bIsUpdate){ m_bIsUpdateTransformFromUserNode = bIsUpdate; }
 	xbool			             GetIsUpdateTranformFromUserNode() const { return m_bIsUpdateTransformFromUserNode; }
-	XEUtility::XEActorPropertySerializeFlag*	GetActorPropertySerializeFlag(){ return &m_SerializeFlag; }
+	XEActorPropertySerializeFlag*GetActorPropertySerializeFlag(){ return &m_SerializeFlag; }
 	xbool						 IsChildActor(const XEActor* pChildActor);
+	XString						 GetActorShortName() const;
 protected:
 	XEActorComponent*            m_pRootComponent;
 	XEWorld*                     m_pOwner;
@@ -288,7 +331,10 @@ protected:
 
 	XEBindUserNodeData			 m_BindUserNodeData;//bind parent actor's UserNode data
 	xbool				         m_bIsUpdateTransformFromUserNode;
-	XEUtility::XEActorPropertySerializeFlag   m_SerializeFlag;//doing copy actor useful
+	XEActorPropertySerializeFlag m_SerializeFlag;//doing copy actor useful
+
+	XString                      m_szActorName;//instance name, will generated automatically or set manually.
+	XString						 m_szActorShortName;//default simply name when create actor
 private:
 	friend class                 XEChildActorComponent;
 	XEChildActorComponent*       m_pAsChildActorComponent;//component that belong to.

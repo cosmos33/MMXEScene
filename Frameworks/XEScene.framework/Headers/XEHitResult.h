@@ -301,6 +301,11 @@ struct XEHitResult
 	*/
 	XVECTOR3 vTraceEnd;
 
+	/**
+	* original screen point
+	*/
+	XVECTOR2 vScreenPoint;
+
 	/** Extra data about item that was hit (hit primitive specific). */
 	xint32   nItem;
 
@@ -311,7 +316,7 @@ struct XEHitResult
 	xint32 nHitMask;
 
 	/** Trace AABB only**/
-	xbool bAABBHitTestOnly;
+	xbool  bAABBHitTestOnly;
 
 	/** Actor hit by the trace. */
 	XEActor* pActor;

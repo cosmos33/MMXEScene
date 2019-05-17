@@ -32,9 +32,8 @@ public:
 	virtual void                        Tick(xfloat32 fDel, xbool bForceTick = xtrue) override;
 	virtual void                        Deserialize(const XMLElement* pEleComponent) override;
 	virtual XMLElement*                 Serialize(XMLElement* pEleParent) override;
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                        GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
-
 	virtual bool                        ExportAsset(const xchar* pProjectDir, const xchar* pExportPath, XArray<XEVector2s>& assetArray);
 #endif
 public:				
@@ -51,7 +50,7 @@ public:
 	xbool                               StopParticleSystem() const;
 	xbool                               PlayParticlSystem() const;
 	xbool                               Create();
-	void                                SetTimeRadio(float fRadio){ m_fRadio = fRadio; };
+	void                                SetTimeRadio(float fRadio);
 protected:
 	// Override this method for custom behavior.
 	virtual xbool                       MoveComponentImpl(const XVECTOR3& vNewWorldLocation, const XQUATERNION& qNewWorldQuaternion) override;

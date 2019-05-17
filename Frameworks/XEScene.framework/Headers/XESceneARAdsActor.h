@@ -16,7 +16,7 @@
 
 #include "XEActor.h"
 #include "XESceneARAdsComponent.h"
-#include "XECanvas3DTextureComponent.h"
+#include "XE3DTextureComponent.h"
 
 class XESceneARAdsActor :public XEActor
 {
@@ -31,9 +31,11 @@ public:
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	XE_ACTOR_CAST(XESceneARAdsActor)
 	X_CLASS_DEF(XESceneARAdsActor)
+	   
 	static const XString	ACTOR_TYPENAME;
+	  
 protected:
-	XECanvas3DTextureComponent   m_Canvas3DTexture;
+	XE3DTextureComponent   m_texture3D;
 };
 
 #endif // XESCENEARADSACTOR_H

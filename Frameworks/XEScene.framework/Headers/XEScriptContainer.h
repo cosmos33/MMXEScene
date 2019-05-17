@@ -49,7 +49,7 @@ public:
 	//meanwhile, will build the default code from a code-template file according to the claiming nScriptHolderType as well.
 	//can attach to the specific script node with the variable: pScriptParentNode, if it is NULL, will be attached to the container as a child node.
 	//FOR EDITOR ONLY
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	XEScript*                                     CreateScript(const xchar* pScriptAssetPath, xint32 nScriptType, xint32 nScriptHolderType, xbool bAsNewScriptFile = xfalse, XEUserNode* pScriptParentNode = NULL);
 #endif
 	void										  GetBindNode(XETreeNode::NodeList& nl);

@@ -21,8 +21,8 @@ class XETransform:public XMemBase
 {
 	friend class XEActorComponent;
 public:
-
 	XETransform();
+	XETransform(const XMATRIX4& mat4);
 	virtual ~XETransform(){};
 public:
 	void                           SetRotateEuler(const xfloat32 fRoll, const xfloat32 fYaw, const xfloat32 fPitch); //normally, "Pitch" is rotate around x, however, here "Roll" is rotate around x, as the "Forward" direction is "Z", thus, "Pitch" is the right definition for the "Forward".  
@@ -47,7 +47,9 @@ public:
 	X_EES_LINE const XVECTOR3&     GetScale() const;
 	XMATRIX4                       GetTransform() const;
 	void                           SetFromMatrix4(const XMATRIX4& mt4);
-
+	X_FORCEINLINE void             SetWorldMatrix4(const XMATRIX4& mt4){ m_matWorldTransform = mt4; }
+	X_FORCEINLINE const XMATRIX4&  GetWorldMatrix4()const{ return m_matWorldTransform; }
+	xbool                          operator == (const XETransform& rhs)const;
 private:
 	//local			          
 	XVECTOR3                       m_vLocation;//relative to its parent

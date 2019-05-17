@@ -22,8 +22,9 @@ public:
 	XE_ACTOR_CAST(XEAmbientSoundActor)
 		XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 		X_CLASS_DEF(XEAmbientSoundActor)
+		   
 		static const XString	   ACTOR_TYPENAME;
-
+	  
 };
 
 

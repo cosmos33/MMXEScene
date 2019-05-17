@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 
 @File         XEViewport.h
 
@@ -115,7 +115,7 @@ public:
 	};
 
 public:
-								XEViewport(XEViewport::XVPType eType, IXPlatformWindow* pWindow, const XString &strName);
+	XEViewport(XEViewport::XVPType eType, IXPlatformWindow* pWindow, const XString &strName, xfloat32 fWindowScale = 1.0f);
 	virtual						~XEViewport();	
 
 	void						Render();
@@ -145,6 +145,7 @@ public:
 	void						SetOwnerCameraParam(XBaseCamera *pCamera);//affect the owner camera.
 	void                        ApplyCameraParam(XBaseCamera* pTargetCamera, XBaseCamera* pSourceCamera);//affect the target camera using the source camera.
 	void					    AttachToOwnerCamera();
+	XBaseCamera*				GetOwnerCamera(){ return m_pOwnerCamera; }
 	void						SetCameraPosTextColor(xfloat32 r = 1.0f, xfloat32 g = 1.0f, xfloat32 b = 0.8f, xfloat32 a = 1.0f);
 	inline void					SetCameraPosTextColor(const XCOLORBASE& color){ m_CameraTextColor = color; }
 
@@ -153,11 +154,12 @@ public:
 	inline void					SetFpsRenderPos(const XVPFpsRenderPos FpsRenderpos){ m_FpsRenderpos = FpsRenderpos; }
 
 	xint32						GetRenderY();
-
+	xint32                      GetViewportWidth();
+	xint32                      GetViewportHeight();
 	OrbitPanView*               GetOribitPanView();
 
-	XBaseCamera*				GetSceneCamera(){ return m_pOwnerCamera; }
-
+	inline xfloat32             GetWindowScale() const { return m_fWindowScale; }
+	inline void			        SetWindowScale(xfloat32 fWindowScale) { m_fWindowScale = fWindowScale; }
 protected:		
 
 	void						Init();
@@ -171,6 +173,9 @@ protected:
 	void						UpdateFpsHistory();
 	void						RenderOrderWhenFpsPosInTop();
 	void						RenderOrderWhenFpsPosInBottom();
+
+private:
+	XVECTOR3                    getRenderCoordinate(XVPFpsRenderPos type, XVECTOR3 vpos);
 
 	xfloat32					m_fCameraFOV;
 	xfloat32					m_fCameraNear;
@@ -196,6 +201,7 @@ protected:
 	XCOLORBASE					m_CameraTextColor;
 
 	XVPFpsRenderPos				m_FpsRenderpos;
+	xfloat32					m_fWindowScale;
 };
 
 typedef XHashTable<XString, XEViewport*> XEViewportMap;
@@ -208,11 +214,12 @@ public:
 								XEViewportManager();
 	virtual						~XEViewportManager();
 
-	XEViewport*				    CreateXEViewport(XEViewport::XVPType eType, const XString &strName, IXPlatformWindow* pWindow);
+	XEViewport*				    CreateXEViewport(XEViewport::XVPType eType, const XString &strName, IXPlatformWindow* pWindow, xfloat32 fWindowScale = 1.0f);
 	void					    DeleteXEViewport(const XString &strName);
 	XEViewport*				    GetXEViewport(const XString &strName);
 	XEViewport*                 GetXEViewport(const XEWorld* pWorld);//get the viewport looking at the world.
 	XEViewport*					GetXEViewport(const IXPlatformWindow *pWin);
+    XEViewport*                 GetXEViewport(const XViewport *pViewPort);
 	XArray<XEViewport*>			GetRefXEViewport(const XBaseCamera *pCamera);
 	XEViewport*				    GetXEViewportByWorldName(const XString &strWorldName);
 protected:

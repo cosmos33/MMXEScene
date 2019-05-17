@@ -48,7 +48,7 @@ public:
 	const XString                                 GetHolderTypeName();
 	const xint32                                  GetHolderType();
 	X_FORCEINLINE xint32                          GetAssignedID() const{ return m_nAssignedID; }
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet                   GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy)override;
 #endif
 public:

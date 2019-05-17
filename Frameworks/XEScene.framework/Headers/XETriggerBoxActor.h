@@ -32,7 +32,9 @@ public:
 	XE_ACTOR_CAST(XETriggerBoxActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XETriggerBoxActor)
+	   
 	static const XString ACTOR_TYPENAME;
+	  
 protected:
 	
 };

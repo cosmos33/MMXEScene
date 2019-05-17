@@ -36,7 +36,7 @@ public:
 	{
 		return X < Min ? Min : X < Max ? X : Max;
 	}
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet           GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif
 protected:

@@ -73,9 +73,8 @@ public:
 protected:
 	virtual void                                              OnParentEmpty(const XEActorComponent* pParentComponent) override;//need to do something necessary while parent is set to empty.
 public:								            
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                                              GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
-	
 	xbool                                                     SavePinchParamInstance();
 #endif
 public:
@@ -85,7 +84,7 @@ public:
 	static const XString COMPONENT_TYPENAME;
 protected:
 	class DelayLoadBody
-		:public XEUtility::XEDelayDestroyer
+		:public XEUtility::XETemporalObject
 	{
 		friend class XEPinchSkeletonComponent;
 		DelayLoadBody(XEPinchSkeletonComponent* holder) :holder_(holder){}
