@@ -16,6 +16,7 @@
 #define _XE_MATH_H_
 #include "XTypes.h"
 #include "XMath3D.h"
+#include "XGlobalFuncs.h"
 #include <limits>
 
 // Aux constants.
@@ -58,6 +59,7 @@ namespace XEMath
 	xfloat32    AreaOfTriangle(XVECTOR2 v1, XVECTOR2 v2, XVECTOR2 v3);//return 0 if can't be a triangle.
 	void        SinCos(xfloat32* ScalarSin, xfloat32* ScalarCos, xfloat32  Value);
 	void        QuaternionToEuler(const XQUATERNION& quat, xfloat32& fRoll, xfloat32& fYaw, xfloat32& fPitch);
+	void        EulerToMatrix(xfloat32 fRoll, xfloat32 fYaw, xfloat32 fPitch, XMATRIX4& mat);
 	void        EulerToQuaternion(xfloat32 fRoll, xfloat32 fYaw, xfloat32 fPitch, XQUATERNION& quat);
 	void        DirAndUpToQuaternion(const XVECTOR3& vForwardDir, const XVECTOR3& vUp, XQUATERNION& quat);
 	void        QuaternionToDirAndUp(const XQUATERNION& quat, XVECTOR3& vForwardDir, XVECTOR3& vUp);
@@ -68,11 +70,39 @@ namespace XEMath
 	XMATRIX4    GetMatrixFromQuaternion(const XQUATERNION& quat);
 	void        EliminateScaleFromMatrix(XMATRIX4& mat);
 	void        EliminateRotateFromMatrix(XMATRIX4& mat);
+	void		EliminateTranslateFromMatrix(XMATRIX4& mat);
+	XMATRIX4    GenerateTranslateMatrixForVector(const XVECTOR3& vTranslate);
+	XMATRIX4    GenerateScaleMatrixForVector(const XVECTOR3& vScale, XVECTOR3 vOriginPoint = XVECTOR3(0.f));
 	void        RotateMatrixWorld(XMATRIX4& mat, const XQUATERNION& quat);
 	void        ScaleMatrixWorld(XMATRIX4& mat, const XVECTOR3& vScale);
 	XVECTOR3    RotateVector(const XQUATERNION& quat, const XVECTOR3&vec);
 	XVECTOR3    UnrotateVector(const XQUATERNION& quat, const XVECTOR3& vec);
 	xbool       Is2MatrixClosed(const XMATRIX4& mat1, const XMATRIX4& mat2, float fEpsilon = 1.e-6f);
+	XMATRIX4    GenerateOrthoProjMatrix(xfloat32 fLeft = -1.f, xfloat32 fRight = 1.f, xfloat32 fButtom = -1.f, xfloat32 fTop = 1.f, xfloat32 fNear = -1.f, xfloat32 fFar = 100.f);
+	XVECTOR2    GenerateMostNearSizeWithRate(const XVECTOR2& vOriginSize, xfloat32 fSizeRate, xint32 nStepSize = 1.f);
+	xint32		ComputerMin2nSubSquare(xint32 nSize);
+	
+	template<typename T = xfloat32>
+	void        MakeRoundingNumberT(T& inputVal)
+	{
+		inputVal = inputVal >= 0.f ? floor(inputVal + .5f) : ceil(inputVal - .5f);
+	}
+
+	template<typename T>
+	void        MakeRoundingNumberM1D(T& inputVal, xint32 n = -1)//number structure with the "m", 1D, specify the exact count of number that you want to make,-1 is all.
+	{
+		xint32 nMaxCount = sizeof(inputVal.m) / sizeof(inputVal.m[0]);
+		n = -1 == n ? nMaxCount : X_ClampRet(n, 0, nMaxCount);
+		for (xint32 i = 0; i < n; ++i)
+			MakeRoundingNumberT(inputVal.m[i]);
+	}
+
+    XVECTOR2 GetVerticalDirFor2DLine(const XVECTOR2& vLineSegDir, const XVECTOR2& vPointInLine);
+	//nearest-sliding-Interpolation
+	//will alloc memory here.
+	xuint8*     GenerateMin2nLinearInterpTexData(const xuint8* data, xint32 nWidth, xint32 nHeight, xint32 nChannelCount, xint32* pN2W = NULL, xint32* pN2H = NULL);
+	// stretch data to what you want. 
+	xbool       StrechLinearInterpTexData(xuint8* dst, const xuint8* src, xint32 srcW, xint32 srcH, xint32 dstW, xint32 dstH, xint32 nChannelCount = 1);
 	/************************************************************************/
 	// To calculate the intersection point in a plane for a ray-line with specific origin point and its dir.
 	// vLineOriginPoint: original point of the ray.

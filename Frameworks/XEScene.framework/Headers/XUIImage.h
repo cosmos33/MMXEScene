@@ -101,6 +101,12 @@ public:
 	XVECTOR2				GetVertexUVBR()const;
 
 	const XUITexture*		GetUITexture()const;
+
+	void					SetUseMaskTexture(xbool bUse);
+	xbool					IsUseMaskTexture()const;
+	xbool					LoadMaskTexture(const XString& strTextureName);
+	XString					GetMaskTexturePath();
+	const XUITexture*		GetUIMaskTexture()const;
 protected:
 	virtual xbool			Init() override;
 	virtual xbool			Init(xint32 nTag, const XString& strTextureName, TextureResType texType = TextureResType::XUI_LOCAL);
@@ -143,6 +149,9 @@ protected:
 
 	XUIImageDirtyFlag		m_eDirtyFlag;
 	XUITexture*				m_pCurrentUITexture;
+
+	XUITexture*				m_pMaskTexture;
+	xbool					m_bUseMaskTexture;
 };
 
 #endif

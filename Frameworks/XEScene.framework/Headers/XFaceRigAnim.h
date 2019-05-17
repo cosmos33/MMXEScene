@@ -17,7 +17,7 @@ struct xFaceRigBoneControl
 class XFaceRigSetting
 {
 public:
-	XFaceRigSetting(){}
+	XFaceRigSetting() : m_mStateToChannel(128,128,128){}
 	~XFaceRigSetting(){}
 
 	xbool Load(const XString &strFilePath);

@@ -28,7 +28,9 @@ public:
 	XE_ACTOR_CAST(XEAnimationFaceRigActor)
 		XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 		X_CLASS_DEF(XEAnimationFaceRigActor)
+		   
 		static const XString	ACTOR_TYPENAME;
+	  
 };
 
 #endif // _XE_ANIMATION_FACE_RIG_ACTOR_H

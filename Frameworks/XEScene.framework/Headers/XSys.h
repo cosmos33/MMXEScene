@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 
  @File         XSys.h
 
@@ -190,6 +190,8 @@ public:
 //
 #elif X_PLATFORM_XOS
 #include "XXOSSys.h"
+#elif X_PLATFORM_MAC
+#include "XMacSys.h"
 #endif
 
 // macros below is defined in the "XWinSys.h"or ...

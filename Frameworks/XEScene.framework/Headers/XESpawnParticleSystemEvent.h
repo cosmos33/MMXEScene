@@ -22,7 +22,7 @@ public:
 	XESpawnParticleSystemEvent(){}
 	virtual ~XESpawnParticleSystemEvent(){}
 protected:
-	class InsDelayDestroyer :public XEUtility::XEDelayDestroyer
+	class InsDelayDestroyer :public XEUtility::XETemporalObject
 	{
 		friend class XESpawnParticleSystemEvent;
 	public:

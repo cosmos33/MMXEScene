@@ -15,7 +15,7 @@
 #define XE_CAMERAACTOR_H
 #include "XEActor.h"
 #include "XECameraComponent.h"
-#include "XECanvas3DTextureComponent.h"
+#include "XE3DTextureComponent.h"
 
 class XEViewport;
 
@@ -40,12 +40,13 @@ public:
 	XE_ACTOR_CAST(XECameraActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XECameraActor)
+	   
 	static const XString	   ACTOR_TYPENAME;
 private:
 	void		 CalculateFrustumVertices();
 protected:
-	XECanvas3DTextureComponent m_Canvas3DTexture;
-	XArray<XVECTOR3>		   m_aFrustumVertices;
+	XE3DTextureComponent m_texture3D;
+	XArray<XVECTOR3>	 m_aFrustumVertices;
 };
 
 #endif // XE_CAMERAACTOR_H

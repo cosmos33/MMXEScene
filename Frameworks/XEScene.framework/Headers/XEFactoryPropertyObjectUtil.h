@@ -16,10 +16,9 @@
 #define _XE_FACTORY_PROPERTYOBJECTBASE_UTIL_H
 
 #include "XPlatform.h"
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 
-#include "XArray.h"
-#include "XESingleton.h"
+#include "XEFactoryUtil.h"
 
 enum XEMatchHandleType
 {
@@ -68,23 +67,26 @@ public:
 	virtual XEPropertyObjectBase* CreatePropertyObject();
 };
 
-class XEPropertyObjectFactoryManager
-	:public XESingleton<XEPropertyObjectFactoryManager>
+class XEPropertyObjectFactoryManager:public XEFactoryManagerBase
 {
 public:
-										   XEPropertyObjectFactoryManager() :m_bIsCollected(xfalse){}
-	                                      ~XEPropertyObjectFactoryManager();
-	void                                   CollectFactory();
-	void                                   ReleaseFactory();
+	XEPropertyObjectFactoryManager();
+	virtual ~XEPropertyObjectFactoryManager();
+	virtual void                           CollectFactory() override;
+	virtual void                           ReleaseFactory() override;
+public:
+	INSTANCE_FACTORY_IMPL(XEPropertyObjectFactoryManager)
 	XArray<IXEPropertyObjectFactory*>&     GetFactoryList(){ return m_aFactoryList; }
 	xbool                                  AddFactory(IXEPropertyObjectFactory* pFactory);
 	IXEPropertyObjectFactory*              GetFactory(const XString& strFactoryName);
-private:
+protected:
+	virtual IXEPropertyObjectFactory*      GetFactoryForDerived(const XString &strFactoryName);//warning, if you don't want to call this in your derived class, override it and return NULL
+
+protected:
 	template<typename T>
 	xbool                                 _Register(const XString strTypeName, const XEMatchHandleType& eMHT);
 private:
 	XArray<IXEPropertyObjectFactory*>      m_aFactoryList;
-	xbool m_bIsCollected;
 };
 
 #define REGISTER_PROPERTY_OBJ(T,E) _Register<T>(#T,E)
@@ -104,30 +106,23 @@ public:
 		ProxyObject(XEPropertyObjectBase* pPo) : pPropertyObject(pPo), pHandleObject(NULL), eMatchHandleType(MHT_UNKOWN){}
 	};
 public:
-	void                                                   RegisterPropertyObject(XEPropertyObjectBase* pPropertyObject, const xchar* pPropertyObjTypeName);
-	XEPropertyObjectBase*                                  GetPropertyObject(const XString& strPropertyObjTypeName);
-	xint32                                                 GetPropertyObject(void* pHandleObject, XArray<const ProxyObject*>& poList) const;
-	XArray<ProxyObject>&                                   GetPropertyObjectList(){ return m_arrProxyObjectList; }
-	XEPropertyObjectBase*                                  HandlePropertyObject(const XString& strPropertyObjTypeName, void* pHandleObject, const XEMatchHandleType& mht);
-	void*                                                  GetHandleObject(const XString& strPropertyObjTypeName);
-	const XEMatchHandleType                                GetHandleObjectMatchType(const XString& strPropertyObjTypeName) const;
-	void                                                   ClearCache();
+	void                                         RegisterPropertyObject(XEPropertyObjectBase* pPropertyObject, const xchar* pPropertyObjTypeName);
+	XEPropertyObjectBase*                        GetPropertyObject(const XString& strPropertyObjTypeName);
+	xint32                                       GetPropertyObject(void* pHandleObject, XArray<const ProxyObject*>& poList) const;
+	XArray<ProxyObject>&                         GetPropertyObjectList(){ return m_arrProxyObjectList; }
+	XEPropertyObjectBase*                        HandlePropertyObject(const XString& strPropertyObjTypeName, void* pHandleObject, const XEMatchHandleType& mht);
+	void*                                        GetHandleObject(const XString& strPropertyObjTypeName);
+	const XEMatchHandleType                      GetHandleObjectMatchType(const XString& strPropertyObjTypeName) const;
+	void                                         ClearCache();
 	template<typename T>
-	T*                                                     GetHandleObjectCast(const XString& strPropertyObjTypeName);
+	T*                                           GetHandleObjectCast(const XString& strPropertyObjTypeName);
 private:
-	ProxyObject*                                           GetPropertyObjectProxy(const XString& strPropertyObjTypeName);
-	const ProxyObject*                                     GetPropertyObjectProxy(const XString& strPropertyObjTypeName) const;
+	ProxyObject*                                 GetPropertyObjectProxy(const XString& strPropertyObjTypeName);
+	const ProxyObject*                           GetPropertyObjectProxy(const XString& strPropertyObjTypeName) const;
 private:
 	XArray<ProxyObject> m_arrProxyObjectList;
 };
 
-
-template<typename T>
-class __PROPERTY_OBJ_AUTO_REG
-{
-public:
-	__PROPERTY_OBJ_AUTO_REG(const XString& strTypeName, const XEMatchHandleType& eMHT);
-};
 
 //implement with template
 template<typename T>
@@ -144,7 +139,6 @@ T* XEPropertyObjectProxy::GetHandleObjectCast(const XString& strPropertyObjTypeN
 	return reinterpret_cast<T*>(GetHandleObject(strPropertyObjTypeName));
 }
 
-
 template<typename T>
 xbool XEPropertyObjectFactoryManager::_Register(const XString strTypeName, const XEMatchHandleType& eMHT)
 {
@@ -156,17 +150,6 @@ xbool XEPropertyObjectFactoryManager::_Register(const XString strTypeName, const
 	}
 	return xtrue;
 }
-
-template<typename T>
-__PROPERTY_OBJ_AUTO_REG<T>::__PROPERTY_OBJ_AUTO_REG(const XString& strTypeName, const XEMatchHandleType& eMHT)
-{
-	IXEPropertyObjectFactory* pFactory = new XEPropertyObjectFactory<T>(strTypeName, eMHT);
-	if (!XEPropertyObjectFactoryManager::GetInstance()->AddFactory(pFactory))
-		X_SAFEDELETE(pFactory);
-}
-
-//warning: use this in the executable-module-only(outer.)
-#define REGISTER_PROPERTY_FACTORY(T,E) static __PROPERTY_OBJ_AUTO_REG<T> ar(#T,E)
 
 #endif //X_PLATFORM_WIN_DESKTOP
 #endif // _XE_FACTORY_PROPERTYOBJECTBASE_UTIL_H

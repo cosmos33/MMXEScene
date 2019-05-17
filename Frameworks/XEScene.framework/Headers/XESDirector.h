@@ -15,6 +15,7 @@
 #include "XECore/XEGame.h"
 #include "XECore/XEEngine/XEEngine.h"
 #include "platform/armodule/XESARModule.h"
+#include "XESLogger.h"
 
 //全局变量所在头文件
 #include "XUIManager.h"
@@ -24,6 +25,7 @@
 #include "PhysicalManager.h"
 #include "XCanvasBase.h"
 #include "xcommon/XModel.h"
+#include "XGestureManager.h"
 
 class IXEDressupManager;
 
@@ -129,6 +131,16 @@ public:
      * @param show
      */
     void ShowDebugInfo(xbool show);
+    
+    void PrintEngineEnvironment();
+
+    /**
+     * 设置Log开关
+     * @param logEnable
+     */
+    X_FORCEINLINE void SetLogEnable(bool logEnable) {
+        XESLogger::GetInstance()->SetEnable(logEnable);
+    };
 
 public:
 
@@ -142,6 +154,10 @@ public:
 
     X_FORCEINLINE XEEngine *GetEngine() {
         return m_eUseEngine;
+    }
+    
+    X_FORCEINLINE void PutInfoEx(const char *exInfo) {
+        m_EngineInfoEx = exInfo;
     }
 
 public:
@@ -309,39 +325,42 @@ public:
 
 
 public://全局变量获取
-    static X_FORCEINLINE IXUIManager *GetXUIManager() {
+    X_FORCEINLINE IXUIManager *GetXUIManager() {
         return g_pIXUIManager;
     }
 
-    static X_FORCEINLINE IXCanvasBase *GetXCanvasBase() {
+    X_FORCEINLINE IXCanvasBase *GetXCanvasBase() {
         return g_pXCanvasBase;
     }
 
-    static X_FORCEINLINE IXPlatformWindow *GetXWindow() {
+    X_FORCEINLINE IXPlatformWindow *GetXWindow() {
         return g_pXWindow;
     }
 
-    static X_FORCEINLINE IX2DPhysicalManager *GetX2DPhysicalManager() {
+    X_FORCEINLINE IX2DPhysicalManager *GetX2DPhysicalManager() {
         return g_pIX2DPhysicalManager;
     }
 
-    static X_FORCEINLINE IXWorld *GetXWorld() {
+    X_FORCEINLINE IXWorld *GetXWorld() {
         return g_pXWorld;
     }
 
-    static X_FORCEINLINE IXPhysicalManager *GetXPhysicalManager() {
+    X_FORCEINLINE IXPhysicalManager *GetXPhysicalManager() {
         return g_pIXPhysicalManager;
     }
 
-    static X_FORCEINLINE IXModelManager *GetXModelManager() {
+    X_FORCEINLINE IXModelManager *GetXModelManager() {
         return g_pXModelManager;
     }
 
-    static X_FORCEINLINE IXEditorModelManager *GetXEditorModelManager() {
+    X_FORCEINLINE IXEditorModelManager *GetXEditorModelManager() {
         return g_pXEditorModelManager;
     }
-
-
+    
+    X_FORCEINLINE XGestureManager *GetXGestureManager() {
+        return g_pIXGestureManager;
+    }
+    
 protected:
 
     xbool m_bRunning;
@@ -377,6 +396,8 @@ protected:
     AR::ARModule *m_pARModule;
 
     XArray<std::function<void()> > _taskQueue;
+    
+    XString m_EngineInfoEx;
 };
 
 XESCENE_NAMESPACE_END

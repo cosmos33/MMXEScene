@@ -41,6 +41,7 @@ public:
 	XE_ACTOR_CAST(XEDummyActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEDummyActor)
+	   
 							XEDummyActor();
 	virtual					~XEDummyActor();
 
@@ -57,7 +58,10 @@ public:
 	void					DettachAll();
 
 	static const XString	ACTOR_TYPENAME;
-	
+	   
+protected:
+	virtual void			PostInitialized() override;//you may do something else later in this function. Elements in Array were ready.
+	virtual xfloat32        GetRenderOrderFactor()const override;
 protected:
 
 	SHAMERENDER				m_pRenderFunc;

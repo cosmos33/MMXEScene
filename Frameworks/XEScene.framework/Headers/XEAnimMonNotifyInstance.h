@@ -31,7 +31,7 @@ public:
 	static XArray<XString>&           GetNotifyStateString();
 public:
 	X_FORCEINLINE xint32              GetNotifyStatus(){ return m_eNotifyState; }
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet       GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif
 	virtual void                      ExplainLiveNotify(void* pParam = NULL){}

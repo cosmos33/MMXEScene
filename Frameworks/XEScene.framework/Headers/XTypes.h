@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 
  @File         XTypes.h
 
@@ -25,6 +25,8 @@
 	#include "XLinuxTypes.h"
 #elif X_PLATFORM_XOS
     #include "XXOSTypes.h"
+#elif X_PLATFORM_MAC
+    #include "XMacTypes.h"
 #endif
 
 #define X_MIN_BYTE		0x00

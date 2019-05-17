@@ -28,9 +28,11 @@ class XEAuxiliaryLineActor : public XEActor
 	};
 public:
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
-		XE_ACTOR_CAST(XEAuxiliaryLineActor)
-		X_CLASS_DEF(XEAuxiliaryLineActor)
-		static const XString	    ACTOR_TYPENAME;
+	XE_ACTOR_CAST(XEAuxiliaryLineActor)
+	X_CLASS_DEF(XEAuxiliaryLineActor)
+	   
+	static const XString	    ACTOR_TYPENAME;
+	  
 	XEAuxiliaryLineActor();
 	virtual					    ~XEAuxiliaryLineActor();
 
@@ -41,8 +43,7 @@ public:
 	virtual void			    Render(XEViewport* pViewport) override;
 	virtual void                Initialize(XEWorld* pWorld) override;
 	virtual xbool               RayPick(XEHitResult& hr) override;
-
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif // X_PLATFORM_WIN_DESKTOP
 

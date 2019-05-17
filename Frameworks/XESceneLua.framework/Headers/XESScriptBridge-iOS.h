@@ -7,8 +7,6 @@
 
 typedef void(^XESBridgeThreadSafeQueue)(dispatch_block_t block);
 
-extern BOOL XESScriptBridgeRenderInMainThread;
-
 @interface XESScriptBridge : NSObject
 
 + (void)regist:(id)handler

@@ -42,7 +42,7 @@ public:
 	static void					ReloadResource(const XArray<XString>& pathList);
 	static xint32               RemoveAllTemplateInWorld(XEWorld* pWorld);//both in editor and runtime
 	static void                 ReleaseAllTemplate();//both in editor and runtime
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	//editor only.
 	static void                 Save();
 	static void                 SaveAs(const xchar* szPath);

@@ -43,7 +43,7 @@ class XEInstanceManagerMaterialFxRuntime
 {
 };
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //edit for export.
 class XEInstanceManagerMaterialFxEditing
 	: public XEInstanceManagerMaterialFx

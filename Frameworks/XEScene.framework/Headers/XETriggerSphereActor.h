@@ -31,6 +31,8 @@ public:
 	XE_ACTOR_CAST(XETriggerSphereActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XETriggerSphereActor)
+	   
 	static const XString ACTOR_TYPENAME;
+	  
 };
 #endif //XE_TRIGGER_SPHERE_ACTOR_H

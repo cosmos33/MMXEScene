@@ -17,7 +17,7 @@
 
 #include <string>
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 #define xetr(STR) XELocalization::getLocaleString(STR).c_str()
 #else
 #define xetr(STR) STR
@@ -30,7 +30,7 @@ namespace XELocalization{
 	bool          getLocaleRes(const char* packagename, const char* localeid);
 	std::string   getLocaleString(const char* stringid);
 	extern std::string gTranslateFile;
-	extern UResourceBundle *gResourceBundle;
+    //extern UResourceBundle *gResourceBundle; //???does it used?
 }
 
 #endif

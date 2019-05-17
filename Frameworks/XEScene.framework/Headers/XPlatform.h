@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 
  @File         XPlatform.h
 
@@ -51,9 +51,12 @@
 
 
 #elif defined(__APPLE__)
-
+#include <TargetConditionals.h>
+#if TARGET_OS_IPHONE
 #define X_PLATFORM_XOS 1
-
+#else
+#define X_PLATFORM_MAC 1
+#endif
 
 #if defined(__x86_64__) || defined(__arm64__)
 #define X_PLATFORM_64 1

@@ -44,6 +44,7 @@ namespace XAudio
 
 
 		bool                         m_streamingThreadActive;
+		bool                         m_bInitialized;
 		ALCdevice*                   m_alcDevice;
 		ALCcontext*                  m_alcContext;
 		XAudioSource*                m_pausingSource;

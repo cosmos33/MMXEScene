@@ -25,9 +25,7 @@ public:
 	virtual ~XEAnimatableFaceRigComponent();
 public:
 	virtual XEAnimController*     AssignAnimationController() override;//to assign an animation controller, if it was not exist yet.
-
-
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                  GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
 #endif
 public:

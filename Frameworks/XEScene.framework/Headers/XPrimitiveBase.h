@@ -71,6 +71,7 @@ enum XPrimitiveLayerMask
 
 	XPLM_CAST_SHADOW				= XBit(18),
 	XPLM_UNLIT						= XBit(19),
+	XPLM_WATER						= XBit(20)
 };
 
 struct XSubViewParam

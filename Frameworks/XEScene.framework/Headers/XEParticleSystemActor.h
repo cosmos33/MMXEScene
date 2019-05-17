@@ -15,7 +15,7 @@
 #define XEAPARTICLESYSTEMACTOR_H
 #include "XEActor.h"
 #include "XEParticleSystemComponent.h"
-#include "XECanvas3DTextureComponent.h"
+#include "XE3DTextureComponent.h"
 
 
 class XEParticleSystemActor:public XEActor
@@ -29,13 +29,15 @@ public:
 	XE_ACTOR_CAST(XEParticleSystemActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEParticleSystemActor)
+	   
 	static const XString	ACTOR_TYPENAME;
+	  
 private:
 	virtual void RenderDummyShape(XEViewport* pViewport) override;
 	virtual void FocusActor(xbool bFocus) override;
 	virtual void Release() override;
 protected:
-	XECanvas3DTextureComponent m_Canvas3DTexture;
+	XE3DTextureComponent m_texture3D;
 };
 
 #endif // XEAPARTICLESYSTEMACTOR_H

@@ -20,7 +20,7 @@
 #include "XRefCount.h"
 #include "XClass.h"
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 #include "XEPropertyObjectBase.h"
 #include "XEFactoryPropertyObjectUtil.h"
 #include "XEProperty.h"
@@ -62,7 +62,7 @@ public:
 	X_FORCEINLINE const xchar*              GetBindingScriptAssetPath()const{ return m_strBindingScriptAssetPath.CStr(); }
 	X_FORCEINLINE void                      SetBindingScriptAssetPath(const XString& strAssetPath){ m_strBindingScriptAssetPath = strAssetPath; }
 	static void                             RemoveAncestorPrefix(XString& szTypeNameWithPrefix);
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet             GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy);
 #endif	
 	template<typename T>				    
@@ -135,7 +135,7 @@ public:
 	virtual void                            OnSocketUpdate(const XMATRIX4& matWorld){}//connect and bind to socket.								    
 	virtual xint32                          SpawnChildrenNodeInstance(Manager* pNodeMgr);//to generate instance nodes for its children.
 	virtual void                            Apply();//apply parameters from node-template.
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                            MarkApplyFromUndoCacheData(){} //for apply-inner used.
 	virtual void                            MarkApplyFromRedoCacheData(){} //for apply-inner used.
 #endif

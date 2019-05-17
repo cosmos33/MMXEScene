@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
 
  @File         XConsoleManager.h
 
@@ -162,6 +162,9 @@ extern XConsoleVariable g_CVarEnableBloom;
 extern XConsoleVariable g_CVarBloomColorThreshold;
 extern XConsoleVariable g_CVarBloomSamplerScale;
 
+extern XConsoleVariable g_CVarEnableBlur;
+extern XConsoleVariable g_CVarBlurIteration;
+
 extern XConsoleVariable g_CVarEnableFog;
 extern XConsoleVariable g_CVarFogStart;
 extern XConsoleVariable g_CVarFogEnd;
@@ -215,8 +218,8 @@ enum XBlendShapeNormalMethod
 extern XConsoleVariable g_CVarBlendShapeNormalMethod;
 
 
-#if defined(X_PLATFORM_WIN_DESKTOP)
-/*Check VAO in windows EGL (windows平台引擎启动前设置， xture : 检测设备是否支持VAO， xfalse : 不检测设备VAO，直接设置不支持)
+#if defined(X_PLATFORM_WIN_DESKTOP) || defined(X_PLATFORM_MAC)
+/*Check VAO in windows or mac EGL (windows和mac平台引擎启动前设置， xture : 检测设备是否支持VAO， xfalse : 不检测设备VAO，直接设置不支持)
 *
 * @notice 因为此参数在Framework::init中需要使用，而XConVar只有在Framework初始化后才可以设置，所以改为全局的bool值
 */

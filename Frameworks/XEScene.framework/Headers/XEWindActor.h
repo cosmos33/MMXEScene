@@ -15,7 +15,7 @@
 #define XEWIND_ACTOR_H
 #include "XEActor.h"
 #include "XELightComponent.h"
-#include "XECanvas3DTextureComponent.h"
+#include "XE3DTextureComponent.h"
 
 class XEWindActor
 	:public XEActor
@@ -27,6 +27,7 @@ public:
 	XE_ACTOR_CAST(XEWindActor)
     XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEWindActor)
+	   
 
 	virtual void Tick(xfloat32 fDel, xbool bForceTick = xtrue) override;
 	virtual void Render(XEViewport* pViewport) override;
@@ -36,8 +37,8 @@ public:
 private:
 	void RenderDummyShape(XEViewport* pViewport) override;
 protected:
-	XECanvas3DTextureComponent m_Canvas3DTexture;
-	xfloat32                   m_fLastDummyRenderScale;
+	XE3DTextureComponent m_texture3D;
+	xfloat32             m_fLastDummyRenderScale;
 };
 
 #endif // XEWIND_ACTOR_H

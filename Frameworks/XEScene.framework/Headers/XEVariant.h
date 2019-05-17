@@ -53,7 +53,8 @@ struct XEVariant
 		*this = value;
 	}
 
-	XEVariant& operator = (const XEVariant& rhs);	
+	XEVariant& operator = (const XEVariant& rhs);
+	xbool operator == (const XEVariant& rhs)const;
 
 	inline void SetFloat(xfloat32 fValue)
 	{
@@ -336,7 +337,7 @@ X_EEB_END
 	static PType   GetStringType(const XString& strType);
 
 	X_EES_LINE void Deserialize(const tinyxml2_XEngine::XMLElement* pEleVaraintNode);
-	X_EES_LINE tinyxml2_XEngine::XMLElement* Serialize(tinyxml2_XEngine::XMLElement* pEleVaraintNode);
+	X_EES_LINE tinyxml2_XEngine::XMLElement* Serialize(tinyxml2_XEngine::XMLElement* pEleVaraintNode) const;
 
 protected:
 	PType	eType;

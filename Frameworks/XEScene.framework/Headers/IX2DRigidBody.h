@@ -87,6 +87,25 @@ public:
 	virtual void		CreateFixture(IX2DShape* pShape, xfloat32 fDensity) = 0;
 	virtual XVECTOR2	GetPosition() const = 0;
 	virtual xfloat32	GetAngle() const = 0;
+	virtual void		SetLinearVelocity(const XVECTOR2& vVelocity) = 0;
+	virtual XVECTOR2	GetLinearVelocity() const = 0;
+	virtual void		SetAngularVelocity(xfloat32 fAngle) = 0;
+	virtual xfloat32	GetAngularVelocity() const = 0;
+
+	virtual void		ApplyForce(const XVECTOR2& force, const XVECTOR2& point, xbool wake = xtrue) = 0;
+	virtual void		ApplyForceToCenter(const XVECTOR2& force, xbool wake = xtrue) = 0;
+	virtual void		ApplyTorque(xfloat32 torque, xbool wake = xtrue) = 0;
+	virtual void		ApplyLinearImpulse(const XVECTOR2& impulse, const XVECTOR2& point, xbool wake = xtrue) = 0;
+	virtual void		ApplyLinearImpulseToCenter(const XVECTOR2& impulse, xbool wake = xtrue) = 0;
+	virtual void		ApplyAngularImpulse(xfloat32 impulse, xbool wake = xtrue) = 0;
+
+	virtual void		SetBullet(xbool flag) = 0;
+	virtual bool		IsBullet() const = 0;
+	virtual void		SetAwake(xbool flag) = 0;
+	virtual bool		IsAwake() const = 0;
+
+	virtual void*		GetUserData() const = 0;
+	virtual void		SetUserData(void* data) = 0;
 };
 
 #endif

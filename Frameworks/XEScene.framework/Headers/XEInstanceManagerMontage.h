@@ -45,7 +45,7 @@ class XEInstanceManagerMontageRuntime
 {
 };
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //editing only.
 class XEInstanceManagerMontageEditing
 	: public XEInstanceManagerMontage

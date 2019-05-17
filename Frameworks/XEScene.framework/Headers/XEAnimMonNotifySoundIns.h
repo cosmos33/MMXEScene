@@ -36,7 +36,7 @@ public:
 	typedef XArray<SpawnAudio>  AudioPawnList;
 
 protected:
-	class InsDelayDestroyer :public XEUtility::XEDelayDestroyer
+	class InsDelayDestroyer :public XEUtility::XETemporalObject
 	{
 		friend class XEAnimMonNotifySoundIns;
 	public:
@@ -66,7 +66,7 @@ public:
 	xbool                                     BindXESocketInstance();
 	void                                      UnbindXESocketInstance();
 	xbool                                     GetDefaultPawnTransform(XETransform& tf);
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet               GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif
 	void                                      OnSocketUpdate(const XMATRIX4& matWorld);

@@ -39,6 +39,7 @@ public:
 	X_FORCEINLINE void                 SetSequencer(XESequencerInstance* pSequencerIns){ m_pSequencerIns = pSequencerIns; }
 	X_FORCEINLINE XESequencerInstance* GetSequencer(){ return m_pSequencerIns; }
 public:
+	virtual void					   Play();//goto 0, and play again.
 	virtual void                       Tick(xfloat32 fInterval) override;
 	virtual xint32                     GetTimeLength() const override;
 	virtual void                       SetTime(xint32 nTime) override;

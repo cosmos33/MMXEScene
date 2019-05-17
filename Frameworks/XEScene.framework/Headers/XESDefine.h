@@ -10,22 +10,22 @@
 
 /**  public include */
 
-#include "xcommon/XPlatform.h"
-#include "xcommon/XTypes.h"
-#include "xcommon/XMath3D.h"
-#include "xcommon/XMemBase.h"
-#include "xcommon/XString.h"
-#include "xcommon/XArray.h"
-#include "xcommon/XHashTable.h"
-#include "xcommon/XGlobalFuncs.h"
+#include "XPlatform.h"
+#include "XTypes.h"
+#include "XMath3D.h"
+#include "XMemBase.h"
+#include "XString.h"
+#include "XArray.h"
+#include "XHashTable.h"
+#include "XGlobalFuncs.h"
+#include "XPlatform.h"
 
 #include <stdio.h>
 #include <string>
+#include "XESLogger.h"
 
-
-
-// Platform Define
-#include "XPlatform.h"
+#define XESCENE_VERSION         "3.3.5"
+#define XESCENE_ARCHIVE_TIME    "2019-05-13 20:00"
 
 #if (defined X_PLATFORM_WIN_DESKTOP) || (defined  X_PLATFORM_MAC)
 #define X_PLATFORM_DESKTOP
@@ -36,9 +36,6 @@
 
 
 /**  namespace define */
-
-#define XESCENE_VERSION "3.0.0"
-
 #define XESCENE_NAMESPACE            xes
 #define XESCENE_NAMESPACE_BEGIN      namespace XESCENE_NAMESPACE {
 #define XESCENE_NAMESPACE_END        }
@@ -80,36 +77,16 @@ XESCENE_NAMESPACE_BEGIN
 #endif
 #endif
 
-/**
- *  @def Debug
- */
-//#define XES_DEBUG 0
-//#define XES_DEBUG_LOG 0
-//#define XES_DEBUG_LUA_LOG 1
-
 #if XES_DEBUG
 #define XESAssert(x) {}
 #else
 #define XESAssert(x) {}
 #endif
 
+#define XESLog(format, args...) XESLogger::GetInstance()->PrintLog(format, ##args)
+#define XE_Log(format, args...) XESLogger::GetInstance()->PrintLog(format, ##args)
+#define XE_Err(format, args...) XESLogger::GetInstance()->PrintErr(format, ##args)
 
-namespace StringUtils {
-
-XString Format(const char *format, ...);
-
-void PrintLog(const char *format, ...);
-
-}
-
-
-#if (defined XE_LUA_ENABLE_LOG) || (defined XES_DEBUG_LOG) || (defined XE_LOG_ENABLE)
-#define XESLog(format, args...) xes::StringUtils::PrintLog(format, ##args)
-#define XE_Log(format, args...) xes::StringUtils::PrintLog(format, ##args)
-#else
-#define XESLog(format, args...) {}
-#define XE_Log(...) {}
-#endif
 
 XESCENE_NAMESPACE_END
 
@@ -142,11 +119,9 @@ protected: type m_##name;\
 #define XESS_HIDE_START     //大段忽略-开始   不允许嵌套
 #define XESS_HIDE_END       //大段忽略-结束   不允许嵌套
 
-
 #define XESS_GET_CLASSNAME(__CLASS_NAME__)\
 virtual const char* GetClassName(){\
     return #__CLASS_NAME__;\
 }
-
 
 #endif /* XEDEFINE_H_ */

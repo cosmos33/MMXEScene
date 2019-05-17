@@ -13,8 +13,7 @@
 #define XE_FACTORY_USER_NODE_UTILITY_H
 
 #include "XEUserNode.h"
-#include "XArray.h"
-#include "XESingleton.h"
+#include "XEFactoryUtil.h"
 
 class XEUserNodeInstance;
 class IXEUserNodeFactory : public XMemBase
@@ -38,32 +37,26 @@ public:
 	virtual const XString&	                          GetUserNodeTypeName() override;
 };
 
-class XEUserNodeFactoryManager
-	: public XESingleton<XEUserNodeFactoryManager>
+class XEUserNodeFactoryManager:public XEFactoryManagerBase
 {
 public:
-	XEUserNodeFactoryManager() :m_bIsCollected(xfalse){}
-	~XEUserNodeFactoryManager();
-	void                                              CollectFactory();
-	void                                              ReleaseFactory();
+	XEUserNodeFactoryManager();
+	virtual ~XEUserNodeFactoryManager();
+	virtual void                                      CollectFactory() override;
+	virtual void                                      ReleaseFactory() override;
+public:
+	INSTANCE_FACTORY_IMPL(XEUserNodeFactoryManager)
 	IXEUserNodeFactory*	                              GetFactory(const XString &strNodeTypeName);
 	xbool                                             AddFactory(IXEUserNodeFactory* pFactory);
 	const IXEUserNodeFactory::XEUserNodeFactoryArray& GetFactoryList() const;
 private:
 	template<typename T,typename I>
 	xbool                                             _Register();
-
 private:
 	IXEUserNodeFactory::XEUserNodeFactoryArray m_aFactories;
 	xbool m_bIsCollected;
 };
 
-template<typename T,typename I>
-class __USER_NODE_AUTO_REG
-{
-public:
-	__USER_NODE_AUTO_REG();
-};
 
 //implement with template
 template<typename T, typename I>
@@ -102,16 +95,5 @@ xbool XEUserNodeFactoryManager::_Register()
 	}
 	return xtrue;
 }
-
-template<typename T, typename I>
-__USER_NODE_AUTO_REG<T,I>::__USER_NODE_AUTO_REG()
-{
-	IXEUserNodeFactory* pFactory = new XEUserNodeFactory<T,I>();
-	if (!XEUserNodeFactoryManager::GetInstance()->AddFactory(pFactory))
-		X_SAFEDELETE(pFactory);
-}
-
-//warning: use this in the executable-module-only(outer.)
-#define REGISTER_USER_NODE_FACTORY(T,I) static __USER_NODE_AUTO_REG<T,I> ar
 
 #endif // XE_FACTORY_USER_NODE_UTILITY_H

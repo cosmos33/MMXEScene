@@ -34,7 +34,7 @@ public:
 	virtual void                                  Release() override;
 	virtual void                                  Apply() override;
 	virtual Manager*                              GetNodeManager() override{ return m_pNodeManager; }
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet                   GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy) override;
 #endif
 public:

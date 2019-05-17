@@ -9,55 +9,61 @@
 #ifndef XESSCENEFILTERMANAGER_H_
 #define XESSCENEFILTERMANAGER_H_
 
-#include "core/XESObject.h"
 #include "core/XESGeometry.h"
+#include "core/XESObject.h"
 #include "filter/XESSceneFilter.h"
 
+class XEDecorationEnvBridgeBase;
 XESCENE_NAMESPACE_BEGIN
 
-class SceneFilterManager : public Object
-{
+class SceneFilterManager : public Object {
 public:
-    
-    static SceneFilterManager* GetInstance();
-    
-    void   LoadScene(const XString& scenePath, const XString& sceneID);
-    
-    void   UnloadScene(const XString& sceneID);
+    static SceneFilterManager *GetInstance();
 
+    void LoadScene(const XString &scenePath, const XString &sceneID);
+
+    void UnloadScene(const XString &sceneID);
 
 public:
-    void   RotateCamera(xbool bPositionFront);
-    
-    void   EnabledRecoreding(xbool bEnabled);
-    
+    void RotateCamera(xbool bPositionFront);
+
+    void EnabledRecoreding(xbool bEnabled);
+
     X_INLINE xbool CameraPositionIsFront() const { return m_bCameraPositionFront; }
+
     X_INLINE xbool RecoredingEnabled() const { return m_bEnableRecoreding; }
-    
-    void   UpdateRelationLocationFrame(Rect rFrame, const XString& sceneID);
-    void   UpdateRelationLocationFrame(xint32 trackId, Rect rFrame, const XString& sceneID);
-    void   TickTimeLineAndFrameSequence(xfloat32 fTime, xint32 nFrame, const XString& sceneID);
-    
-    Rect   GetActorLocationFrame(XString strActorName);
-    
+
+    void UpdateRelationLocationFrame(Rect rFrame, const XString &sceneID);
+
+    void UpdateRelationLocationFrame(xint32 trackId, Rect rFrame, const XString &sceneID);
+
+    void TickTimeLineAndFrameSequence(xfloat32 fTime, xint32 nFrame, const XString &sceneID);
+
+    Rect GetActorLocationFrame(XString strActorName);
+
 protected:
-    void   UnloadAllScene();
-    SceneFilter* LoadSceneFilter(const SceneConfig* pConfig);
-    
+    void UnloadAllScene();
+
+    SceneFilter *LoadSceneFilter(const SceneConfig *pConfig);
+
     friend class Director;
-    
+
 private:
-                    SceneFilterManager();
-    virtual         ~SceneFilterManager();
-    virtual void    Release();
-    
+    SceneFilterManager();
+
+    virtual ~SceneFilterManager();
+
+    virtual void Release();
+
+    xint32 VersionCompare(std::string v1, std::string v2);
+
 protected:
-    
-    XHashTable<XString, SceneFilter*> m_pFilters;
-    
+    XHashTable<XString, SceneFilter *> m_pFilters;
+
     xbool m_bEnableRecoreding;
     xbool m_bCameraPositionFront;
-    
+
+    XEDecorationEnvBridgeBase *m_pEvnBridge;
 };
 
 XESCENE_NAMESPACE_END

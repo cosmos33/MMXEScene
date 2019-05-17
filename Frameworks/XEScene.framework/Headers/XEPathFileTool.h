@@ -1,4 +1,4 @@
-/******************************************************************************
+ï»¿/******************************************************************************
 
 @File         XEPathFunc.h
 
@@ -18,6 +18,7 @@
 #include <vector>
 #include <string>
 #include "XPlatform.h"
+#include "XString.h"
 
 using std::vector;
 using std::string;
@@ -25,46 +26,46 @@ using std::string;
 //will not actually operate the files.
 namespace XEPathFileTool
 {
-
-	// [WINDOWS ONLY]ÅĞ¶¨ÎÄ¼ş£¨¼Ğ£©ÊÇ·ñ´æÔÚ 
+	// whether file or filePath is exist 
 	bool IsFileOrDirExist(const char* pathname);
-	// [WINDOWS ONLY]»ñÈ¡ÍêÕûÎïÀíÂ·¾¶ÏÂÖ¸¶¨ºó×ºµÄÎÄ¼ş
+	// get files from path with suffix name.
 	std::vector<std::string> GetFileWithExt(const char* path, const char* ext);
-	// [WINDOWS ONLY]Ê¹ÓÃÏµÍ³ÃüÁîÉ¾³ıÎÄ¼ş¼Ğ,ÎŞQT»·¾³£¬ÓĞQT»·¾³ÇëÊ¹ÓÃXEFileHelper::removePath
+	// delete dir by using sys command without QT,if want to use QT function,please use 'XEFileHelper::removePath'
 	bool DeleteDir(const char* pathname);
-	// [WINDOWS ONLY]Ê¹ÓÃÏµÍ³ÃüÁîÉ¾³ıÎÄ¼ş£¬ÎŞQT»·¾³£¬ÓĞQT»·¾³ÇëÊ¹ÓÃXEFileHelper::removePath
+	// delete dir by using sys command without QT,if want to use QT function,please use 'XEFileHelper::removePath'
 	bool Deletefile(const string &strFilePath);
 	void GetAllFormatFiles(string fileFolderPath, vector<string>& files, string fileExtension);
-	// [WINDOWS ONLY]Ê¹ÓÃÏµÍ³ÃüÁî¿½±´ÎÄ¼ş£¬ÎŞQT»·¾³ £¬ÓĞQT»·¾³ÇëÊ¹ÓÃXEFileHelper::CopyFileToPath
+	// copy file by using sys command without QT,if want to use QT function,please use 'XEFileHelper::CopyFileToPath'
 	bool Copyfile(const string &strFromPath, const string &strToPath);
-	// [WINDOWS ONLY]
+	
 	bool CreateFolderByPath(const char* path);
 
-	//Èç¹ûreverseÎªtrue£¬×ª»»Îª/(·´Ğ±¸Ü)£¬·ñÔòÎª\(Ğ±¸Ü£¬WindowsÃüÁîĞĞÊ¶±ğ£¬²»Ê¶±ğ/)
+	// if reverse is true, convert to '/', otherwise '\'
 	void NormalPath(string& strFullName, bool reverse = true);
 	void NormalPath(char *pFullName, bool reverse = true);
-	//¼ÓÃÜ/½âÃÜÂ·¾¶
+    void NormalPath(XString& pFullName, bool reverse = true);
+	// Encode path/ Decode path
 	void EncodePath(const string &strKey, string &strpath);
 	void DecodePath(const string &strKey, string &strpath);
-	// »ñÈ¡Ó¦ÓÃ³ÌĞòÄ¿Â¼Â·¾¶,AndroidÆ½Ì¨²»Ö§³Ö!ÇëÊ¹ÓÃJNI AssetManager»òÆäËü·½·¨»ñÈ¡
+	// get application path, not support Android,please use JNI AssetManager or other function.
 	string GetAppPath();
-	// ´ÓÍêÕûÂ·¾¶ÖĞµÃµ½Ä¿Â¼²¿·Ö
+	// get dir from full name.
 	string GetPathDir(const string &strFullName);
-	// ´ÓÍêÕûµÄÃû×ÖÖĞµÃµ½Ãû×Ö(´øºó×ºÃû)
+	// get fileName with suffix name from Full name.
 	string GetFileName(const string& strFullName);
-	// »ñÈ¡ºó×ºÃû
+	// get Suffix name
 	string GetFileExt(const std::string &strName);
-	// È¥µôºó×ºÃû
+	// trim Suffix name
 	string GetFilePathExceptExt(const std::string &strName);
-	// »ñÈ¡Ïà¶ÔÂ·¾¶
+	// get relative path
 	bool GetRaletivePath(const string &strFullPath, const string &strParentPath, string &strRelativePath);
-	// ÅĞ¶ÏÏà¶ÔÂ·¾¶
+	// whether is relative path
 	bool IsRaletivePath(const string &strFullPath, const string &strParentPath);
-	//¼ò»¯Â·¾¶,Èç½«root/bb/../aa ±äÎªroot/aa 
+	// simplify path, for example, convert 'root/bb/../aa' to 'root/aa' 
 	void ExpandPath(string &strPath);
-	//·ÖÀë×Ö·û´®
+	// split string
 	void SplitString(const string &str, const string &mak, vector<string> &vstr);
-	//È¥³ıÁ½¶Ë¿Õ°××Ö·û
+	// trim blank chars at both ends
 	const string& Strtrim(string &s);
 
 };

@@ -12,13 +12,13 @@
 
 //#define XE_AUDIO_DEBUG
 
-#ifdef XE_AUDIO_LOG
+//#ifdef XE_AUDIO_LOG
 #define AUDIO_LOG_D(...) NSLog(__VA_ARGS__)
 #define AUDIO_LOG_I(...) NSLog(__VA_ARGS__)
-#else
-#define AUDIO_LOG_D(args...) {}
-#define AUDIO_LOG_I(args...) {}
-#endif
+//#else
+//#define AUDIO_LOG_D(args...) {}
+//#define AUDIO_LOG_I(args...) {}
+//#endif
 
 
 /**

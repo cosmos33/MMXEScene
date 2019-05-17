@@ -36,7 +36,7 @@ public:
 	virtual void                     UpdateForSerialize() override;
 	virtual void                     Tick(xfloat32 fDel, xbool bForceTick = xtrue) override;
 
-#if X_PLATFORM_WIN_DESKTOP
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                     GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
 #endif
 public:

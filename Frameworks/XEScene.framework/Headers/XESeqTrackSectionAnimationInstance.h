@@ -73,7 +73,6 @@ public:
 	static xbool						 SpiltAnimationToOtherLayer(XESeqTrackSectionAnimationInstance* pDragIns, XESeqTrackSectionAnimationInstance* pDropIns);//a already layer.
 	
 	static xfloat32						 GetWeightFactor(xfloat32 fStart, xfloat32 fEnd, xfloat32 fCur, xint32 type);
-	//static void							 GetDrawGrayAreas(XESeqTrackSectionAnimationInstance* pIns, XArray<XVECTOR2>& arrGrayBlend, XArray<XVECTOR2>& arrGrayMontage);
 
 public:
 	XE_USER_NODE_CAST(XESeqTrackSectionAnimationInstance)
