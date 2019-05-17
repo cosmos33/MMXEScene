@@ -74,6 +74,17 @@
 
 @end
 
+@protocol CVSegmentationData <NSObject>
+
+@property (readonly,copy,readonly) NSData *data;
+
+@property (readonly,readonly) size_t width;
+
+@property (readonly,readonly) size_t height;
+
+@end
+
+
 @protocol CVGesture <NSObject>
 
 @property (nonatomic,readonly) float score;

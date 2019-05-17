@@ -34,6 +34,8 @@
 
 - (void)updateRenderID:(NSString *)renderID;
 
+- (void)printInfo;
+
 @end
 
 @protocol XSKGLDisplayViewDataOutputDelegate <NSObject>
