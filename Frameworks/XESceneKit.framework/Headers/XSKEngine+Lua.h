@@ -17,4 +17,6 @@
 
 - (void)execteGameScriptFile:(NSString *)scriptFile;
 
+- (void)cleanStack;
+
 @end

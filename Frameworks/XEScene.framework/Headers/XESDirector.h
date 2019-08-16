@@ -402,4 +402,6 @@ protected:
 
 XESCENE_NAMESPACE_END
 
+//typedef XESCENE_NAMESPACE::Director XEDirector;
+
 #endif /* XESDIRECTOR_H_ */

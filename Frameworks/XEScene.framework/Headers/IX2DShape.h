@@ -13,7 +13,7 @@ public:
 		X_POLYGON = 2,
 		X_NUM = 3
 	};
-	virtual ~IX2DShape() {}
+	virtual ~IX2DShape();
 	virtual Type		GetType() const = 0;
 };
 
@@ -43,6 +43,7 @@ class X2DShapeFactory : public XMemBase
 {
 public:
 	static IX2DShape*		CreateShape(IX2DShape::Type eType);
+	static void				DestoryShape(IX2DShape* pShape);
 };
 
 #endif

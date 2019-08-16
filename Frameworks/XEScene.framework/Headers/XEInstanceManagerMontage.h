@@ -14,11 +14,6 @@
 #ifndef _XE_MONTAGE_MANAGER_H
 #define _XE_MONTAGE_MANAGER_H
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
-
-class XEAnimMontage;
-class XEAnimMontageInstance;
-class XEInstanceManagerMontageRuntime;
 class XEInstanceManagerMontage
 	: public XEInstanceManagerBase
 {
@@ -32,25 +27,25 @@ public:
 	virtual void                            SaveImpl() const override;
 	virtual void                            SaveAsImpl(const xchar* pPath) const override;
 	virtual xbool                           IsNodesModifiedImpl()const override;
-public:
-	//for lua side
-	static XEInstanceManagerMontageRuntime* GetInstanceManagerMontage();
+	virtual xbool							IsMatchFileType(const XString& szPath) override;
 };
 
 
 //runtime only.
 class XEInstanceManagerMontageRuntime
 	: public XEInstanceManagerMontage
-	, public XESingleton<XEInstanceManagerMontageRuntime>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerMontageRuntime)
 };
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //editing only.
 class XEInstanceManagerMontageEditing
 	: public XEInstanceManagerMontage
-	, public XESingleton<XEInstanceManagerMontageEditing>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerMontageEditing)
 };
 #endif
 

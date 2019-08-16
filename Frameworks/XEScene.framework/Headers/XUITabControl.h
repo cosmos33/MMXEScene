@@ -1,4 +1,4 @@
-#ifndef _XUITABVIEW_H_
+﻿#ifndef _XUITABVIEW_H_
 #define _XUITABVIEW_H_
 
 #include "XUIWidget.h"

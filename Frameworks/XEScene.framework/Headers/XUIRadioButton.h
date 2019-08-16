@@ -1,4 +1,4 @@
-#ifndef _XUIRADIOBUTTON_H_
+﻿#ifndef _XUIRADIOBUTTON_H_
 #define _XUIRADIOBUTTON_H_
 
 #include "XUIAbstractCheckButton.h"

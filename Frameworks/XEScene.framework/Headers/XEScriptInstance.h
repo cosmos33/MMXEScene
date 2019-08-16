@@ -12,6 +12,7 @@
 #ifndef _XE_SCRIPT_INSTANCE_H_
 #define _XE_SCRIPT_INSTANCE_H_
 #include "XEUserNode.h"
+#include "XGestureManager.h"
 
 class XEWorld;
 class XEViewport;
@@ -19,6 +20,7 @@ class XEActor;
 class XEActorComponent;
 class XEScript;
 class XEScriptContainerInstance;
+
 
 class XEScriptInstance 
 	: public XEUserNodeInstance
@@ -39,6 +41,16 @@ public:
 	virtual xbool                                 OnHolderTick(xfloat32 fIntervalMs);//in milliseconds.
 	virtual xbool                                 OnHolderRender(XEViewport *pViewport);
 	virtual xbool                                 OnHolderTigger(xbool bTrigger);
+
+	//gesture events.
+	virtual xbool                                 OnTouchClickEvent(GestureClickParam* pParam);
+	virtual xbool                                 OnTouchMoveEvent(GestureMoveParam* pParam);
+	virtual xbool                                 OnTouchMove2Event(GestureMove2Param* pParam);
+	virtual xbool                                 OnTouchPinchEvent(GesturePinchParam* pParam);
+	virtual xbool                                 OnNativeTouchesBeginEvent(xint32 number, intptr_t* ids, xfloat32* posX, xfloat32* posY);
+	virtual xbool                                 OnNativeTouchesMoveEvent(xint32 number, intptr_t* ids, xfloat32* posX, xfloat32* posY);
+	virtual xbool                                 OnNativeTouchesEndEvent(xint32 number, intptr_t* ids, xfloat32* posX, xfloat32* posY);
+
 	//holder settings.
 	void*                                         GetHolder();
 	XEWorld*                                      GetHolderWorld();
@@ -48,6 +60,7 @@ public:
 	const XString                                 GetHolderTypeName();
 	const xint32                                  GetHolderType();
 	X_FORCEINLINE xint32                          GetAssignedID() const{ return m_nAssignedID; }
+	X_FORCEINLINE void                            SetAssignedID(xint32 nID){ m_nAssignedID = nID; }
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual XEPropertyObjectSet                   GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy)override;
 #endif

@@ -73,6 +73,7 @@ protected:
 	xbool				m_bIndicatorEnabled;
 	XVECTOR2			m_vIndicatorPositionAsAnchorPoint;
 	xint32				m_nCurrentPageIndex;
+	xint32              m_nPreviousPageIndex   = -1;
 	XUIPageViewCallback m_pEventCallback;
 	xbool				m_bTouchBegin;
 };

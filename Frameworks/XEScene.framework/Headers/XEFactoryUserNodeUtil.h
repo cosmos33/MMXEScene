@@ -26,6 +26,7 @@ public:
 	virtual XEUserNode*                               CreateUserNode(XEUserNode* pNodeContext) = 0;
 	virtual XEUserNodeInstance*                       CreateUserNodeInstance(XEUserNode* pNodeTemplate) = 0;
 	virtual const XString&	                          GetUserNodeTypeName() = 0;
+	virtual const XString&                            GetUserNodeInsTypeName() = 0;
 };
 
 template<typename T, typename I>
@@ -35,6 +36,8 @@ public:
 	virtual XEUserNode*                               CreateUserNode(XEUserNode* pNodeContext) override;
 	virtual XEUserNodeInstance*                       CreateUserNodeInstance(XEUserNode* pNodeTemplate) override;
 	virtual const XString&	                          GetUserNodeTypeName() override;
+	virtual const XString&                            GetUserNodeInsTypeName() override;
+	
 };
 
 class XEUserNodeFactoryManager:public XEFactoryManagerBase
@@ -47,14 +50,16 @@ public:
 public:
 	INSTANCE_FACTORY_IMPL(XEUserNodeFactoryManager)
 	IXEUserNodeFactory*	                              GetFactory(const XString &strNodeTypeName);
+	IXEUserNodeFactory*	                              GetFactory(const XString &strNodeTypeName, const XString& strNodeInsTypeName);
 	xbool                                             AddFactory(IXEUserNodeFactory* pFactory);
 	const IXEUserNodeFactory::XEUserNodeFactoryArray& GetFactoryList() const;
-private:
+protected:
+	virtual IXEUserNodeFactory*						  GetFactoryForDerived(const XString &strNodeTypeName);//warning, if you don't want to call this in your derived class, override it and return NULL
+	virtual IXEUserNodeFactory*						  GetFactoryForDerived(const XString &strNodeTypeName, const XString& strNodeInsTypeName);//warning, if you don't want to call this in your derived class, override it and return NULL
 	template<typename T,typename I>
 	xbool                                             _Register();
 private:
 	IXEUserNodeFactory::XEUserNodeFactoryArray m_aFactories;
-	xbool m_bIsCollected;
 };
 
 
@@ -83,6 +88,14 @@ const XString& XEUserNodeFactory<T,I>::GetUserNodeTypeName()
 {
 	return T::NODE_TYPENAME;
 }
+
+
+template<typename T, typename I>
+const XString& XEUserNodeFactory<T, I>::GetUserNodeInsTypeName()
+{
+	return I::NODE_TYPENAME;
+}
+
 
 template<typename T, typename I>
 xbool XEUserNodeFactoryManager::_Register()

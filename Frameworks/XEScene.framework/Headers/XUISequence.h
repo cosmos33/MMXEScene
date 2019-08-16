@@ -1,4 +1,4 @@
-#ifndef _UI_SEQUENCE_H_
+ï»¿#ifndef _UI_SEQUENCE_H_
 #define _UI_SEQUENCE_H_
 
 #include "XArray.h"
@@ -9,12 +9,19 @@ class XUISequence : public XUIActionInterval
 {
 public:
 
+	X_CLASS_DEF(XUISequence)
+
 	static XUISequence* Create(const XArray<XUIFiniteTimeAction*>& vActions);
 	virtual XUISequence* Clone() const override;
 
 	virtual xbool IsDone() const override;
 
 	virtual ~XUISequence();
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
+
+	virtual void ActionUpdate(const xfloat32& fProgress) override;
 protected:
 
 	XUISequence();
@@ -25,8 +32,6 @@ protected:
 	
 
 	virtual void Step(const xfloat32& dt) override;
-//	virtual void ActionUpdate(const xfloat32& fProgress) override;
-
 
 protected:
 

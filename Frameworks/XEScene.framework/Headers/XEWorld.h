@@ -35,7 +35,8 @@ typedef std::function<void(XEActor*, xfloat32)>    OnActorTick;
 typedef std::function<void(XEActor*, XEViewport*)> OnActorRender;
 typedef std::function<void(XEWorld*)>              OnDeserializeFinished;
 typedef std::function<bool(XEWorld*)>              OnFrameSizeChangedFunc;
-typedef std::function<void(XMLElement*)>           OnFlushSceneData;//deserialize/serialize...
+typedef std::function<void(XEWorld*, XMLElement*)> OnFlushSceneData;//deserialize/serialize...
+typedef std::function<void(XEWorld*)>              OnCreateInitFinished;
 
 X_ECB_AUTO(OnActorTick, void, XEActor*, xfloat32)
 X_ECB_AUTO(OnActorRender, void, XEActor*, XEViewport*)
@@ -62,6 +63,8 @@ public:
 	X_EEB_BEGIN
 	static const xchar*              c_SupportPhysicsSkeletonSceneMinVersion;
 	static const xchar*				 c_SupportFaceTrackerActorSceneMinVersion;
+	static const xchar*				 c_SupportSequenceFrameAnimMinVersion;
+	static const xchar*				 c_SupportUVAssetFileMaxVersion;//支持美妆UV资源的最大版本
 	static const xchar*				 c_CurrentSceneVersion;
 	X_EEB_END
 
@@ -276,6 +279,7 @@ X_EEB_BEGIN
 	static OnFrameSizeChangedFunc				s_pOnFrameSizeChangedFunc;
 	static OnFlushSceneData                     s_pOnSceneDeserializeData;
 	static OnFlushSceneData                     s_pOnSceneSerializeData;
+	static OnCreateInitFinished					s_pOnCreateInitFinished;
 X_EEB_END
 public:
 	static const XString						PHY_SCENE_SUFFIX;

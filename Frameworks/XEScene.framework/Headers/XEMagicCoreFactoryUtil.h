@@ -16,6 +16,7 @@
 #include "XEFactoryActorUtil.h"
 #include "XEFactoryActorComponentUtil.h"
 #include "XEFactoryPropertyObjectUtil.h"
+#include "XEFactoryUserNodeUtil.h"
 
 //XEMagicCoreActorFactoryManager
 class XEMagicCoreActorFactoryManager :public XEActorFactoryManager
@@ -59,5 +60,20 @@ public:
 	INSTANCE_FACTORY_IMPL(XEMagicCorePropertyObjectFactoryManager)
 };
 #endif
+
+//////////////////////////////////////////////////////////////////////////XEMagicCoreUserNodeFactoryManager
+class XEMagicCoreUserNodeFactoryManager : public XEUserNodeFactoryManager
+{
+public:
+	XEMagicCoreUserNodeFactoryManager();
+	virtual ~XEMagicCoreUserNodeFactoryManager();
+	virtual void                          CollectFactory() override;
+protected:
+	//warning, if you don't want to call this in your derived class, override it and return NULL
+	virtual IXEUserNodeFactory*           GetFactoryForDerived(const XString &strFactoryName){ return NULL; }
+	virtual IXEUserNodeFactory*			  GetFactoryForDerived(const XString &strNodeTypeName, const XString& strNodeInsTypeName){ return NULL; }
+public:
+	INSTANCE_FACTORY_IMPL(XEMagicCoreUserNodeFactoryManager)
+};
 
 #endif

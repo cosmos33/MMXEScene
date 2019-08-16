@@ -24,5 +24,6 @@
 #include "XEInstanceManagerScript.h"
 #include "XEInstanceManagerSequencer.h"
 #include "XEInstanceManagerSkeleton.h"
+#include "XEInstanceManagerUIAnimation.h"
 
 #endif // _XE_INSTANCE_MANAGER_INCLUDE_H_

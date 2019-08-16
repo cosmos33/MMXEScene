@@ -1,4 +1,4 @@
-#ifndef _XUILISTVIEW_H_
+﻿#ifndef _XUILISTVIEW_H_
 #define _XUILISTVIEW_H_
 
 #include "XUIScrollView.h"

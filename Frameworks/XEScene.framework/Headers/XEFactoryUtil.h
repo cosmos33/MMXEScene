@@ -27,7 +27,7 @@ public:
 	virtual void                          CollectFactory() = 0;
 	virtual void                          ReleaseFactory() = 0;
 public:
-	static FactoryManagers&               GetFactoryManagers(){ static FactoryManagers fm; return fm; }
+	static FactoryManagers&               GetFactoryManagers();
 	static void                           CollectFactories();
 	static void                           ReleaseFactories();
 public:
@@ -39,6 +39,7 @@ public:
 	static void                           UnregisterManager();
 protected:
 	xbool                                 m_bIsCollected;
+	static FactoryManagers                s_factoryManagers;
 };
 
 template<typename T>

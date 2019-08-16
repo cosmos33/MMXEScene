@@ -64,6 +64,13 @@ enum FxEventType
 	ET_DEATH
 };
 
+enum FxParticleLocationCylinderAxis
+{
+	FPLCA_X,
+	FPLCA_Y,
+	FPLCA_Z
+};
+
 enum FxModuleCategory
 {
 	FMC_ACCELERATION,
@@ -117,7 +124,15 @@ enum FxModuleType
 	FMT_TYPEDATA_RIBBON,
 	FMT_TRAIL_SOURCE,
 	FMT_ACCELERATION,
+	FMT_LOCATION_CYLINDER,
 	FMT_MODULETYPENUM
+};
+
+enum FxRenderLayerOrder
+{
+	LO_BeforeUI,
+	LO_BetweenUI,
+	LO_AfterUI
 };
 
 struct ModuleFlag

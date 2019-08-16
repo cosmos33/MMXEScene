@@ -21,10 +21,27 @@
 #include "XPlatformWindow.h"
 #include "XEngineRoot.h"
 #include "XEViewport.h"
+#include "XGestureManager.h"
+#include "XConsoleManager.h"
+
+extern XConsoleVariable g_CVarEnableWorldTickSubstepping;
+extern XConsoleVariable g_CVarWorldTickMaxStepTimeMS;
+
+class XEInputEventManager
+	:public XGestureManager
+{
+public:
+	XEInputEventManager() :m_bEnabled(xfalse){}//disabled by default.
+	virtual ~XEInputEventManager(){}
+public:
+	//a status only.
+	X_FORCEINLINE void                 SetEnabled(xbool bEnabled){ m_bEnabled = bEnabled; }
+	X_FORCEINLINE xbool                IsEnabled()const{ return m_bEnabled; }
+protected:
+	xbool m_bEnabled;
+};
 
 class XEWorld;
-
-
 class XEGame : public IXApplication
 {
 public:
@@ -64,14 +81,19 @@ public:
 	};
 	xbool                              AddTickListener(TickListener* pTickListener);
 	xbool                              RemoveTickListener(TickListener* pTickListener);
+
+	X_FORCEINLINE XEInputEventManager* GetGameInputEventMgr(){ return m_pGameInputEventManager; }
+	X_FORCEINLINE void                 SetGameInputEventMgr(XEInputEventManager* pMgr){ m_pGameInputEventManager = pMgr; }
 protected:
 	void					           Tick();
 	void					           Render();
+	void							   TickWorld(XEWorld* pWorld, xfloat32 fDeltaTime);
 	XEViewport*				           m_pCurViewPort;
 	XEWorldList				           m_vWorld;
 	xfloat32				           m_fCurDeltaTime;
 	xbool                              m_bEnableTick;
 	XArray<TickListener*>              m_aTickListener;
+	XEInputEventManager*               m_pGameInputEventManager;//gesture currently.
 };
 
 #endif

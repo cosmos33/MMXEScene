@@ -15,9 +15,7 @@
 #define _XE_ARADS_MANAGER_H
 
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
 
-class XEInstanceManagerARAdsRuntime;
 class XEInstanceManagerARAds
 	: public XEInstanceManagerBase
 {
@@ -31,25 +29,25 @@ public:
 	virtual void                         SaveImpl() const override;
 	virtual void                         SaveAsImpl(const xchar* pPath) const override;
 	virtual xbool                        IsNodesModifiedImpl()const override;
-public:
-	//for lua side
-	static XEInstanceManagerARAdsRuntime*GetInstanceManagerARAds();
+	virtual xbool						 IsMatchFileType(const XString& szPath) override;
 };
 
 
 //runtime only.
 class XEInstanceManagerARAdsRuntime
 	: public XEInstanceManagerARAds
-	, public XESingleton<XEInstanceManagerARAdsRuntime>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerARAdsRuntime)
 };
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //editing only.
 class XEInstanceManagerARAdsEditing
 	: public XEInstanceManagerARAds
-	, public XESingleton<XEInstanceManagerARAdsEditing>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerARAdsEditing)
 };
 #endif
 

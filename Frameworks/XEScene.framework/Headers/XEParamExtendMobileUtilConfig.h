@@ -121,12 +121,15 @@ public:
 class TapToPlay :public MobileActionCfgBase
 {
 public:
-	TapToPlay() :m_nAnimationIndex(0){}
+	TapToPlay() :m_nAnimationIndex(0), m_nAnimPlayMode(0) {}
 	virtual XString     GetTypeName() override;
 public:
 	xint32 m_nAnimationIndex;
+	xint32 m_nAnimPlayMode;//动画播放模式
 };
 
+class XEScriptInstance;
+class XEScript;
 class XEParamExtendMobileUtilConfig
 	:public IXEExtendParam
 {
@@ -153,7 +156,7 @@ public:
 	xbool                       AddActionCfg(const XString& szActionType);
 	xbool                       RemoveActionCfg(const XString& szActionType);
 	MobileActionCfgBase*        GetActionCfg(const XString& szActionType);
-	
+X_EEB_BEGIN
 	xint32                      GetRestValidActionCfgType(XArray<XString>& aType);
 	xint32                      GetUseActionCftType(XArray<XString>& aType);
 	static MobileActionCfgBase* NewActionCfgBaseForType(const XString& szActionType);
@@ -166,16 +169,24 @@ public:
 	static XArray<XString>&		GetAnimationCandidatePlayMode();
 	static XString*				GetAnimationPlayModeByIndex(const xint32& nPlayModeIndex);
 	static xint32*				GetAnimationPlayModeIndexByName(const XString& strPlayModeName);
+X_EEB_END
+
 protected:
 	//driving methods.
+	void                        MountGestureListener();
+	void                        UnmountGestureListener();
 	void                        ActOnFaceExpression();
 	void                        ActOnGesture();
+public:
+	static void                 ActOnTapEvent(XEActor* pActor);//from lua
 public:
 	static XString EXTEND_PARAM_NAME;
 	MobileActionConfigArray     m_aMobileActionCfg;
 private:
 	xint32                      m_nCurEmotionType;
 	xint32                      m_nCurGestureType;
+	XEScriptInstance*           m_pScriptInsTapLuaEvent;
+	XEScript*                   m_pScriptTl;
 };
 
 

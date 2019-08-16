@@ -1,4 +1,4 @@
-#ifndef _XUIDIALOG_H_
+﻿#ifndef _XUIDIALOG_H_
 #define _XUIDIALOG_H_
 
 /*

@@ -53,20 +53,22 @@ enum XRendererSystemType
 	XRT_VULKAN,
 };
 
+class IXImageEffectProcessor;
 class IXRenderSystemBase : public XMemBase
 {
 public:
-	virtual						~IXRenderSystemBase() {};
-	virtual	xbool				Init(const XRenderSystemInitializeParameter* pParam) = 0;
-	virtual void				Release() = 0;	
-	virtual void				RenderSystemRender(const XRenderSystemParameter& renderParam) = 0;
-	virtual xbool				CanSupportTexFormat(xint32 nFmtFlag) = 0;
-	virtual xuint32				GetCurTexFormat() = 0;
-	virtual xint32				GetRendererType() = 0;
-	virtual xint32				GetRTTID() = 0;
+	virtual							~IXRenderSystemBase() {};
+	virtual	xbool					Init(const XRenderSystemInitializeParameter* pParam) = 0;
+	virtual void					Release() = 0;	
+	virtual void					RenderSystemRender(const XRenderSystemParameter& renderParam) = 0;
+	virtual xbool					CanSupportTexFormat(xint32 nFmtFlag) = 0;
+	virtual xuint32					GetCurTexFormat() = 0;
+	virtual xint32					GetRendererType() = 0;
+	virtual xint32					GetRTTID() = 0;
+	virtual xint32					GetRTFID() = 0;
 	
-	virtual void				ResizeWindow(IXPlatformWindow* pWin) = 0;
-	virtual xbool				CreateRenderWindow(IXPlatformWindow* pWin) = 0;
+	virtual void					ResizeWindow(IXPlatformWindow* pWin) = 0;
+	virtual xbool					CreateRenderWindow(IXPlatformWindow* pWin) = 0;
 
 	/* 销毁渲染窗口
 	*
@@ -74,7 +76,7 @@ public:
 	* @param	pWin 将被销毁的窗口
 	* @returns  xtrue 成功销毁
 	*/
-	virtual xbool				DestroyRenderWindow(IXPlatformWindow* pWin) = 0;
+	virtual xbool					DestroyRenderWindow(IXPlatformWindow* pWin) = 0;
 
 	/* 切换pWin为当前渲染的窗口
 	*
@@ -82,11 +84,14 @@ public:
 	* @param	pWin 将被切换的窗口
 	* @returns  xtrue 切换成功
 	*/
-	virtual xbool				SwitchCurRenderWindow(IXPlatformWindow* pWin) = 0;
+	virtual xbool					SwitchCurRenderWindow(IXPlatformWindow* pWin) = 0;
 
 	/* 获取当前渲染窗口
 	*/
-	virtual IXPlatformWindow*	GetCurRenderWindow() = 0;
+	virtual IXPlatformWindow*		GetCurRenderWindow() = 0;
+
+	virtual void					RegisterImageEffectProcessor(IXImageEffectProcessor* pProcessor) = 0;
+	virtual IXImageEffectProcessor*	GetImageEffectProcessor() = 0;
 };
 
 extern IXRenderSystemBase*	g_pXCurrentRenderer;

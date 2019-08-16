@@ -76,7 +76,7 @@ public:
 	virtual void                           ReleaseFactory() override;
 public:
 	INSTANCE_FACTORY_IMPL(XEPropertyObjectFactoryManager)
-	XArray<IXEPropertyObjectFactory*>&     GetFactoryList(){ return m_aFactoryList; }
+	XArray<IXEPropertyObjectFactory*>&     GetFactoryList(){ return m_aFactories; }
 	xbool                                  AddFactory(IXEPropertyObjectFactory* pFactory);
 	IXEPropertyObjectFactory*              GetFactory(const XString& strFactoryName);
 protected:
@@ -86,7 +86,7 @@ protected:
 	template<typename T>
 	xbool                                 _Register(const XString strTypeName, const XEMatchHandleType& eMHT);
 private:
-	XArray<IXEPropertyObjectFactory*>      m_aFactoryList;
+	XArray<IXEPropertyObjectFactory*>      m_aFactories;
 };
 
 #define REGISTER_PROPERTY_OBJ(T,E) _Register<T>(#T,E)

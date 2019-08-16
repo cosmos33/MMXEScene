@@ -1,4 +1,4 @@
-#ifndef _UI_MOVE_BY_H_
+ï»¿#ifndef _UI_MOVE_BY_H_
 #define _UI_MOVE_BY_H_
 
 #include "XUIActionInterval.h"
@@ -7,12 +7,19 @@ class XUIMoveBy : public XUIActionInterval
 {
 public:
 
+	X_CLASS_DEF(XUIMoveBy)
+
 	static XUIMoveBy* Create(const xfloat32& fDuration, const XVECTOR2& v2DeltaPosition);
 
 	virtual XUIMoveBy* Clone() const override;
 	virtual XUIMoveBy* Reverse() const override;
 
 	virtual ~XUIMoveBy() {};
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
+
+
 protected:
 	XUIMoveBy();
 

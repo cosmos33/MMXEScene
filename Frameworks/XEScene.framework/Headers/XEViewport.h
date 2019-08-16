@@ -222,6 +222,9 @@ public:
     XEViewport*                 GetXEViewport(const XViewport *pViewPort);
 	XArray<XEViewport*>			GetRefXEViewport(const XBaseCamera *pCamera);
 	XEViewport*				    GetXEViewportByWorldName(const XString &strWorldName);
+public:
+	//export scripting support
+	static XEViewportManager*   GetManager();
 protected:
 	inline XEViewportMap&		GetViewportMap() { return m_mXEViewport; }
 

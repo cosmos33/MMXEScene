@@ -131,6 +131,9 @@ public:
      * @return
      */
     xbool DispatchTouchHitTestEvent(Event *pEvent);
+    
+    
+    xbool HasGestureEventListener();
 
 
 private:

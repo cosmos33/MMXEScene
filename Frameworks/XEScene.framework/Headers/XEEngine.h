@@ -20,7 +20,8 @@
 #include "XArray.h"
 
 // Online version number, Maximum four segments of the number, the maximum number of each is 99.
-#define ENGINE_CURR_VERSION "1.1.11"     // 1.1.11 - 2019-4-26 to build
+#define ENGINE_CURR_VERSION "1.1.13"     // 1.1.12 - 2019-6-25
+#define ENGINE_VERSION_COMPILE_TIME "2019-7-17-19:57" // first time of add this parameter
 
 class XEEngine
 {
@@ -35,11 +36,13 @@ public:
 		virtual void             OnPostFrame(){}
 		virtual void             OnFrameSizeChanged(){}
 	};	                  
+
 	virtual					    ~XEEngine();
 
 	static XEEngine*		     GetInstance();
-	static const XString		 GetEngineVersion();
+	static const xchar*			 GetEngineVersion() { return ENGINE_CURR_VERSION; }
 	static xint32				 GetEngineVersionValue();
+	static const xchar*			 GetEngineVersionCompileTime() { return ENGINE_VERSION_COMPILE_TIME; }
 	
 
 	/*

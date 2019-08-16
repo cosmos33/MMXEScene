@@ -20,5 +20,8 @@
 #include "XEImg2DFaceKeyPointSequenceFrameComponent.h"
 #include "XEImgSegmentationComponent.h"
 #include "XEImgFaceTrackerComponent.h"
+#include "XEFaceKeyPointSocketComponent.h"
+#include "XEBodyJointSocketComponent.h"
+#include "XEImg2DPointSequenceFrameComponent.h"
 
 #endif

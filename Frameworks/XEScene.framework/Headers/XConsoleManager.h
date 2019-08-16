@@ -185,10 +185,10 @@ extern XConsoleVariable g_CVarFogWorldPosHeightOffset;
 
 extern XConsoleVariable g_CVarDebugDrawPhysics;
 
-extern XConsoleVariable g_CVarEnableARBackgroundEffect;
-extern XConsoleVariable g_CVarARBackgroundHueAdjust;
-extern XConsoleVariable g_CVarARBackgroundSaturationAdjust;
-extern XConsoleVariable g_CVarARBackgroundLightnessAdjust;
+//extern XConsoleVariable g_CVarEnableARBackgroundEffect;
+//extern XConsoleVariable g_CVarARBackgroundHueAdjust;
+//extern XConsoleVariable g_CVarARBackgroundSaturationAdjust;
+//extern XConsoleVariable g_CVarARBackgroundLightnessAdjust;
 
 extern XConsoleVariable g_CVarEnableOIT;
 extern XConsoleVariable g_CVarOITLayerNum;
@@ -206,6 +206,9 @@ extern XConsoleVariable g_CVarEnableSSAO;
 extern XConsoleVariable g_CVarSSAOSampleRadius;
 
 extern XConsoleVariable g_CVarRenderWater;
+
+extern XConsoleVariable g_CVarEnablePreprocessImageEffect;
+extern XConsoleVariable g_CVarEnablePostprocessImageEffect;
 
 // 形变动画的法线计算方法
 enum XBlendShapeNormalMethod

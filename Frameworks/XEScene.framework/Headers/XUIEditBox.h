@@ -1,4 +1,4 @@
-#ifndef _XUIEDITBOX_H_
+﻿#ifndef _XUIEDITBOX_H_
 #define _XUIEDITBOX_H_
 
 #include "XUIWidget.h"

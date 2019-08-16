@@ -44,6 +44,12 @@ public:
 	void				          SetBlendMaskTextureInverse(xbool bInverse);
 	void                          SetBlendMaskTextureEnable(xbool bEnable);
 	void						  SetBlendMaskTextureUFlip(xbool bSet);
+	virtual IXTexture2D*          ProvideTexture2D() override = 0;
+	virtual XMATRIX4              ProvideWVPMatrix() override = 0;
+	virtual xint32                ProvideRenderPrimitiveNum() override = 0;//usually is the triangle num.
+	virtual IXVertexDesc*         ProvideVertexDesc() override = 0;
+	virtual IXVertexBuffer*       GetVB() override = 0;
+	virtual IXIndexBuffer*		  GetIB() override = 0;
 	X_FORCEINLINE xuint8          GetBlendOptions()const{ return m_nBlendMaskOption; }
 	X_FORCEINLINE xbool           IsBlendColorEnable()const{ return 0 != (m_nBlendMaskOption&BMO_BLEND_COLOR); }
 	X_FORCEINLINE xbool           IsBlendDiffuseTextureEnable()const{ return 0 != (m_nBlendMaskOption&BMO_BLEND_DIFFUSE_TEXTURE); }

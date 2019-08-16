@@ -51,7 +51,7 @@ protected:
 	template<typename T>
 	xbool                                             _Register();
 private:
-	IXEEventFactory::XEEventFactoryArray m_aFactories;
+	IXEEventFactory::XEEventFactoryArray			  m_aFactories;
 };
 
 //implement with template

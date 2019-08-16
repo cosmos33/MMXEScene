@@ -1,4 +1,4 @@
-#ifndef _XUIASSIST_H_
+﻿#ifndef _XUIASSIST_H_
 #define _XUIASSIST_H_
 
 #include "XString.h"
@@ -35,6 +35,7 @@ enum WidgetPriority
 #define TYPESTRING_SCENE		"Scene"
 #define TYPESTRING_IMAGE		"Image"
 #define TYPESTRING_LABEL		"Label"
+#define TYPESTRING_LABELCYCLICROLL "LabelCyclicRoll"
 #define TYPESTRING_BUTTON		"Button"
 #define TYPESTRING_DIALOG		"Dialog"
 #define TYPESTRING_EDITBOX		"EditBox"
@@ -60,4 +61,6 @@ enum WidgetPriority
 #define TYPESTRING_GUIDEPAGE	"GuidePage"
 #define TYPESTRING_GUIDEPAGEGROUP	"GuidePageGroup"
 #define TYPESTRING_DYNAMICLISTVIEW	"DynamicListView"
+#define TYPESTRING_UIFX          	"UIFX"
+
 #endif

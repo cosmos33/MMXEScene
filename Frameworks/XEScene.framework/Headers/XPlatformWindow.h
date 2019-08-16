@@ -25,6 +25,7 @@ public:
 
 	virtual unsigned int	GetWidth() = 0;
 	virtual unsigned int	GetHeight() = 0;
+	virtual float           GetWindowScale() { return 1.0f; }
 	virtual bool			IsFullScreen() = 0;
 
 	virtual int				GetMouseX() = 0;

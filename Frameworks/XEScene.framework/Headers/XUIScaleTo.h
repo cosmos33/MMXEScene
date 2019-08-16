@@ -1,11 +1,13 @@
-#ifndef _UI_SCALE_TO_H_
+ï»¿#ifndef _UI_SCALE_TO_H_
 #define _UI_SCALE_TO_H_
 
-#include "XUIActionInterval.h"
+#include "XUIScaleBy.h"
 
-class XUIScaleTo : public XUIActionInterval
+class XUIScaleTo : public XUIScaleBy
 {
 public:
+
+	X_CLASS_DEF(XUIScaleTo)
 
 	static XUIScaleTo* Create(const xfloat32& fDuration, const XVECTOR2& v2Scale);
 	static XUIScaleTo* Create(const xfloat32& fDuration, const xfloat32& fScale);
@@ -14,25 +16,18 @@ public:
 	virtual XUIScaleTo* Reverse() const override;
 
 	virtual ~XUIScaleTo() {};
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
 protected:
 	XUIScaleTo();
 
-
 	virtual void StartWithTarget(XUINode* pTarget) override;
-	
-	virtual void ActionUpdate(const xfloat32& fProgress) override;
 
-
-protected:
-
-	xbool InitWithDuration(const xfloat32& fDuration, const XVECTOR2& v2Scale);
+	xbool InitWithDuration(const xfloat32& fDuration, const XVECTOR2& v2EndPosition);
 
 protected:
-	
-	XVECTOR2 m_v2StartScale;
+
 	XVECTOR2 m_v2EndScale;
-	XVECTOR2 m_v2Delta;
-
-
 };
 #endif

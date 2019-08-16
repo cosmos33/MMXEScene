@@ -1,4 +1,4 @@
-#ifndef _UI_SPEED_H_
+ï»¿#ifndef _UI_SPEED_H_
 #define _UI_SPEED_H_
 
 #include "XUIAction.h"
@@ -8,12 +8,17 @@ class XUISpeed : public XUIAction
 {
 public:
 
+	X_CLASS_DEF(XUISpeed)
+
 	static XUISpeed* Create(XUIActionInterval* pAction, const xfloat32& fSpeed);
 
 	virtual XUISpeed* Clone() const override;
 	virtual xbool IsDone() const override;
 
 	virtual ~XUISpeed();
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
 protected:
 	XUISpeed();
 

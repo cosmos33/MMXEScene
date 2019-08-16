@@ -21,7 +21,6 @@ class XEDecorationEnvBridgeBase;
 class XEImgSegmentationComponent 
 	: public XEActorComponent
 	, public XETexSegmentationMask
-
 {
 public:
 	XEImgSegmentationComponent();

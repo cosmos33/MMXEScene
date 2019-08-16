@@ -186,4 +186,6 @@ private:
 
 XESCENE_NAMESPACE_END
 
+//typedef XESCENE_NAMESPACE::Scene XEWorldController;
+
 #endif /* XESCENE_H_ */

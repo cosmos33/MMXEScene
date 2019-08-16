@@ -42,6 +42,8 @@ public:
     virtual xbool HandleAssert(const XString &msg) = 0;
 
     virtual void SetSecretKey(const char *key) = 0;
+    
+    virtual void CleanStack() = 0;
 
 #ifndef X_PLATFORM_WIN_DESKTOP
 

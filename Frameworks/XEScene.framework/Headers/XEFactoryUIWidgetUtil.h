@@ -61,6 +61,6 @@ public:
 	xbool                      AddFactory(IXEUIWidgetFactory* pFactory);
 	XArray<XString>			   GetAllFactoryType();
 private:
-	IXEUIWidgetFactory::UIWIdgetFactoryArray m_aUIWidgetFactories;
+	IXEUIWidgetFactory::UIWIdgetFactoryArray m_aFactories;
 };
 #endif//_XEFACTORYUIWIDGETUTIL_H

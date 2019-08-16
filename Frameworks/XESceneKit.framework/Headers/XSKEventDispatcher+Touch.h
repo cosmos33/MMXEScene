@@ -7,6 +7,14 @@
 
 #import "XSKEventDispatcher.h"
 
+@protocol XSKFixTouchScale <NSObject>
+
+@required
+- (CGPoint) getScaleCoefficient;
+
+@end
+
+
 @interface XSKEventDispatcher (Touchs)
 
 + (BOOL)hitTestTouch:(CGPoint)point withView:(UIView *)view;

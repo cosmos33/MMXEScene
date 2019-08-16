@@ -201,7 +201,7 @@ private:
 #define XThreadLocal(of_type) XEngineThreadLocal<of_type>
 
 
-#define  LOG_TAG    "[XENGINE]"
+#define  LOG_TAG    "XEngine"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 

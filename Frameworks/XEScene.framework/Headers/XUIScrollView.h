@@ -1,4 +1,4 @@
-#ifndef _XUISCROLLVIEW_H_
+﻿#ifndef _XUISCROLLVIEW_H_
 #define _XUISCROLLVIEW_H_
 
 #include "XUILayout.h"

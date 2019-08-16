@@ -55,6 +55,7 @@ public:
 
     virtual void SetSecretKey(const char *key) override;
 
+    virtual void CleanStack() override;
 
 #ifdef X_PLATFORM_MOBILE
 
@@ -71,8 +72,6 @@ private:
     static LuaEngine *g_DefaultEngine;
 
     LuaStack *m_Stack;
-
-//    XELuaInterpreter *_luaInterpreter;
 
 };
 

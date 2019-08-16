@@ -24,6 +24,12 @@ public:
 public:
 	X_FORCEINLINE xfloat32 GetZDelta() const{ return m_fZDelta; }
 	X_FORCEINLINE void	   SetZDelta(xfloat32 fDelta){ m_fZDelta = fDelta; }
+	virtual IXTexture2D*   ProvideTexture2D() override = 0;
+	virtual XMATRIX4       ProvideWVPMatrix() override = 0;
+	virtual xint32         ProvideRenderPrimitiveNum() override = 0;//usually is the triangle num.
+	virtual IXVertexDesc*  ProvideVertexDesc() override = 0;
+	virtual IXVertexBuffer*GetVB() override = 0;
+	virtual IXIndexBuffer* GetIB() override = 0;
 protected:
 	struct Vertex
 	{

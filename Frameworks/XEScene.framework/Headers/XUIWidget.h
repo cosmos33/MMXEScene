@@ -1,4 +1,4 @@
-#ifndef _XUIWIDGET_H_
+﻿#ifndef _XUIWIDGET_H_
 #define _XUIWIDGET_H_
 
 #include "XUINode.h"

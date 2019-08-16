@@ -1,4 +1,4 @@
-#ifndef _IXGESTUREMANAGER_H_
+﻿#ifndef _IXGESTUREMANAGER_H_
 #define _IXGESTUREMANAGER_H_
 
 #include "XMemBase.h"

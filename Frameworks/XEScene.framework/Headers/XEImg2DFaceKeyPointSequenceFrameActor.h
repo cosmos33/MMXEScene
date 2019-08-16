@@ -16,6 +16,9 @@
 
 #include "XEImg2DScreenSequenceFrameActor.h"
 
+/*
+* Note:此类Actor只能Attach到XEFaceTrackerActor上，不支持附加到其他类型Actor.
+*/
 class XEImg2DFaceKeyPointSequenceFrameActor : public XEImgSequenceFrameActorBase
 {
 public:
@@ -25,13 +28,16 @@ public:
 	XE_ACTOR_CAST(XEImg2DFaceKeyPointSequenceFrameActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEImg2DFaceKeyPointSequenceFrameActor)
+	XE_ACTOR_SHORT_NAME_DEF(ACTOR_SHORT_NAME)
 	   
 	virtual void                Initialize(XEWorld* pWorld)override;
-#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
-	virtual xbool               IsTransformMergeEditMode()const override{ return xfalse; }
-#endif
+	virtual const XArray<XString>&GetParentActorTypeFilterList()const override;
+
 public:
 	static const XString ACTOR_TYPENAME;
+	static const XString ACTOR_SHORT_NAME;
+protected:
+	static XArray<XString>		s_aFilterParentActorType;
 };
 
 

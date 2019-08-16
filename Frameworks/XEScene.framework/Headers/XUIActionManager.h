@@ -35,8 +35,6 @@ public:
 
 	virtual void Tick(const xfloat32& dt) = 0;
 
-
-
 protected:
 	void ActionStartWithTarget(XUIAction* pAction, XUINode* pTarget);
 	void ActionStop(XUIAction* pAction);

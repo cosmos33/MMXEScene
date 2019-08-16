@@ -34,6 +34,8 @@
 
 @property (nonatomic,readonly,copy) NSArray<NSValue *> *landmarks;
 
+@property (readonly,readonly,copy) NSArray<NSValue *> *landmarks137;
+
 @end
 
 @protocol CVFacialExpression <NSObject>

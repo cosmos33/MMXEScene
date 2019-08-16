@@ -1,4 +1,4 @@
-#ifndef _XUIRICHTEXT_H_
+﻿#ifndef _XUIRICHTEXT_H_
 #define _XUIRICHTEXT_H_
 
 #include "XUIWidget.h"

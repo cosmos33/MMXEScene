@@ -98,6 +98,11 @@ public:
 	void									SetFogColorLower(XVECTOR4 vValue);
 	inline XVECTOR4							GetFogColorLower(){ return m_vFogColorLower; }
 
+	void									SetWorldTickSubsteppingEnable(xbool bEnable);
+	xbool									IsWorldTickSubsteppingEnable() const { return m_bWorldTickSubstepping; }
+	void									SetWorldTickMaxStepTime(xfloat32 fMaxStepTime);
+	xfloat32								GetWorldTickmaxStepTime() const { return m_fWorldTickMaxStepTimeMS; }
+
 	void									SetBlendShapeNormalMethod(XBlendShapeNormalMethod eType);
 	X_FORCEINLINE XBlendShapeNormalMethod	GetBlendShapeNormalMethod() { return m_eBlendshapeNormalMethod; }
 	void									InitParams();
@@ -134,7 +139,8 @@ private:
 	xfloat32								m_fFogAngleUpper;
 	xfloat32								m_fFogAngleLower;
 
-
+	xbool									m_bWorldTickSubstepping;
+	xfloat32								m_fWorldTickMaxStepTimeMS;
 };
 
 #endif//_XE_WORLD_PROPERTY_H_

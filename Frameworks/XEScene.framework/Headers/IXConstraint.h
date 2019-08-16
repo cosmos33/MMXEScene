@@ -24,7 +24,7 @@ struct XConstraintBaseParams
 		, Damping(0.5f)
 		, Restitution(0.5f)
 		, ContactDistance(-1.0f)
-		, bSoftConstraint(xfalse) {}
+		, bSoftConstraint(xtrue) {}
 
 	// Stiffness of the soft constraint. Only used when Soft Constraint is on.
 	xfloat32 Stiffness;

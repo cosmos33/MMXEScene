@@ -49,14 +49,14 @@ protected:
 public:
 	INSTANCE_FACTORY_IMPL(XEActorFactoryManager)
 	IXEActorFactory*                      GetFactory(const XString &strActorTypeName);
-    IXEActorFactory::ActorFactoryArray&   GetFactoryList(){ return m_aActorFactories; }
+    IXEActorFactory::ActorFactoryArray&   GetFactoryList(){ return m_aFactories; }
     xbool                                 AddFactory(IXEActorFactory* pFactory);
 protected:
 	template<typename T>
 	xbool                                 _Register();
 	void                                  _RegSystemMetaCollisionChannel(const XString& strActorTypeName);
 protected:
-    IXEActorFactory::ActorFactoryArray     m_aActorFactories;
+    IXEActorFactory::ActorFactoryArray     m_aFactories;
 };
 
 //implement with template.

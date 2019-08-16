@@ -55,6 +55,8 @@ public:
 
     static xbool GetDataFromFile(const xchar *xcFileName,XESData &data);
 
+    static xbool Unzip(std::string zipFile, std::string unzipDir);
+    
 public:
     static XArray<XString> m_SearchPaths;
 

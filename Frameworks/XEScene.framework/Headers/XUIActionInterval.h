@@ -1,4 +1,4 @@
-#ifndef _UIACTIONINTERVAL_H_
+Ôªø#ifndef _UIACTIONINTERVAL_H_
 #define _UIACTIONINTERVAL_H_
 
 #include "XUIFiniteTimeAction.h"
@@ -8,14 +8,17 @@ class XUIActionInterval : public XUIFiniteTimeAction
 {
 public:
 
+	X_CLASS_DEF(XUIActionInterval)
+
 	xfloat32 GetElapsed() { return m_fElapsed; }
 
 	virtual XUIActionInterval* Clone() { return NULL; }
 	virtual xbool IsDone() const override;
 
-protected:
+	// ƒ⁄≤ø π”√
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
 
-	friend class XUISpeed;
+protected:
 
 	XUIActionInterval();
 	virtual ~XUIActionInterval() {};
@@ -26,10 +29,9 @@ protected:
 	xbool InitWithDuration(const xfloat32& fDuration);
 
 protected:
-	//“—æ≠÷¥––µƒ ±º‰
+	//Â∑≤ÁªèÊâßË°åÁöÑÊó∂Èó¥
 	xfloat32 m_fElapsed;
 	xbool m_bFirstTick;
-	xbool m_bDone;
 
 };
 #endif

@@ -38,6 +38,8 @@ public:
 	void						SetClearColor(XCOLOR clearColor);
 	void						EnableClearColor(xbool bClearColor);
 	xbool						IsClearColor() { return m_bClearColor; }
+	void						EnableSwapBuffers(xbool bSwapBuffers);
+	xbool						IsSwapBuffers() { return m_bSwapBuffers; }
 
 private:
 	XVIEWPORTPARAMETER			m_ViewportParam;
@@ -46,5 +48,6 @@ private:
 	XMATRIX4					m_matInvViewScale;
 	XCOLOR						m_ClearColor;
 	xbool						m_bClearColor;
+	xbool						m_bSwapBuffers;
 };
 #endif // _XVIEWPORT_H_

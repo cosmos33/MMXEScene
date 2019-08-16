@@ -55,11 +55,11 @@ public:
 	xfloat32		GetLeftMarginPercent()const{ return m_fLeftMarginPercent; }
 	void			SetLeftMarginPercent(xfloat32 fMarginPercent){ m_fLeftMarginPercent = fMarginPercent; m_bLeftMarginPercent = xtrue; }
 	xfloat32		GetRightMarginPercent()const{ return m_fRightMarginPercent; }
-	void			SetRightMarginPercent(xfloat32 fMarginPercent){ m_fRightMarginPercent = fMarginPercent; m_bLeftMarginPercent = xtrue; }
+	void			SetRightMarginPercent(xfloat32 fMarginPercent){ m_fRightMarginPercent = fMarginPercent; m_bRightMarginPercent = xtrue; }
 	xfloat32		GetTopMarginPercent()const{ return m_fTopMarginPercent; }
-	void			SetTopMarginPercent(xfloat32 fMarginPercent){ m_fTopMargin = fMarginPercent; m_bLeftMarginPercent = xtrue; }
+	void			SetTopMarginPercent(xfloat32 fMarginPercent){ m_fTopMarginPercent = fMarginPercent; m_bTopMarginPercent = xtrue; }
 	xfloat32		GetBottomMarginPercent()const{ return m_fBottomMarginPercent; }
-	void			SetBottomMarginPercent(xfloat32 fMarginPercent){ m_fBottomMarginPercent = fMarginPercent; m_bLeftMarginPercent = xtrue; }	
+	void			SetBottomMarginPercent(xfloat32 fMarginPercent){ m_fBottomMarginPercent = fMarginPercent; m_bBottomMarginPercent = xtrue; }	
 	void			RefreshLayout();
 	void			RefreshHorizontalMargin();
 	void			RefreshVerticalMargin();

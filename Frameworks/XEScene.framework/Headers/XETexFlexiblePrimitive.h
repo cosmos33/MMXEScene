@@ -28,6 +28,12 @@ public:
 	xbool		                     UpdateFlexibleTexture2DWithData(const xuint8* pTexBuff, xint32 nImageWidth, xint32 nImageHeight, xbool bStretchImage = xfalse);
 	X_FORCEINLINE XTexFormat         GetFlexibleTextureFormat()const{ return m_eTexFormat; }
 	xint32                           GetChannelCount() const;
+	virtual IXTexture2D*             ProvideTexture2D() override= 0;
+	virtual XMATRIX4                 ProvideWVPMatrix() override = 0;
+	virtual xint32                   ProvideRenderPrimitiveNum() override = 0;//usually is the triangle num.
+	virtual IXVertexDesc*            ProvideVertexDesc() override = 0;
+	virtual IXVertexBuffer*          GetVB() override = 0;
+	virtual IXIndexBuffer*			 GetIB() override = 0;
 protected:
 	IXTexture2D*                     m_pFlexibleTexture2D;
 	XTexFormat						 m_eTexFormat;

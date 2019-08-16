@@ -338,6 +338,7 @@ X_EEB_END
 
 	X_EES_LINE void Deserialize(const tinyxml2_XEngine::XMLElement* pEleVaraintNode);
 	X_EES_LINE tinyxml2_XEngine::XMLElement* Serialize(tinyxml2_XEngine::XMLElement* pEleVaraintNode) const;
+	xbool IsTypeValid();
 
 protected:
 	PType	eType;

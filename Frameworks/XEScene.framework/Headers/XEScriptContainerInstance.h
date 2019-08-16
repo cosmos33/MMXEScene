@@ -12,6 +12,7 @@
 #ifndef _XE_SCRIPT_CONTAINER_INSTANCE_H_
 #define _XE_SCRIPT_CONTAINER_INSTANCE_H_
 #include "XEUserNode.h"
+#include "XGestureManager.h"
 
 class XEScriptContainer;
 class XEScriptContainerInstance 
@@ -42,6 +43,15 @@ public:
 	void                                          OnHolderTick(xfloat32 fIntervalMs);//in milliseconds.
 	void                                          OnHolderRender(XEViewport *pViewport);
 	void                                          OnHolderTrigger(xbool bTriiger);
+	//gesture events.
+	void                                          OnTouchClickEvent(GestureClickParam* pParam);
+	void                                          OnTouchMoveEvent(GestureMoveParam* pParam);
+	void                                          OnTouchMove2Event(GestureMove2Param* pParam);
+	void                                          OnTouchPinchEvent(GesturePinchParam* pParam);
+	void                                          OnNativeTouchesBeginEvent(xint32 number, intptr_t* ids, xfloat32* posX, xfloat32* posY);
+	void                                          OnNativeTouchesMoveEvent(xint32 number, intptr_t* ids, xfloat32* posX, xfloat32* posY);
+	void                                          OnNativeTouchesEndEvent(xint32 number, intptr_t* ids, xfloat32* posX, xfloat32* posY);
+	
 	void										  SetScriptAssetPath(const xchar* szScriptPath){ m_strFileAssetPath = szScriptPath; };
 	const XString&								  GetScriptAssetPath(){ return m_strFileAssetPath; }
 public:

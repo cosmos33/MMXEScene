@@ -55,7 +55,7 @@ protected:
 	template<typename T>	               
 	xbool                                  _Register();
 private:
-	IXEActorComponentFactory::ActorComponentFactoryArray m_aComponentFactories;
+	IXEActorComponentFactory::ActorComponentFactoryArray m_aFactories;
 };
 
 //implement with template

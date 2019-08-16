@@ -14,6 +14,7 @@
 #ifndef _XE_MAGIC_CORE_ENTRANCE_H
 #define _XE_MAGIC_CORE_ENTRANCE_H
 #include "XEVariant.h"
+#include "XEGraphBuilderSelector.h"
 #include <mutex>
 
 class XEDecorationEnvBridgeBase;
@@ -21,6 +22,8 @@ class XEDecorationEnvBridgeBase;
 namespace XEMagicCore
 {
 	xbool ModuleEntrance();//you'd better call this in your runnable module,otherwise the api may won't work.
+
+X_EEB_BEGIN
 	struct XEAutoLock
 	{
 		XEAutoLock(std::mutex& lock)
@@ -34,6 +37,7 @@ namespace XEMagicCore
 		}
 		std::mutex& lock_;
 	};
+X_EEB_END
 
 	struct XEFaceEntity
 	{
@@ -44,9 +48,11 @@ namespace XEMagicCore
 		XVECTOR4           vFaceRect;//you may probably use this to calculate the correct UVs.
 		XMATRIX4           matFace;//indicate that the matrix for the face, need to update every frame.
 		XArray<xfloat32>   arrFaceLandMarks;//indicate the landmark for the face(eg. 96,104, etc...)
+		XArray<xfloat32>   arrFaceLandMarks137;//137 for makeup
 		xbool              IsValid() const;
 		void               Clear();
 		void               AssignLandmarks(const xfloat32* pData, xint32 nSize);
+		void               AssignLandmarks_137(const xfloat32* pData, xint32 nSize);
 		void               UpdateData(const XEFaceEntity& cpy);
 		xint32             LandmarkSize() const;
 		xfloat32*          Landmark(xint32 nIndex);
@@ -61,11 +67,40 @@ namespace XEMagicCore
 	*/
 	struct XEObjectEntity
 	{
-		XEObjectEntity() :fScore(0.f), nObjectIndex(0){}
+		XEObjectEntity() :fScore(0.f), nObjectIndex(-1){}
 		void	          UpdateData(const XEObjectEntity& cpy);
+		void              Clear();
+		xbool             IsValid() const;
 		xfloat32          fScore;
 		xint32            nObjectIndex;
 		XString           strClassName;
+	};
+
+	/*
+	* body joint data
+	*/
+	struct XEBodyJoint
+	{
+		XEBodyJoint() :fScore(0), nPointX(0), nPointY(0){}
+		void	          UpdateData(const XEBodyJoint& cpy);
+		xfloat32		  fScore;
+		xint32			  nPointX;
+		xint32			  nPointY;
+	};
+
+	/*
+	* single persion's body joints
+	*/
+	struct XEBodyEntity
+	{
+		XEBodyEntity() :nBodyIndex(-1){}
+		void	               UpdateData(const XEBodyEntity& cpy);
+		xbool                  IsValid() const;
+		void                   Clear();
+		void                   Lock() const;
+		void                   Unlock() const;
+X_EES_LINE XArray<XEBodyJoint> a2DJoints;
+		xint32			       nBodyIndex;
 	};
 
 	struct XEDetectParam
@@ -83,6 +118,7 @@ X_EEB_BEGIN
 	typedef XArray<XEFaceEntity>   FaceEntityList;
 	typedef XArray<XEDetectParam>  DetectParams;
 	typedef XArray<XEObjectEntity> ObjectEntityList;
+	typedef XArray<XEBodyEntity>   BodyEntityList;
 	enum    eEntityDetectStatus{ EDS_UNKOWN, EDS_ADD_NEW, EDS_MODIFY_EXIST };
 	class   FxListener
 	{
@@ -102,6 +138,10 @@ X_EEB_BEGIN
 		virtual void           OnObjectEntitiesChangeDetected(XEDecorationEnvBridgeBase* pEnvBridge, const ObjectEntityList& entities){}
 		//segmentation, nSegModelType need to be defined, may exist multi types, eg. face-only, body, hand, hair-only, etc.
 		virtual void           OnSegmentationProcessed(XEDecorationEnvBridgeBase* pEnvBridge){}
+		//single body entity
+		virtual void		   OnBodyEntityDetected(XEDecorationEnvBridgeBase* pEnvBridge, eEntityDetectStatus status, const XEBodyEntity& entity){}
+		//multi body entities
+		virtual void		   OnBodyEntitiesChangeDetected(XEDecorationEnvBridgeBase* pEnvBridge, const BodyEntityList& entities){}
 	};
 
 	//cv-enable/disable
@@ -116,14 +156,23 @@ X_EEB_BEGIN
 	void                       OnObjectEntitiesChangeDetected(XEDecorationEnvBridgeBase* pEnvBridge, const ObjectEntityList& entities);
 	//segmentation
 	void                       OnSegmentationProcessed(XEDecorationEnvBridgeBase* pEnvBridge);
+	//single body entity
+	void                       OnBodyEntityDetected(XEDecorationEnvBridgeBase* pEnvBridge, eEntityDetectStatus status, const XEBodyEntity& entity);
+	//multi body entities
+	void					   OnBodyEntitiesChangeDetected(XEDecorationEnvBridgeBase* pEnvBridge, const BodyEntityList& entities);
 	std::mutex*                GetDataMutex(xint32 nFaceIndex);
 X_EEB_END				       
 						       
 	void                       RegisterEnvBridge(XEDecorationEnvBridgeBase*  pEnvBridge);
-	xint32                     AddFxListener(FxListener* pFaceEntityListener);
-	xbool                      RemoveFxListener(FxListener* pFaceEntityListener);
-	XEFaceEntity               GetFaceEntityByIndex(xint32 nFaceIndex);
+	X_EES_LINE xint32          AddFxListener(FxListener* pFaceEntityListener);
+	X_EES_LINE xbool           RemoveFxListener(FxListener* pFaceEntityListener);
+	XEFaceEntity*              GetFaceEntityByIndex(xint32 nFaceIndex);
+	XEObjectEntity*            GetObjectEntity(xint32 nObjectIndex);
 	XEDecorationEnvBridgeBase* GetDecorationEnvBridge();
+	XEGraphBuilderProcess&     GetGraphBuilderPostprocess();
+	XEGraphBuilderProcess&     GetGraphBuilderPreprocess();
+	xbool                      IsPreProcessEnabled();
+	xbool                      IsPostProcessEnabled();
 
 }
 

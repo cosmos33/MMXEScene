@@ -1,4 +1,4 @@
-#ifndef _XUICHATVIEW_H_
+﻿#ifndef _XUICHATVIEW_H_
 #define _XUICHATVIEW_H_
 
 #include "XUIListView.h"

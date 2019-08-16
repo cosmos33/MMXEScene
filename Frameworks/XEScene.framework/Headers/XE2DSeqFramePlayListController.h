@@ -17,6 +17,7 @@
 #include "XEMagicCoreUtility.h"
 #include "XEImgSequenceFrameComponent.h"
 
+class XEMagicSeqFrameInstance;
 class XE2DSequenceFrameAnimController;
 class XE2DSeqFramePlayListController : public XEAnimControllerBase
 {
@@ -32,31 +33,68 @@ public:
 	virtual void                        SetTime(xint32 nTime) override;//in micro seconds.
 public:
 	XEImgSequenceFrameComponent*		GetComponentOwner(){ return m_pComponentOwner; }
-	//添加一个序列帧动画
+	/*
+	* @Deprecated from 1.5 version
+	* 添加一个序列帧动画 
+	* 注意：此函数为了兼容sence低于1.5版本，大于等于1.5版本的函数，应该使用BuildSeqFrameAnimIns函数
+	*/
 	XE2DSequenceFrameAnimController*	Add2DSequenceFrameAnim(const XEMagicCoreUtility::XE2DSequenceFrameListInfo& aFrameListInfo);
-	void								RemoveAllSeqFrameAnim();
-	xbool								RemoveSeqFrameAnim(xint32 nIndex);
+	void								RemoveAllSeqFrameAnim();//remove all seq frame anim ins
+	xbool								RemoveSeqFrameAnim(xint32 nIndex);//remove seq frame anim ins
 	//获取某个序列帧动画的控制器
 	XE2DSequenceFrameAnimController*    Get2DSeqFrameAnimController(xint32 nIndex);
 	//获取当前播放的序列帧动画控制器
 	XE2DSequenceFrameAnimController*	GetCurrentSeqFrameAnimController();
-	XArray<XE2DSequenceFrameAnimController*>&	GetAllSequenceFrameAnimController(){ return m_aSeqFrameAnimController; }
 	void								SetCurrentController(const xint32& nIndex){ m_nCurIndex = nIndex; }
 	//设置是否仅仅更新当前序列帧动画
 	void								SetOnlyTickCurrentController(xbool bTickOnlyCurrentController);
 	//延迟时间
 	void								SetDelayTime(xfloat32 fDelayTime){ m_fDelayTime = fDelayTime; }
 	xfloat32							GetDelayTime(){ return m_fDelayTime; }
+public:
+	//1.5 version adding 
+	XArray<XE2DSequenceFrameAnimController*>	GetAllSequenceFrameAnimController();
+	const XArray<XEMagicSeqFrameInstance*>&		GetSeqFrameAnimInstanceList(){ return m_aSequenceFrameIns; }
+	XEMagicSeqFrameInstance*			BuildSeqFrameAnimIns(const XString& strAssetPath);
+	xbool								DestorySeqFrameAnimIns(XEMagicSeqFrameInstance* pIns);
+	XEMagicSeqFrameInstance*			GetSeqFrameIns(xint32 nIndex);
+public:
+ #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
+	struct AnimWrapper
+	{
+	public:
+		AnimWrapper() :nAddIndex(0){}
+		~AnimWrapper(){}
+	public:
+		xbool operator == (const AnimWrapper& aw) const;
+	public:
+		xint32         nAddIndex;
+		XString        strAnimAssetPath;///using path to generate the actual animation.
+	};
+
+	typedef XArray<AnimWrapper> AnimWrapperArray;
+	xint32                              AddAnimWrapper(const xchar* pAssetPath);
+	xbool                               RemoveAnimWrapper(const xchar* pAssetPath, xint32 nAddIndex = -1);//if nAddIndex set to -1, means try to remove all animwrapper in the same asset path.
+	xbool                               RemoveAnimWrapperForAddIndex(xint32 nAddIndex);
+	void                                RemoveAllAnimWrapper();
+	xint32                              GetMaxAddIndex();
+	X_FORCEINLINE const AnimWrapperArray& GetAnimWrapperList() const{ return m_aAnimWrapper; }
+	X_FORCEINLINE AnimWrapperArray&       GetAnimWrapperList(){ return m_aAnimWrapper; }
+ #endif
 private:
 	XE2DSequenceFrameAnimController*	Get2DSequenceFrameAnimController(const XEMagicCoreUtility::XE2DSequenceFrameListInfo& aFrameListInfo);
 	void								NextAnimation();
 	xbool								Delay(xfloat32 fInterval);
+	xbool								DestorySeqFrameAnimInsImpl(XEMagicSeqFrameInstance* pIns);
 private:
 	XEImgSequenceFrameComponent*			m_pComponentOwner;
-	XArray<XE2DSequenceFrameAnimController*>m_aSeqFrameAnimController;
 	xint32									m_nCurIndex;
 	xbool									m_bOnlyTickCurrentController;//是否仅仅更新当前控制器
 	xfloat32								m_fDelayTime;
+	XArray<XEMagicSeqFrameInstance*>		m_aSequenceFrameIns;
+#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
+	AnimWrapperArray                        m_aAnimWrapper;
+#endif
 };
 
 #endif

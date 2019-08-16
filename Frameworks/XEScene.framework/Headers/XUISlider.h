@@ -1,4 +1,4 @@
-#ifndef _XUISLIDER_H_
+﻿#ifndef _XUISLIDER_H_
 #define _XUISLIDER_H_
 
 #include "XUIWidget.h"

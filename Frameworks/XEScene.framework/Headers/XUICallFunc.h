@@ -1,4 +1,4 @@
-#ifndef _UI_CALLFUNC_H_
+﻿#ifndef _UI_CALLFUNC_H_
 #define _UI_CALLFUNC_H_
 
 #include "XUIActionInstant.h"
@@ -8,6 +8,9 @@ class XUINode;
 class XUICallFunc : public XUIActionInstant
 {
 public:
+
+	X_CLASS_DEF(XUICallFunc)
+
 	typedef std::function<void(XUINode*)> XUIActionFunction;
 
 	XUICallFunc* Clone() const override;

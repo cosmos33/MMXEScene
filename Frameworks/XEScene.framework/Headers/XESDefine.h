@@ -24,8 +24,8 @@
 #include <string>
 #include "XESLogger.h"
 
-#define XESCENE_VERSION         "3.3.5"
-#define XESCENE_ARCHIVE_TIME    "2019-05-13 20:00"
+#define XESCENE_VERSION "3.5.4"
+#define XESCENE_ARCHIVE_TIME "Wed Jul 17 21:19:17 2019"
 
 #if (defined X_PLATFORM_WIN_DESKTOP) || (defined  X_PLATFORM_MAC)
 #define X_PLATFORM_DESKTOP
@@ -86,6 +86,8 @@ XESCENE_NAMESPACE_BEGIN
 #define XESLog(format, args...) XESLogger::GetInstance()->PrintLog(format, ##args)
 #define XE_Log(format, args...) XESLogger::GetInstance()->PrintLog(format, ##args)
 #define XE_Err(format, args...) XESLogger::GetInstance()->PrintErr(format, ##args)
+#define XELog(format, args...) XESLogger::GetInstance()->PrintLog(format, ##args)
+#define XEErr(format, args...) XESLogger::GetInstance()->PrintErr(format, ##args)
 
 
 XESCENE_NAMESPACE_END
@@ -116,6 +118,7 @@ protected: type m_##name;\
 #define XESS_IGNORE         //忽略导出方法    不允许加在实现方法上
 #define XESS_MANUAL         //手动导出方法    不允许加在实现方法上
 #define XESS_RETURN_VALUE   //作为返回值处理的参数
+#define XESCRIPT_RETURN_VALUE
 #define XESS_HIDE_START     //大段忽略-开始   不允许嵌套
 #define XESS_HIDE_END       //大段忽略-结束   不允许嵌套
 

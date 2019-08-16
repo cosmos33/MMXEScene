@@ -46,7 +46,7 @@ public:
 	virtual					~IXEngineRoot(){}
 	virtual xbool			Init(const XEngineRootParameter* pParam) = 0;
 	virtual void			Release() = 0;
-	virtual void			FrameStep() =0;
+	virtual void			FrameStep() = 0;
 	virtual void			EachFrame() = 0;
 	virtual xint32			GetRTTID() = 0;
 	virtual void			ResizeRenderWindow(IXPlatformWindow* pWin) = 0;

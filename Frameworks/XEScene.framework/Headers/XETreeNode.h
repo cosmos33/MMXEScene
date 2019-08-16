@@ -11,7 +11,8 @@
 @HISTORY:
 
 ******************************************************************************/
-#pragma once
+#ifndef _XE_TREE_NODE_H_
+#define _XE_TREE_NODE_H_
 
 #include "XEIteratorWrapper.h"
 #include "XMemBase.h"
@@ -80,6 +81,7 @@ public:
 	xint32                             GetIndex(XETreeNode* pParent) const;
 	NodeIterator                       GetParentIterator() const;
 	NodeIterator                       GetChildIterator() const;
+	xbool                              SwapChildren(XETreeNode* pNode1, XETreeNode* pNode2);
 	XETreeNode*                        GetRoot();
 	const XETreeNode*                  GetRoot() const;
 	XETreeNode*                        GetFirstParent();
@@ -95,4 +97,4 @@ protected:
 	NodeList	                       m_parent;
 	NodeList	                       m_child;
 };
-
+#endif//_XE_TREE_NODE_H_

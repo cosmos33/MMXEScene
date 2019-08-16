@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 
 @File         XEInstanceManagerPhysicsSkeletal.h
 
@@ -12,34 +12,33 @@
 #ifndef XE_INSTANCE_MANAGER_PHYSICS_SKELTAL_H
 #define XE_INSTANCE_MANAGER_PHYSICS_SKELTAL_H
 
-#include "XESingleton.h"
 #include "XTypes.h"
 #include "XString.h"
 #include "XEUserNode.h"
 #include "XEInstanceManagerBase.h"
 #include "XEPhysicsSkeletalRoot.h"
 
-class XEPhysicsSkeletalRootInstance;
 class XESkeleton;
-//һ��XEPhysicsSkeletalRoot ��Ӧһ��phy��Դ
+//一个XEPhysicsSkeletalRoot 对应一个phy资源(运行时和编辑时需要共用同一个phy资源，因此不需要区分两种状态)
 class XEInstanceManagerPhysicsSkeletal
 	: public XEInstanceManagerBase
-	, public XESingleton<XEInstanceManagerPhysicsSkeletal>
 {
 public:
 	XEInstanceManagerPhysicsSkeletal();
 	~XEInstanceManagerPhysicsSkeletal(){}
-
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerPhysicsSkeletal)
 public:
 	virtual XEUserNode*						CreateTemplate(const xchar* szAssetFile, XEWorld* pOwnerWorld) override;
 	virtual XEUserNode*						GetTemplate(const xchar* szAssetFile, XEWorld* pOwnerWorld, xbool bReload = xfalse) override;
 	virtual void							Reload(const xchar* szAssetFile = NULL) override;
 	virtual void							SaveImpl() const override;
 	virtual xbool							IsNodesModifiedImpl()const override;
+	virtual xbool						    IsMatchFileType(const XString& szPath) override;
 public:
-	//��һ��szSkePath������������ش˺���
+	//多一个szSkePath参数，因此重载此函数
 	XEUserNodeInstance*						CreateInstance(const xchar* szPhyResPath, const xchar* szSkePath, XEWorld* pOwnerWorld);
-	//���¹Ǽ�ģ��
+	//更新骨架模板
 	void									UpdateSkeletalPhyNodeForSkeletonTemplate(XESkeleton* pSkeletonTemplate);
 private:
 	XEUserNode*								CreatePhyTemplate(const xchar* szPhyResPath, const xchar* szSkePath, XEWorld* pOwnerWorld);
@@ -50,9 +49,6 @@ private:
 	void									RemoveConstraintTemplateFromSkeletonManager(XETreeNode::NodeList& listConstraintInSkeleton, XEPhysicsConstraint* pConstraintTemplate);
 
 	void									UpdateBodyConstraintPair(XEPhysicsSkeletalBody* pSkeletalBodyTemp, XEPhysicsConstraint* pConstraint);
-public:
-	//for lua side
-	static XEInstanceManagerPhysicsSkeletal*GetInstanceManagerPhysicsSkeletal();
 };
 
 #endif // XE_INSTANCE_MANAGER_PHYSICS_SKELTAL_H

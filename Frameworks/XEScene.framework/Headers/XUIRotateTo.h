@@ -1,11 +1,13 @@
-#ifndef _UI_ROTATE_TO_H_
+﻿#ifndef _UI_ROTATE_TO_H_
 #define _UI_ROTATE_TO_H_
 
-#include "XUIActionInterval.h"
+#include "XUIRotateBy.h"
 
-class XUIRotateTo : public XUIActionInterval
+class XUIRotateTo : public XUIRotateBy
 {
 public:
+
+	X_CLASS_DEF(XUIRotateTo)
 
 	static XUIRotateTo* Create(const xfloat32& fDuration, const xfloat32& fRotate);
 
@@ -13,25 +15,20 @@ public:
 	virtual XUIRotateTo* Reverse() const override;
 
 	virtual ~XUIRotateTo() {};
+
+	// �ڲ�ʹ��
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
 protected:
 	XUIRotateTo();
 
 
 	virtual void StartWithTarget(XUINode* pTarget) override;
-	
-	virtual void ActionUpdate(const xfloat32& fProgress) override;
 
+	xbool InitWithDuration(const xfloat32& fDuration, const xfloat32& fEndRotation);
+	
 
 protected:
-
-	xbool InitWithDuration(const xfloat32& fDuration, const xfloat32& fRotate);
-
-protected:
-	
-	xfloat32 m_fStartRotate;
-	xfloat32 m_fEndRotate;
-	xfloat32 m_fDelta;
-
+	xfloat32 m_fEndRotation;
 
 };
 #endif

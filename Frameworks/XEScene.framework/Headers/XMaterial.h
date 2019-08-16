@@ -29,30 +29,30 @@
 #define CONST_VECTOR_VALUE_COUNT 16
 enum XMaterialDataType
 {
-    XMDT_UNKNOWN		= 0,
-    XMDT_FLOAT       	= XBit(0), 
-    XMDT_FLOAT2      	= XBit(1), 
-    XMDT_FLOAT3      	= XBit(2), 
-    XMDT_FLOAT4      	= XBit(3), 
-    XMDT_FLOAT_ALL   	= XMDT_FLOAT | XMDT_FLOAT2 | XMDT_FLOAT3 | XMDT_FLOAT4,
-    XMDT_MATRIX4     	= XBit(4), 
-    XMDT_2DTEX   		= XBit(10),
-	XMDT_NOTSUPPORT3DTEX = XBit(11),
-	XMDT_CUBETEX		= XBit(12),
-	XMDT_ALL_TEX = XMDT_2DTEX | XMDT_CUBETEX | XMDT_NOTSUPPORT3DTEX,
-    XMDT_FLOAT4GROUP	= XBit(13),
+    XMDT_UNKNOWN			= 0,
+    XMDT_FLOAT       		= XBit(0), 
+    XMDT_FLOAT2      		= XBit(1), 
+    XMDT_FLOAT3      		= XBit(2), 
+    XMDT_FLOAT4      		= XBit(3), 
+    XMDT_FLOAT_ALL   		= XMDT_FLOAT | XMDT_FLOAT2 | XMDT_FLOAT3 | XMDT_FLOAT4,
+    XMDT_MATRIX4     		= XBit(4), 
+    XMDT_2DTEX   			= XBit(10),
+	XMDT_NOTSUPPORT3DTEX	= XBit(11),
+	XMDT_CUBETEX			= XBit(12),
+	XMDT_ALL_TEX			= XMDT_2DTEX | XMDT_CUBETEX | XMDT_NOTSUPPORT3DTEX,
+    XMDT_FLOAT4GROUP		= XBit(13),
 };
 
 enum XMaterialBlendMode
 {
-    XMBM_EMPTY			= 0,
-    XMBM_OPAQUE			= XBit(1),
-    XMBM_ALPHATEST		= XBit(2),
-    XMBM_TRANSLUCENT	= XBit(3),
+    XMBM_EMPTY				= 0,
+    XMBM_OPAQUE				= XBit(1),
+    XMBM_ALPHATEST			= XBit(2),
+    XMBM_TRANSLUCENT		= XBit(3),
 	XMBM_TRANSLUCENT_ALPHA_ADDITIVE = XBit(4),
-	XMBM_DEPTHONLY		= XBit(5),
-	XMBM_AR_BACKGROUND	= XBit(6),
-	XMBM_TRANSLUCENT_OIT = XBit(7),
+	XMBM_DEPTHONLY			= XBit(5),
+	XMBM_AR_BACKGROUND		= XBit(6),
+	XMBM_TRANSLUCENT_OIT	= XBit(7),
 };
 
 enum XBlendFactorType
@@ -159,7 +159,6 @@ struct XMaterialParamTypeValue
 		VectorValues[3] = vec4Val.a;
 	}
 
-
 	X_FORCEINLINE XMaterialParamTypeValue(const XMATRIX4& vec16Val)
 	{
 		nMDType = XMDT_MATRIX4;
@@ -183,7 +182,6 @@ struct XMaterialParamTypeValue
 		memcpy(this, &xValue, sizeof(*this));
 		return *this;
 	}
-
 };
 
 struct XMaterialParamDescInfo : public XMemBase
@@ -279,16 +277,18 @@ class IXMaterialInstance;
 
 struct XMaterialDescInfo
 {
-    xint32						bWriteDepth;
-    xint32						bTestDepth;
-    xint32                      bTwoSideShow;
+    xbool						bWriteDepth;
+	xbool						bTestDepth;
+	xbool						bTwoSideShow;
+	xbool						bCastShadow;
+	XMaterialShadingType		eShadingMode;
     XMaterialBlendMode			nMaterialBlendMode;
     XBlendFactorType			nSrcBlendFactor;
     XBlendFactorType			nDestBlendFactor;
 	xfloat32					fRenderLayerSort;
-    XMaterialShaderDescInfo         strShaderDesc;
+    XMaterialShaderDescInfo     strShaderDesc;
     
-    bool operator ==(const XMaterialDescInfo& desc) const
+    bool operator==(const XMaterialDescInfo& desc) const
     {
         return bWriteDepth == desc.bWriteDepth
             && bTestDepth == desc.bTestDepth
@@ -303,14 +303,24 @@ struct XMaterialDescInfo
             && strShaderDesc.strPixelShaderFileName == desc.strShaderDesc.strPixelShaderFileName
             && strShaderDesc.strShaderMacro == desc.strShaderDesc.strShaderMacro;
     }
-    XMaterialDescInfo();
+
+	XMaterialDescInfo()
+		: bWriteDepth(xtrue)
+		, bTestDepth(xtrue)
+		, bTwoSideShow(xfalse)
+		, bCastShadow(xtrue)
+		, eShadingMode(X_MSM_DEFAULT_LIT)
+		, nMaterialBlendMode(XMBM_OPAQUE)
+		, nSrcBlendFactor(XBFT_ONE)
+		, nDestBlendFactor(XBFT_ZERO)
+		, fRenderLayerSort(XPLM_ERR) {}
 };
+
 class IXMaterial : public IXResource
 {
-protected:
+public:
     virtual								~IXMaterial() {}
 
-public:
     virtual void						Release() = 0;
 
     virtual XMaterialBlendMode			GetMaterialBlendMode() const = 0;
@@ -362,39 +372,55 @@ public:
 
 class IXMaterialManager : public XMemBase
 {
-protected:
-    virtual                     ~IXMaterialManager() {};
 public:
-    virtual xbool			    Init() = 0;
-    virtual void			    Release() = 0;
-	virtual IXMaterial*			GetMaterial(const xchar* szMaterialFile, const xchar* szReplaceShaderMacro = NULL) = 0;
+	virtual							~IXMaterialManager() {}
 
+    virtual xbool					Init() = 0;
+    virtual void					Release() = 0;
+
+	// 保存材质文件，如果szFileName为空则覆盖原文件
+	virtual void					SaveMaterial(IXMaterial* pMaterial,
+												 const xchar* szFileName = NULL,
+												 xbool bBinary = xtrue) = 0;
 	// 获取一个内存中或硬盘上的材质
-	virtual IXMaterialInstance* GetMaterialInstance(const char* szMaterialFileName, const xchar* szReplaceShaderMacro = NULL, xbool bReLoad = xfalse) = 0;
-	// 创建一个内存中的材质实例
-	// 材质名称和宏连接起来的字符串不能相同
-	virtual IXMaterialInstance*	CreateMaterialInstance(const xchar* szNewMaterialInsFile, const xchar* szMaterialFile, const xchar* szReplaceShaderMacro = NULL) = 0;
-	// 临时添加，禁止调用
-	virtual void				SaveMaterialBinary(const xchar* szMatFile, IXMaterial* pMaterial) = 0;
+	virtual IXMaterial*				GetMaterial(const xchar* szMaterialFileName, 
+												const xchar* szReplaceShaderMacro = NULL,
+												xbool bBinary = xtrue,
+												xbool bReload = xfalse) = 0;
+	
 
-	/* 是否重新加载材质实例 */
-	virtual void				ReloadMaterialInstance(const xchar* szMaterialInsFile) = 0;
-	/* 判断材质实例是否已加载 */
-	virtual xbool				IsMaterialInstanceLoaded(const xchar* szMtlInsFile) = 0;
-
+	// 保存材质实例文件
 	struct XMaterialInsParameterForSave
 	{
-		XMaterialDataType		nMatInsDataType;
-		XString					strMaterialInsParameterName;
-		XString					strTexFile;
-		xbool					bRelativeToCurrentDirection;
-		XVECTOR4				vecValues;
+		XMaterialDataType			nMatInsDataType;
+		XString						strMaterialInsParameterName;
+		XString						strTexFile;
+		xbool						bRelativeToCurrentDirection;
+		XVECTOR4					vecValues;
 	};
-	virtual void				SaveMaterialInstance(const xchar* szSaveMatInsFile, const xchar* szMatFile, const xchar* szShaderMacro, const XArray<XMaterialInsParameterForSave>& aParams) = 0;
+	virtual void					SaveMaterialInstance(const xchar* szSaveMatInsFile,
+														 const xchar* szMatFile,
+														 const xchar* szShaderMacro,
+														 const XArray<XMaterialInsParameterForSave>& aParams,
+														 xbool bBinary = xtrue) = 0;
+	// 获取一个内存中或硬盘上的材质实例
+	virtual IXMaterialInstance*		GetMaterialInstance(const char* szMaterialFileName,
+														const xchar* szReplaceShaderMacro = NULL,
+														xbool bReLoad = xfalse,
+														xbool bBinary = xtrue) = 0;	
+	// 创建一个内存中的材质实例，材质实例名称和宏连接起来的字符串作为key
+	virtual IXMaterialInstance*		CreateMaterialInstance(const xchar* szNewMaterialInsFile,
+														   const xchar* szMaterialFile,
+														   const xchar* szReplaceShaderMacro = NULL) = 0;
+	// 重新加载材质实例
+	virtual void					ReloadMaterialInstance(const xchar* szMaterialInsFile) = 0;
+	// 判断材质实例是否已加载
+	virtual xbool					IsMaterialInstanceLoaded(const xchar* szMtlInsFile) = 0;	
 };
 
-
 extern IXMaterialManager* g_pXMaterialMgr;
+extern IXMaterialManager* g_pXUserMaterialMgr;
+
 
 inline xuint32 GetLayerMask(IXMaterialInstance* pMaterialIns)
 {

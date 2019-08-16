@@ -19,8 +19,6 @@
 #include "XEMagicCoreUtility.h"
 #include "XTexture.h"
 
-#define USE_FLEXIBILITY 0
-
 class XViewport;
 class XE2DSeqFramePlayListController;
 class XE2DSequenceFrameAnimController;
@@ -50,21 +48,6 @@ public:
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual void                            GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy, XEPropertyObjectSet& po) override;
 #endif
-
-#if USE_FLEXIBILITY
-		//序列帧拉伸方式：横向拉伸、纵向拉伸
-	enum EFlexibilityType
-	{
-		EFT_NONE = 1 << 0,
-		EFT_HORIZONTAL = 1 << 1,
-		EFT_VERTICAL = 1 << 2,
-		EFT_NUM = 1 << 3
-	};
-	void									SetFlexibilityType(EFlexibilityType eType){ m_eFlexibilityType = eType; }
-	EFlexibilityType						GetFlexibilityType() const{ return m_eFlexibilityType; }
-	xbool									IsHorizontalFlexiblity() const;
-	xbool									IsVerticalFlexiblity() const;
-#else
 	//缩放模式
 	enum EScaleMode
 	{
@@ -78,7 +61,8 @@ public:
 	EScaleMode								GetScaleMode(){ return m_eScaleMode; }
 	const XArray<XString>&					GetAllScaleModeName();
 	EScaleMode								GetScaleModeByName(const XString& strScaleModeName);
-#endif
+public:
+	XVECTOR2								GetRefDeviceWidthHeight(){ return m_vRefDeviceWidthHeight; }
 public:
 	virtual  void							SetRotateScreen(const xfloat32& fRotate);
 	virtual  xfloat32						GetRotateScreen() const;//角度
@@ -90,13 +74,11 @@ public:
 	virtual  XVECTOR2                       GetDesignSize() const{return m_vDesignSize; }
 	virtual void                            UpdateScreenShape();
 	virtual void                            UpdateDeviceWidthHeight(xfloat32 fWidth, xfloat32 fHeight);
-
+public:
+	xbool									IsSupportSequenceFrameAnimFile();//whether supports 2d sequence frame anim file
 protected:
 	void									AutoPlay();//根据设置自动播放
-#if USE_FLEXIBILITY
-#else
 	virtual void							UpdateSizeWithScaleMode(const XVECTOR2& vRefDeviceSize,const XVECTOR2& vNewDeviceSize, XVECTOR2& vPixelCenter, XVECTOR2& vDesignSize);
-#endif
 protected:
 	virtual IXTexture2D*					ProvideTexture2D() override;
 	virtual IXVertexDesc*                   ProvideVertexDesc() override;
@@ -107,25 +89,24 @@ private:
 	xbool									LoadAsset(const xchar* pTexPath);
 	void									Serialize2DSequenceFrameAnimList(XMLElement* pEleParent);
 	void									Deserialize2DSequenceFrameAnimList(const XMLElement* pEleParent);
+	void									Serialize2DSeqFrameAnimAssets(XMLElement* pEleParent);
+	void									Deserialize2DSeqFrameAnimAssets(const XMLElement* pEleParent);
 	void									UpdateTexture();
 	
 protected:
-	void									UpdateWorldShapeVers(xint32 nPixelCenterX, xint32 nPixelCenterY, xint32 nPixelWidth, xint32 nPixelHeight);//更新世界坐标系下的矩形四个顶点坐标，根据当前一个中心点屏幕坐标和指定屏幕宽高，主动调用 
+	virtual void							UpdateWorldShapeVers(xint32 nPixelCenterX, xint32 nPixelCenterY, xint32 nPixelWidth, xint32 nPixelHeight);//更新世界坐标系下的矩形四个顶点坐标，根据当前一个中心点屏幕坐标和指定屏幕宽高，主动调用 
 	virtual XMATRIX4						GetShapeTransform() const ;
+	XEViewport*								GetXEViewport();
 public:
 	static const XString					COMPONENT_TYPENAME;
+	static XArray<XString>					TEMPLATE_SEQ_FRAME_ANIM_ASSET_LIST;
 protected:
 	XVECTOR3*								m_pVertLocation;
 	XE2DSeqFramePlayListController*			m_p2DSequenceFrameAnimPlayList;
 	XVECTOR2                                m_vDesignSize;
 	XVECTOR2                                m_vPixelCenter;
 	XVECTOR2                                m_vRefDeviceWidthHeight;//参照设备宽高
-
-#if USE_FLEXIBILITY
-	EFlexibilityType						m_eFlexibilityType;//影响尺寸和中心点
-#else
-	EScaleMode								m_eScaleMode;//缩放模式
-#endif	
+	EScaleMode								m_eScaleMode;//缩放模式	
 private:
 	IXTexture2D*							m_pCurRenderTex;
 	XVECTOR2*								m_pTexcoord;

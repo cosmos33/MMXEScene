@@ -2,6 +2,7 @@
 #define _FXINSTANCE_H_
 
 #include "XBaseCoordSpace.h"
+#include "XCustomGeometry.h"
 #include "XRefCount.h"
 #include "FxGlobal.h"
 
@@ -46,6 +47,13 @@ public:
 	// render			 
 	virtual void		 Render(XBaseCamera* pCamera, IXWorld* pScene) = 0;
 
+	//Render mode control
+	virtual void		 Set2DMode(xbool b2DRenderMode) = 0;
+	virtual void		 Set2DModeLayerMask(FxRenderLayerOrder pLayer) = 0;
+
+	// AABB
+	virtual const XCusAABB&	 GetAABB() const = 0;
+	
 	// 					 
 	virtual IFxTemplate* GetFxTemplate() = 0;
 	virtual void		 OnPostEditProperty() = 0;

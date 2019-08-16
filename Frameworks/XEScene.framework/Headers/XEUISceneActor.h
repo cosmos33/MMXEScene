@@ -17,6 +17,7 @@
 #include "XEModelComponent.h"
 
 class XUIScene;
+class XEUIAnimationInstance;
 class XEUISceneActor
 	:public XEActor
 {
@@ -34,13 +35,18 @@ public:
 	static const									 XString ACTOR_TYPENAME;
 
 	virtual xbool                                    LoadAsset(const xchar* pPath);
+	xbool                                            LoadAnimationAsset(const xchar* pPath);
+	void                                             Unload();
 	virtual void                                     Empty();
 	virtual void									 Deserialize(const XMLElement* pEleActor) override;
 	virtual XMLElement*								 Serialize(XMLElement* pEleParent) override;
 	XUIScene*										 GetScene()const { return m_pScene; }
-
+	XEUIAnimationInstance*							 GetUIAnimationIns(){ return m_pUIAnimationIns; }
+	X_FORCEINLINE const XString&		             GetAssetPath() const { return m_szAssetPath; }
 public:
-
+protected:
+	XEUIAnimationInstance*                           m_pUIAnimationIns;
+	XString                                          m_szAssetPath;
 private:
 	XUIScene*										 m_pScene;
 	XString											 m_strScenePath;

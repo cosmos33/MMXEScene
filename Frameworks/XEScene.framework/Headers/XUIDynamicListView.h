@@ -1,4 +1,4 @@
-#ifndef _UIDYNAMICLISTVIEW_H_
+﻿#ifndef _UIDYNAMICLISTVIEW_H_
 #define _UIDYNAMICLISTVIEW_H_
 
 

@@ -24,4 +24,5 @@
 #include "XUIImageArray.h"
 #include "XUIGuidePage.h"
 #include "XUIDynamicListView.h"
+#include "XUIFXWrapper.h"
 #endif

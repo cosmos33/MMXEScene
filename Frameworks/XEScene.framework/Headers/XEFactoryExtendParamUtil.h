@@ -88,7 +88,7 @@ protected:
 	template<typename T>
 	xbool                      _Register();
 private:
-	IXEExtendParamFactory::ExtendParamFactoryArray m_aExtendParamFactories;
+	IXEExtendParamFactory::ExtendParamFactoryArray m_aFactories;
 };
 
 

@@ -59,7 +59,7 @@
 #ifdef      MAX_PATH
 #undef      MAX_PATH
 #endif
-#define     MAX_PATH        260
+#define     MAX_PATH        1024
 
 
 #define XBit( num )		( 1 << ( num ) )

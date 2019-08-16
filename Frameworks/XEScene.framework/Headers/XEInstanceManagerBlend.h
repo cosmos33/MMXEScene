@@ -14,11 +14,6 @@
 #ifndef _XE_BLEND_MANAGER_H
 #define _XE_BLEND_MANAGER_H
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
-
-class XEAnimBlend;
-class XEAnimBlendInstance;
-class XEInstanceManagerBlendRuntime;
 
 class XEInstanceManagerBlend
 	: public XEInstanceManagerBase
@@ -33,25 +28,25 @@ public:
 	virtual void                         SaveImpl() const override;
 	virtual void                         SaveAsImpl(const xchar* pPath) const override;
 	virtual xbool                        IsNodesModifiedImpl()const override;
-public:
-	//for lua side
-	static XEInstanceManagerBlendRuntime*GetInstanceManagerBlend();
+	virtual xbool						 IsMatchFileType(const XString& szPath) override;
 };
 
 
 //runtime only.
 class XEInstanceManagerBlendRuntime
 	: public XEInstanceManagerBlend
-	, public XESingleton<XEInstanceManagerBlendRuntime>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerBlendRuntime)
 };
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //editing only.
 class XEInstanceManagerBlendEditing
 	: public XEInstanceManagerBlend
-	, public XESingleton<XEInstanceManagerBlendEditing>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerBlendEditing)
 };
 #endif
 

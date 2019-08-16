@@ -1,4 +1,4 @@
-#ifndef _UI_MOVE_TO_H_
+ï»¿#ifndef _UI_MOVE_TO_H_
 #define _UI_MOVE_TO_H_
 
 #include "XUIMoveBy.h"
@@ -7,12 +7,17 @@ class XUIMoveTo : public XUIMoveBy
 {
 public:
 
+	X_CLASS_DEF(XUIMoveTo)
+
 	static XUIMoveTo* Create(const xfloat32& fDuration, const XVECTOR2& v2EndPosition);
 
 	virtual XUIMoveTo* Clone() const override;
 	virtual XUIMoveTo* Reverse() const override;
 
 	virtual ~XUIMoveTo() {};
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
 protected:
 	XUIMoveTo();
 

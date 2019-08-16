@@ -14,9 +14,6 @@
 #ifndef _XE_MOUNTER_MANAGER_H
 #define _XE_MOUNTER_MANAGER_H
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
-
-class XEInstanceManagerMounterRuntime;
 class XEInstanceManagerMounter
 	: public XEInstanceManagerBase
 {
@@ -30,10 +27,9 @@ public:
 	virtual void                            SaveImpl() const override;
 	virtual void                            SaveAsImpl(const xchar* pPath) const override;
 	virtual xbool                           IsNodesModifiedImpl()const override;
+	virtual xbool							IsMatchFileType(const XString& szPath) override;
 public:							           
 	void                                    SetMounterScopeModelAssetPath(const xchar* szAssetPath);//need to specifiy the scope model asset path.
-	//for lua side
-	static XEInstanceManagerMounterRuntime* GetInstanceManagerMounter();
 protected:
 	XString                                 m_strScopeMounterModelAssetPath;
 };
@@ -42,16 +38,18 @@ protected:
 //runtime only.
 class XEInstanceManagerMounterRuntime
 	: public XEInstanceManagerMounter
-	, public XESingleton<XEInstanceManagerMounterRuntime>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerMounterRuntime)
 };
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //editing only.
 class XEInstanceManagerMounterEditing
 	: public XEInstanceManagerMounter
-	, public XESingleton<XEInstanceManagerMounterEditing>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerMounterEditing)
 };
 #endif
 

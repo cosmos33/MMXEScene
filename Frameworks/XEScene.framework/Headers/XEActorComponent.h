@@ -80,7 +80,6 @@ public:
 	template<typename castType>
 	const castType*              CastActorComponent() const;
 	virtual void                 SetHidden(xbool bHide);
-    XEViewport*                  GetXEViewport() const;
 protected:
 	//translate to world-matrix impl
 	//Override this method for custom behavior.
@@ -92,7 +91,7 @@ protected:
 	virtual	void				 SerializeTransform(XMLElement* pEleComponent);
 	virtual void                 DeserializeTransform(const XMLElement* pEleComponent);
 public:
-	xbool                        MergeToWorldTransform(const XMATRIX4& mat);//may call by the thread.
+	virtual xbool                MergeToWorldTransform(const XMATRIX4& mat);//may call by the thread.
 	xbool                        ApplyWorldTransform(const XMATRIX4& mat);
 	XMATRIX4                     GetRawWorldTransform() const;
 public:
@@ -149,7 +148,7 @@ public:
 	X_FORCEINLINE xbool          IsDeleted()  const      { return m_bDeleted; }
 	//X_FORCEINLINE xbool          IsModified()  const      { return m_bModified; }
 
-	xbool						 IsModified()  const; //travel all children.--ylj
+	virtual xbool				 IsModified()  const; //travel all children.--ylj
 	X_FORCEINLINE xbool          IsHidden()    const      { return m_bHidden; }
 	X_FORCEINLINE void           SetModified(xbool bModified){ m_bModified = bModified; }	
 public:
@@ -189,7 +188,7 @@ protected:
 		ELAT_BLEND_ASSET,//blend
 		ELAT_SEQ_ASSET,
 		ELAT_ARADS_ASSET,
-		ELAT_AUDIO_ASSET
+		ELAT_AUDIO_ASSET,
 	};
 	xbool						 LoadAssetError(const xchar* szFilePath, ELostAssetType eType);
 	xbool						 IsExistAssetPath(const xchar* szFilePath);

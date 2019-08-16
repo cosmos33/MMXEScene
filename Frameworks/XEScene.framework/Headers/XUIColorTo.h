@@ -1,4 +1,4 @@
-#ifndef _UI_COLOR_TO_H_
+ï»¿#ifndef _UI_COLOR_TO_H_
 #define _UI_COLOR_TO_H_
 
 #include "XUIActionInterval.h"
@@ -8,12 +8,18 @@ class XUIColorTo : public XUIActionInterval
 {
 public:
 
+	X_CLASS_DEF(XUIColorTo)
+
 	static XUIColorTo* Create(const xfloat32& fDuration, const XCOLORBASE& cEndColor);
 
 	virtual XUIColorTo* Clone() const override;
 	virtual XUIColorTo* Reverse() const override;
 
 	virtual ~XUIColorTo() {};
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
+
 protected:
 	XUIColorTo();
 
@@ -29,6 +35,7 @@ protected:
 	
 	XCOLORBASE m_cStartColor;
 	XCOLORBASE m_cEndColor;
+	XCOLORBASE m_cPreviousColor;
 	XCOLORBASE m_cDelta;
 
 

@@ -20,5 +20,9 @@
 #include "XEImg2DFaceKeyPointSequenceFrameActor.h"
 #include "XEImgSegmentationActor.h"
 #include "XEMagicCoreActorBase.h"
+#include "XEFaceKeyPointSocketActor.h"
+#include "XEBodyJointSocketActor.h"
+#include "XEImg2DPointSequenceFrameActor.h"
+#include "XEImgFilterChainActor.h"
 
 #endif

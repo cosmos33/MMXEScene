@@ -32,7 +32,7 @@ public:
 	virtual void			SetAllBodiesSimulatePhysics(xbool bSimulate) = 0;
 	virtual void			SetAllBodiesBelowSimulatePhysics(const xchar* szBoneName, xbool bSimulate, xbool bIncludeSelf = xtrue) = 0;
 
-	virtual void			OnBindModelInstanceTransformChanged() = 0;
+	virtual void			OnBindModelInstanceTransformChanged(xfloat32 fScaleEpsilon = X_EPSILON_FLT32) = 0;
 	virtual void			DebugDraw(const XCOLORBASE& Color = XCOLORBASE(1.0f, 0.0f, 0.0f, 1.0f)) const = 0;
 
 	virtual IXSkeletalBody*	GetBody(const XString& strBoneName) const = 0;

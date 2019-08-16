@@ -11,13 +11,14 @@
 @HISTORY:
 
 ******************************************************************************/
-
 #ifndef _XE_UTILITY_H_
 #define _XE_UTILITY_H_
+
 #include "XEHitResult.h"
 #include "XCustomGeometry.h"
 #include "XArray.h"
 #include "XHashTable.h"
+#include "XLinkList.h"
 #include "XMaterial.h"
 #include "XModel.h"
 #include "XModelInstance.h"
@@ -27,6 +28,7 @@
 #include "IXPhysicsRes.h"
 #include "XClass.h"
 #include "XEViewport.h"
+#include "XEngineRoot.h"
 
 class XEWorld;
 class XEAnimatableModelComponent;
@@ -61,12 +63,12 @@ namespace XEUtility
 	xbool                                 IsShaderParamRelatedToMacro(const XString& strParamName, const XString& strMacroName);
 	xbool								  IsShaderParamEliminateByMacro(const XString& strParamName, const XString& strMacroName);
 	void                                  MakeNameLegalForLua(std::string& szName);
+
 	XEAnimCurveFlyController*             GetCameraFlyAnimCurveController();
 	XEAnimCurveFlyController*             GetActorFlyAnimCurveController();
 	XEAnimCurveFlyController*             GetActorComponentFlyAnimCurveController();    
     template<typename T>
     void                                  GetRealPositionOfWindow(XEViewport* viewport, T& pos) { pos = pos * viewport->GetWindowScale(); }
-    
     
     //canvas & cast ray, etc.
     //may consider the different platforms also.
@@ -180,10 +182,13 @@ X_EEB_END
 	EConstraintMotion						GetConstraintMotionTypeByName(const XString& str);
 	const XArray<XString>&					GetConstraintMotionNameList();
 
-	IXSkeletalPhysicsRes::EPhysResFitVertWeight		GetPhysResFitVertWeightTypeByName(const XString& str);
+	IXSkeletalPhysicsRes::EPhysResFitVertWeight GetPhysResFitVertWeightTypeByName(const XString& str);
 	const XArray<XString>&					GetAllPhysResFitVertWeightType();
 	const XArray<XString>&					GetAllShapeMaterialParams();
 
+	//XEWorld* pWorld helps to snap the correct asset path.
+	void							        DeserializeMaterialIns(IXMaterialInstance* pMaterialIns, const tinyxml2_XEngine::XMLElement* pEleNode, XEWorld* pWorld = NULL);
+	tinyxml2_XEngine::XMLElement*		    SerializeMaterialIns(IXMaterialInstance* pMaterialIns, tinyxml2_XEngine::XMLElement* pEleNode);
 
 
 	class XEBinaryString
@@ -406,7 +411,30 @@ X_EEB_BEGIN
 	extern const xchar*              c_szMacro_DEFAULTENABLE;
 X_EEB_END	
 
-	
+	template<typename T>
+	static void CleanLinkListOptionally(XLinkList<T>& node, xbool bDeleteNode = xtrue, xbool bDeleteOwner = xtrue)
+	{
+		XLinkList<T>* pNode = node.ListHead();
+		XArray<XLinkList<T>*> arrNodes;
+		while (pNode)
+		{
+			if (bDeleteOwner)
+			{
+				if (T* pOwner = pNode->Owner())
+					X_SAFEDELETE(pOwner);
+			}
+			arrNodes.Add(pNode);
+			pNode = pNode->NextNode();
+		}
+		if (bDeleteNode)
+		{
+			for (xint32 i = 0; i < arrNodes.Num(); ++i)
+			{
+				X_SAFEDELETE(arrNodes[i]);
+			}
+		}	
+	}
+
 	//load skeletal phy res from file
 	IXPhysicsRes*								LoadPhysicsResFromPhy(const xchar* szPhyPath, xbool bReload = xfalse);
 	IXPhysicsRes*								CreatePhysicsRes(PhysicsResourceType eType, const xchar* szName, const xchar* szMdlPath, const IXSkeletalPhysicsRes::XPhysResCreateParams& Params); 
@@ -416,7 +444,7 @@ X_EEB_END
 	// version function
 	// conver version string to int, Condition: Maximum four segments of the number, the maximum number of each is 99.
 	xint32										ConverVersionStringToValue(const XString &strVersion);
-
+	const XArray<XString>&					    GetXECoreActorTypes();
 };
 
 typedef XEUtility::XEVectorM<xint32, 2> XEVector2i;
@@ -424,4 +452,13 @@ typedef XEUtility::XEVectorM<xint32, 4> XEVector4i;
 typedef XEUtility::XEVector<std::string, 2> XEVector2s;
 
 #define ASSERT_ERROR(V,I) ASSERT(0&&V&&I)
+
+#if X_PLATFORM_WIN_DESKTOP
+#define CHECKF(V, IS_POP_TIP, TIPS_FORMAT, ...) {if(!(V)){ g_pXEngineRoot->WriteLogAndOutputDebug(TIPS_FORMAT, __VA_ARGS__); if(IS_POP_TIP){ASSERT_ERROR(V,TIPS_FORMAT);}}}
+#define LOGINFO(INFO_FORMAT, ...) {g_pXEngineRoot->WriteLogAndOutputDebug(INFO_FORMAT, __VA_ARGS__);}
+#else
+#define CHECKF(V, IS_POP_TIP, TIPS_FORMAT, ARGS...) {if(!(V)){ g_pXEngineRoot->WriteLogAndOutputDebug(TIPS_FORMAT, ##ARGS); if(IS_POP_TIP){ASSERT_ERROR(V,TIPS_FORMAT);}}}
+#define LOGINFO(INFO_FORMAT, ARGS...) {g_pXEngineRoot->WriteLogAndOutputDebug(INFO_FORMAT, ##ARGS);}
+#endif
+
 #endif

@@ -1,4 +1,4 @@
-#ifndef _UILAYOUTPARAMETER_H_
+﻿#ifndef _UILAYOUTPARAMETER_H_
 #define _UILAYOUTPARAMETER_H_
 
 #include "XMemBase.h"

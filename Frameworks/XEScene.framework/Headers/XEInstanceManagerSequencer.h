@@ -14,9 +14,6 @@
 #ifndef _XE_SEQUENCER_MANAGER_H
 #define _XE_SEQUENCER_MANAGER_H
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
-
-class XEInstanceManagerSequencerRuntime;
 class XEInstanceManagerSequencer
 	: public XEInstanceManagerBase
 {
@@ -30,25 +27,24 @@ public:
 	virtual void                              SaveImpl() const override;
 	virtual void                              SaveAsImpl(const xchar* pPath) const override;
 	virtual xbool                             IsNodesModifiedImpl()const override;
-public:
-	//for lua side
-	static XEInstanceManagerSequencerRuntime* GetInstanceManagerSequencer();
+	virtual xbool							  IsMatchFileType(const XString& szPath) override;
 };
-
 
 //runtime only.
 class XEInstanceManagerSequencerRuntime
 	: public XEInstanceManagerSequencer
-	, public XESingleton<XEInstanceManagerSequencerRuntime>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerSequencerRuntime)
 };
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //editing only.
 class XEInstanceManagerSequencerEditing
 	: public XEInstanceManagerSequencer
-	, public XESingleton<XEInstanceManagerSequencerEditing>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerSequencerEditing)
 };
 #endif
 

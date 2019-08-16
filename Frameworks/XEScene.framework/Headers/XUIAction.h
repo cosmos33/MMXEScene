@@ -1,4 +1,4 @@
-#ifndef _UIACTION_H_
+ï»¿#ifndef _UIACTION_H_
 #define _UIACTION_H_
 
 #include "XMemBase.h"
@@ -6,30 +6,40 @@
 
 #include "XUIActionManager.h"
 
-class XUIAction : public XMemBase//, public XRefCount
+typedef XUIAction* XUIActionPtr;
+
+class XUIAction : public XMemBase, public XClass
 {
 public:
 	static const int INVALID_TAG;
 public:
+
+	X_CLASS_DEF(XUIAction)
 
 	virtual XUIAction* Clone() const { return NULL; };
 	virtual XUIAction* Reverse() const{ return NULL; };
 	virtual xbool IsDone() const = 0;
 
 	virtual ~XUIAction() {};
-protected:
+
+
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive);
+
+
+protected: 
 	XUIAction();
 
 
 	friend class IXUIActionManager;
-	//ÒÔÏÂ·½·¨Ö»ÓĞIXUIActionManagerÒÔ¼°ÆäÅÉÉúÀà¿ÉÒÔ·ÃÎÊµ½
+	//ä»¥ä¸‹æ–¹æ³•åªæœ‰IXUIActionManagerä»¥åŠå…¶æ´¾ç”Ÿç±»å¯ä»¥è®¿é—®åˆ°
 
 	virtual void StartWithTarget(XUINode* pTarget);
 	virtual void Stop();
 	virtual void Step(const xfloat32& dt) = 0;
-	
 
-	virtual void ActionUpdate(const xfloat32& fProgress);;
+	virtual void ActionUpdate(const xfloat32& fProgress);
 
 
 
@@ -46,9 +56,12 @@ protected:
 	void ActionStep(XUIAction* pAction, const xfloat32& dt);
 	xbool ActionIsDone(XUIAction* pAction) const;
 	void ActionActionUpdate(XUIAction* pAction, const xfloat32& fProgress);
+	XUINode* ActionGetTarget(XUIAction* pAction);
+	void ActionSafeDelete(XUIAction* pAction);
 
 protected:
 	XUINode* m_pTarget;
 	xint32 m_nTag;
+	xbool m_bDone;
 };
 #endif

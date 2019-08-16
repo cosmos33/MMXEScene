@@ -21,6 +21,7 @@ class XSkelAnimController;
 class XEPrimitiveComponent;
 class XAnimMultiLayer;
 
+/*  May be released in an animation loop  */
 class XEAnimController : public XEAnimControllerBase
 {
 public:

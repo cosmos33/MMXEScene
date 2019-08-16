@@ -1,4 +1,4 @@
-#ifndef _XUIPROGRESSBAR_H_
+﻿#ifndef _XUIPROGRESSBAR_H_
 #define _XUIPROGRESSBAR_H_
 
 #include "XUIWidget.h"

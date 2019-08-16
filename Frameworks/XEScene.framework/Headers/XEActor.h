@@ -38,7 +38,7 @@ public:
 	typedef XArray<IXEExtendParam*> XEActorExtendParamList;
 	enum EDrawDebugType
 	{
-		EDD_DRAW_NONE = 0, 
+		EDD_DRAW_NONE = 0,
 		EDD_DRAW_AUXILIARY = 1 << 0,///such as camera frustum..
 		EDD_DUMMY_SHAPE = 1 << 1,///draw dummy
 		EDD_BOUNDINGBOX = 1 << 2/// draw bounding box
@@ -87,7 +87,6 @@ public:
 public:
 	XEActor();
 	virtual ~XEActor();
-
 protected:
 	class DelayLoadBindUserNodeDestroyer :public XEUtility::XETemporalObject
 	{
@@ -107,7 +106,6 @@ public:
 	virtual xbool                LoadScript(const xchar* pScriptPath);//full relative path
 	virtual	const XString&	     GetTypeName() const{ return ACTOR_TYPENAME; }
 	virtual void			     Serialize(XFileBase *pFile) {}
-
 	virtual void                 Initialize(XEWorld* pWorld);
 	X_EES_LINE virtual void      PostInitialized(){}//you may do something else later in this function. Elements in Array were ready.
 	virtual xfloat32             GetRenderOrderFactor()const;
@@ -122,7 +120,8 @@ public:
 
 	/************************************************************************/
 	/* KeepWorldTransform by default
-	/* DEPRECATED 
+	/* DEPRECATED
+	/* AttachToActor and AttachToActorNode : added actor type restrictions for parent Actors.（s_aFilterParentActorType）
 	/************************************************************************/
 	virtual void                 AttachToActor(XEActor* pActor);//KeepWorldTransform by default
 	virtual void                 AttachToActor(XEActor* pActor, const XEAttachRules& attachRules);
@@ -135,7 +134,7 @@ public:
 	virtual void                 DetachFromActor();
 	virtual void                 DetachFromActor(const XEDetachmentTransformRules& detachRules);
 
-	
+
 	virtual XCusAABB             GetCusAABB() const;
 
 	virtual xbool                RayPick(XEHitResult& hr);
@@ -152,7 +151,6 @@ public:
 
 	virtual void                 SetDeleted(xbool bDelete);
 	virtual void                 SetHidden(xbool bHide);
-
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 	virtual xbool                IsTransformMergeEditMode()const{ return xtrue; }
 	virtual XEPropertyObjectSet  GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy);	
@@ -202,16 +200,19 @@ public:
 	xbool                        TravelToGuestWorld(XEWorld* pGuestWorld);//actor will be temporally travel to the guest world.
 	xbool                        ReturnBackToOwnerWorld();//actor went back home.
 	X_FORCEINLINE xbool          IsInGuestWorld()const{ return NULL != m_pGuest; }
+	virtual	const XString&	     GetActorShortName() const{ return ACTOR_SHORT_NAME; }//Call the macro(XE_ACTOR_SHORT_NAME_DEF) in the new Actor Class
+	virtual const XArray<XString>&GetParentActorTypeFilterList()const;
+	static  void				 AddParentActorTypeFilter(const XString& strActorType);
 public:
 	xbool                        GetMergeRenderHidden(xint32 nBit = -1) const;
 	xint32                       SetMergeRenderHidden(xint32 nMergeBit, xbool bHidden);
 	xint32                       SetMergeRenderHiddenEnable(xint32 nMergeBit, xbool bEnable);
 	void                         ResetMergeRenderHidden();
 	void                         UpdateLocalTransformForChildComponent();
-	void                         SetTransformMergeMode(xbool bMerge, xbool bRecursion = xtrue);
+	virtual void                 SetTransformMergeMode(xbool bMerge, xbool bRecursion = xtrue);
+
 	xbool                        AttachBindingScriptAsset(const xchar* pAssetPath);//path will be fixed.
 	void                         DetachBindingScriptInstance();
-
 
 	xbool                        IsReferenceTarget() const { return m_bReferenceTarget; }
 	void                         SetReferenceTargetFlag(xbool bReference);
@@ -240,6 +241,9 @@ public:
 	void				         RotateY(xfloat32 fDeltaRadian);
 	void				         RotateZ(xfloat32 fDeltaRadian);
 	void				         RotateAxis(const XVECTOR3& vRotateAxis, xfloat32 fDeltaRadian);
+
+private:
+	XString						 GetDefaultActorNamePrefix();
 public:
 	xbool                        m_bReferenceTarget;
 	xint32                       m_nReferenceType;
@@ -250,16 +254,16 @@ public:
 	xint32                       m_nMergeHidden;
 	static const XString         ACTOR_TYPENAME;//will be set to "EmptyAcotr"
 	static const XString         RC_CHANNEL;
+	static const XString         ACTOR_SHORT_NAME;//default simply name when create actor
 	XE_EVENT_CHANNEL_TYPE_DEF(RC_CHANNEL)
 	X_CLASS_DEF(XEActor)
 
 	X_FORCEINLINE xbool			 IsHidden(){ return m_bHidden; }
-	X_FORCEINLINE void           SetHiddenInGame(xbool bHide){ m_bHiddenInGame = bHide; }
+	void						 SetHiddenInGame(xbool bHide);
 	X_FORCEINLINE xbool          IsHiddenInGame(){ return m_bHiddenInGame; }
 	X_FORCEINLINE void           SetBoundingBoxColor(XCOLOR clVal){ m_clBoundingBoxColor = clVal; }
 	X_FORCEINLINE XCOLOR         GetBoundingBoxColor(){ return m_clBoundingBoxColor; }
 	X_FORCEINLINE const XString& GetActorName() const { return m_szActorName; }
-
 	X_FORCEINLINE void           SetActorTickEnabled(bool bEnable){ m_bEnaleTick = bEnable; }
 	X_FORCEINLINE xbool          IsActorTickable()const{ return m_bEnaleTick; }
 	X_FORCEINLINE XEWorld*       GetOwner() const{ return m_pOwner; }
@@ -308,7 +312,25 @@ public:
 	xbool			             GetIsUpdateTranformFromUserNode() const { return m_bIsUpdateTransformFromUserNode; }
 	XEActorPropertySerializeFlag*GetActorPropertySerializeFlag(){ return &m_SerializeFlag; }
 	xbool						 IsChildActor(const XEActor* pChildActor);
-	XString						 GetActorShortName() const;
+protected:
+	xbool						 IsEnableAttachToParent(XEActor* pParentActor);//whether can attach to parent actor
+
+	/** for parent actor call before the child actor attaching to parent*/
+	virtual xbool				 PreAttachActorForParentActor(XEActor* pChildActor){ return xtrue; }
+	/** for parent actor call after attached to parent */
+	virtual xbool				 PostAttachActorForParentActor(XEActor* pChildActor){ return xtrue; }
+	/** for parent actor call before attaching to parent's node */
+	virtual xbool				 PreAttachNodeForParentActor(XEActor* pChildActor, const xchar* szBindNodeName){ return xtrue; }
+	/** for parent actor call after attached to parent's node */
+	virtual xbool				 PostAttachNodeForParentActor(XEActor* pChildActor, const xchar* szBindNodeName){ return xtrue; }
+	/** for parent actor call before detaching from parent */
+	virtual xbool				 PreDetachForParentActor(XEActor* pChildActor){ return xtrue; }
+	/** for parent actor call after detached from parent */
+	virtual xbool				 PostDetachForParentActor(XEActor* pChildActor);
+
+	/** enable update child actor's merge mode when call SetTransformMergeMode func*/
+	virtual xbool				 EnableUpdateChildActorMergeMode(XEActor* pChildActor){ return xtrue; }
+
 protected:
 	XEActorComponent*            m_pRootComponent;
 	XEWorld*                     m_pOwner;
@@ -334,7 +356,7 @@ protected:
 	XEActorPropertySerializeFlag m_SerializeFlag;//doing copy actor useful
 
 	XString                      m_szActorName;//instance name, will generated automatically or set manually.
-	XString						 m_szActorShortName;//default simply name when create actor
+	static XArray<XString>		 s_aFilterParentActorType;//attach时过滤父Actor的类型
 private:
 	friend class                 XEChildActorComponent;
 	XEChildActorComponent*       m_pAsChildActorComponent;//component that belong to.
@@ -357,5 +379,5 @@ const castType* XEActor::CastActor() const
 
 #define XE_ACTOR_TYPE_DEF(T) virtual const XString& GetTypeName()const override{return T;}
 #define XE_ACTOR_CAST(T) static T* Cast(XEActor* A){ return A?A->CastActor<T>():NULL;} static XEActor* ReverseCast(T* A){ return A;}
-
+#define XE_ACTOR_SHORT_NAME_DEF(T) virtual const XString& GetActorShortName()const override{return T;}
 #endif // XEACTOR_H

@@ -1,4 +1,4 @@
-/******************************************************************************
+ï»¿/******************************************************************************
 
 @File         UILabel.h
 
@@ -57,16 +57,16 @@ struct XUITTFConfig
 		, nOutlineSize(_nOutline)
 	{}
 
-	XString				strFontFilePath;		// ×ÖÌåÎÄ¼şÂ·¾¶
-	xfloat32			fontPointSize;			// ×ÖÌåµãÊı´óĞ¡   
+	XString				strFontFilePath;		// å­—ä½“æ–‡ä»¶è·¯å¾„
+	xfloat32			fontPointSize;			// å­—ä½“ç‚¹æ•°å¤§å°   
 
-	XUIGlyphCollection	eGlyphs;				// ¸üĞÂÀàĞÍ
-	const xchar			*pCustomGlyphs;			// ×Ô¶¨ÒåÀàĞÍÊ±£¬Ô¤Éú³ÉµÄ×Ö·û
-	xint32				nOutlineSize;			// ×ÖÌå±ß½çÏß¿í 
+	XUIGlyphCollection	eGlyphs;				// æ›´æ–°ç±»å‹
+	const xchar			*pCustomGlyphs;			// è‡ªå®šä¹‰ç±»å‹æ—¶ï¼Œé¢„ç”Ÿæˆçš„å­—ç¬¦
+	xint32				nOutlineSize;			// å­—ä½“è¾¹ç•Œçº¿å®½ 
 
-	// 	xbool				bItalics;				// Ğ±Ìå
-	//  xbool				bUnderline;				// ÏÂ»®Ïß
-	// 	xbool				bStrikethrough;			// É¾³ıÏß
+	// 	xbool				bItalics;				// æ–œä½“
+	//  xbool				bUnderline;				// ä¸‹åˆ’çº¿
+	// 	xbool				bStrikethrough;			// åˆ é™¤çº¿
 };
 
 
@@ -80,6 +80,7 @@ public:
 		XUI_NORMAL,
 		XUI_OUTLINE
 	};
+
 
 public:
 
@@ -104,32 +105,33 @@ public:
 	virtual void					Draw(IXWorld* pWorld, xuint32 unParentFlags) override;
 
 	/*
-		Ó¦ÓÃÉèÖÃ
+		åº”ç”¨è®¾ç½®
 	*/	
 	void							UpdateImmediately();
 
 	/*
-		ÉèÖÃ×ÖÌå´óĞ¡
+		è®¾ç½®å­—ä½“å¤§å°
 	*/
 	void							SetTextPointSize(xfloat32 fPointSize);
 	X_FORCEINLINE xfloat32			GetTextPointSize() const { return m_fOriginalFontSize; }
 
 	/*
-		¸ü¸Ä×ÖÌå
+		è®¾ç½®æ˜¯å¦è‡ªåŠ¨æ¢è¡Œ
+		@ é»˜è®¤trueï¼Œä¸ºfalseæ—¶ï¼Œè¦æ±‚m_fLabelWidth > 0.0fï¼Œæ‰ä¼šè¿›è¡Œè‡ªåŠ¨æ¢è¡Œå¤„ç†ã€‚
 	*/
-	void							SetTTFFontPath(const XString &strPath);
-	X_FORCEINLINE const XString&	GetTTFFontPath() const { return m_strFontPath; }
+	void							SetEnableWrap(xbool bEnableWrap);
+	X_FORCEINLINE xbool				GetEnableWrap() const { return m_bEnableWrap; }
 
 
 	/*
-		ÉèÖÃÎÄ±¾ÄÚÈİ
+		è®¾ç½®æ–‡æœ¬å†…å®¹
 	*/
 	void							SetString(const XString &strUtf8Text);
 	const XString&					GetString() const { return m_utf8Text; }
 	xint32							GetStringCount() const { return (xint32)(m_utf32Text.length()); }
 
 	/*
-		ÉèÖÃÎÄ±¾¶ÔÆë·½Ê½£¬ hAlign £º Ë®Æ½¶ÔÆë£¬ vAlign ÊúÖ±¶ÔÆë
+		è®¾ç½®æ–‡æœ¬å¯¹é½æ–¹å¼ï¼Œ hAlign ï¼š æ°´å¹³å¯¹é½ï¼Œ vAlign ç«–ç›´å¯¹é½
 	*/
 
 	void							SetAlignment(XUITextHAlignment hAlign, XUITextVAlignment vAlign);
@@ -139,55 +141,58 @@ public:
 	X_FORCEINLINE XUITextVAlignment	GetVAlignment() { return m_eVAlignment; }
 
 	/*
-		ÉèÖÃÎÄ±¾ÇøÓò, 
-		@ fWidth»òfHeightÎª Ğ¡ÓÚµÈÓÚ 0.0£¬Ôò±íÊ¾´óĞ¡×Ô¶¯ÊÊÓ¦¡£ ¼´LabelµÄ¿í¶ÈºÍ¸ß¶È£¬°´ÎÄ×ÖĞĞ×î´ó¿í¶ÈºÍ¸ß¶È×Ô¶¯µ÷Õû
-		  µ±fWidth > 0.0£¬ÇÒÎÄ×ÖĞĞ¿í¶È³¬³öfWidth£¬Èç¹û´ËÊ±×Ô¶¯»»ĞĞÎªtrue£¬Ôò×Ô¶¯»»ĞĞ; Îªfalse£¬Ôò½Ø¶Ï±¾ĞĞ
-		  µ±fHeight >0.0£¬ÇÒÎÄ×Ö×Ü¸ß¶È³¬³öfHeight£¬Ôò½Ø¶ÏÎÄ×Ö¡£
+		è®¾ç½®æ–‡æœ¬åŒºåŸŸ, 
+		@ fWidthæˆ–fHeightä¸º å°äºç­‰äº 0.0ï¼Œåˆ™è¡¨ç¤ºå¤§å°è‡ªåŠ¨é€‚åº”ã€‚ å³Labelçš„å®½åº¦å’Œé«˜åº¦ï¼ŒæŒ‰æ–‡å­—è¡Œæœ€å¤§å®½åº¦å’Œé«˜åº¦è‡ªåŠ¨è°ƒæ•´
+		  å½“fWidth > 0.0ï¼Œä¸”æ–‡å­—è¡Œå®½åº¦è¶…å‡ºfWidthï¼Œå¦‚æœæ­¤æ—¶è‡ªåŠ¨æ¢è¡Œä¸ºtrueï¼Œåˆ™è‡ªåŠ¨æ¢è¡Œ; ä¸ºfalseï¼Œåˆ™æˆªæ–­æœ¬è¡Œ
+		  å½“fHeight >0.0ï¼Œä¸”æ–‡å­—æ€»é«˜åº¦è¶…å‡ºfHeightï¼Œåˆ™æˆªæ–­æ–‡å­—ã€‚
 	*/
 	void							SetDimensions(xfloat32 fWidth, xfloat32 fHeight);
 	XVECTOR2						GetDimensions() const { return XVECTOR2(m_fTextAreaWidth, m_fTextAreaHeight); }
 
 	/* 
-		ÉèÖÃÎÄ±¾ÑÕÉ«
+		è®¾ç½®æ–‡æœ¬é¢œè‰²
 	*/
 	void							SetTextColor(const XCOLORBASE &clr);
 	X_FORCEINLINE const XCOLORBASE&	GetTextColor() const { return m_TexColor; }
 
+
+
 	/*
-		ÉèÖÃÎÄ±¾µÄ×Ö¼ä¾à, ½öTTFÎÄ×ÖÖ§³Ö
+		è®¾ç½®æ–‡æœ¬çš„å­—é—´è·, ä»…TTFæ–‡å­—æ”¯æŒ
 	*/
 	void							SetAdditionalKerning(xfloat32 fAdditionalKerning);
 	X_FORCEINLINE xfloat32			GetAdditionalKerning() const { return m_fAdditionalKerning; }
 
 	/*
-		ÉèÖÃÎÄ±¾µÄĞĞ¼ä¾à, ½öTTFÎÄ×ÖÖ§³Ö
+		è®¾ç½®æ–‡æœ¬çš„è¡Œé—´è·, ä»…TTFæ–‡å­—æ”¯æŒ
 	*/
 	void							SetLineSpacing(xfloat32 fLineSpacing);
 	X_FORCEINLINE xfloat32			GetLineSpacing() const { return m_fLineSpacing; }
 
 	/*
-		ÉèÖÃÊÇ·ñ×Ô¶¯»»ĞĞ	
-		@ Ä¬ÈÏtrue£¬ÎªfalseÊ±£¬ÒªÇóm_fLabelWidth > 0.0f£¬²Å»á½øĞĞ×Ô¶¯»»ĞĞ´¦Àí¡£
+		æ›´æ”¹å­—ä½“
 	*/
-	void							SetEnableWrap(xbool bEnableWrap);
-	X_FORCEINLINE xbool				GetEnableWrap() const { return m_bEnableWrap; }
+	void							SetTTFFontPath(const XString &strPath);
+	X_FORCEINLINE const XString&	GetTTFFontPath() const { return m_strFontPath; }
 	
 	/*
-		ÉèÖÃÊÇ·ñÔÊĞíÔÚÎ÷ÎÄµ¥´ÊÖĞ»»ĞĞ, ½öTTFÎÄ×ÖÖ§³Ö
+		è®¾ç½®æ˜¯å¦å…è®¸åœ¨è¥¿æ–‡å•è¯ä¸­æ¢è¡Œ, ä»…TTFæ–‡å­—æ”¯æŒ
 	*/
 	void							SetBreakOfWesternWord(xbool bBreakOfWesternWord);
-	X_FORCEINLINE xbool				GetBreakOfWesternWord() const { return m_bBreakOfWesternWord; }
-	
-	/*
-		ÉèÖÃÏµÍ³×ÖÌåÃû³Æ
-	*/
-	void							SetSystemFontName(const XString &strFontName);
-	X_FORCEINLINE const XString&	GetSystemFontName() const {	return m_strSystemFontName; }
+	X_FORCEINLINE xbool				GetBreakOfWesternWord() const { return m_bBreakOfWesternWord; }	
+
 
 	/*
-		ÇĞ»»µ½ÏµÍ³×ÖÌå
+		åˆ‡æ¢åˆ°ç³»ç»Ÿå­—ä½“
 	*/
 	void							ChangeToSystemFont();
+
+	/*
+		è®¾ç½®ç³»ç»Ÿå­—ä½“åç§°
+	*/
+	void							SetSystemFontName(const XString &strFontName);
+	X_FORCEINLINE const XString&	GetSystemFontName() const { return m_strSystemFontName; }
+
 
 	virtual xbool					SerilizeSelfXML(XXMLExtendTool& outXmlArchive) override;
 
@@ -203,9 +208,10 @@ protected:
 	void							ClearData();
 	void							ReleaseTTF();
 	void							ReleaseSystemFInfo();
+	void                            ReleaseSpriteBuff();
 
 	xbool							UpdateContent();
-	xbool							GenerateSpriteBuff(xint32 nSpriteNum);
+	xbool							GenerateSpriteBuff(xint32 nSpriteNum, xbool bReset = xfalse);
 
 // TTF
 	xbool							InitWithTTF(const XUITTFConfig& ttfConfig, const XString& strText, xint32 nLabelWidth = 0);
@@ -267,11 +273,11 @@ protected:
 	xfloat32					m_fTextAreaHeight;
 	XUITextHAlignment			m_eHAlignment;
 	XUITextVAlignment			m_eVAlignment;	
-	xfloat32					m_fAdditionalKerning;			// ¸½¼ÓµÄ×Ö¼ä¸ô
-	xfloat32					m_fLineSpacing;					// ¸½¼ÓµÄĞĞ¼ä¸ô
-	xfloat32					m_fLineHeight;					// ĞĞ¸ß
-	xbool						m_bEnableWrap;					// ÊÇ·ñ×Ô¶¯»»ĞĞ£¬Ä¬ÈÏtrue¡£ÎªfalseÊ±£¬ÒªÇóm_fLabelWidth > 0.0f£¬²Å»á½øĞĞ×Ô¶¯»»ĞĞ´¦Àí¡£
-	xbool						m_bBreakOfWesternWord;			// ÊÇ·ñÔÊĞíÔÚÎ÷ÎÄµ¥´ÊÖĞ»»ĞĞ	
+	xfloat32					m_fAdditionalKerning;			// é™„åŠ çš„å­—é—´éš”
+	xfloat32					m_fLineSpacing;					// é™„åŠ çš„è¡Œé—´éš”
+	xfloat32					m_fLineHeight;					// è¡Œé«˜
+	xbool						m_bEnableWrap;					// æ˜¯å¦è‡ªåŠ¨æ¢è¡Œï¼Œé»˜è®¤trueã€‚ä¸ºfalseæ—¶ï¼Œè¦æ±‚m_fLabelWidth > 0.0fï¼Œæ‰ä¼šè¿›è¡Œè‡ªåŠ¨æ¢è¡Œå¤„ç†ã€‚
+	xbool						m_bBreakOfWesternWord;			// æ˜¯å¦å…è®¸åœ¨è¥¿æ–‡å•è¯ä¸­æ¢è¡Œ	
 
 	// ---------------------------------TTF Draw buffer--------------------------------------------
 	XString						m_strFontPath;
@@ -283,8 +289,8 @@ protected:
 	//xint32						m_nLengthOfString;
 	xfloat32					m_fTextDesiredHeight;
 	XArray<xfloat32>			m_vLineWidth;
-	XArray<xfloat32>			m_vlinesOffsetX;				// ¸÷ĞĞ¿ªÊ¼Æ«ÒÆ ÓÉ¶ÔÆë¹ØÏµ²úÉú
-	xfloat32					m_fLetterOffsetY;				// Ê×ĞĞ¾àÀë¶¥µÄÆ«ÒÆ
+	XArray<xfloat32>			m_vlinesOffsetX;				// å„è¡Œå¼€å§‹åç§» ç”±å¯¹é½å…³ç³»äº§ç”Ÿ
+	xfloat32					m_fLetterOffsetY;				// é¦–è¡Œè·ç¦»é¡¶çš„åç§»
 	xint32						m_nNumberOfLines;
 
 	// draw

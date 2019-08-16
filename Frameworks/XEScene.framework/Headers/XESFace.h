@@ -63,6 +63,8 @@ public:
 
     // 人脸96点
     XArray<XVECTOR2> m_aLandmarks;
+    // 人脸137点
+    XArray<XVECTOR2> m_137Landmarks;
 
 XESCENE_CONSTRUCTOR_ACCESS:
 
@@ -80,6 +82,9 @@ XESCENE_CONSTRUCTOR_ACCESS:
 
     X_INLINE XArray<XVECTOR2> GetLandmarks() const {
         return m_aLandmarks;
+    }
+    X_INLINE XArray<XVECTOR2> Get137Landmarks() const {
+        return m_137Landmarks;
     }
 
 public:

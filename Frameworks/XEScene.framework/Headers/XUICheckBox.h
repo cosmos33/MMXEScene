@@ -1,4 +1,4 @@
-#ifndef _XUICHECKBOX_H_
+﻿#ifndef _XUICHECKBOX_H_
 #define _XUICHECKBOX_H_
 
 #include "XUIAbstractCheckButton.h"

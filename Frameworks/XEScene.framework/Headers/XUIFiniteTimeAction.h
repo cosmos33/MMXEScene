@@ -1,4 +1,4 @@
-#ifndef _UIFINITETIMEACTION_H_
+ï»¿#ifndef _UIFINITETIMEACTION_H_
 #define _UIFINITETIMEACTION_H_
 
 #include "XUIAction.h"
@@ -11,12 +11,17 @@ protected:
 
 public:
 
+	X_CLASS_DEF(XUIFiniteTimeAction)
+
 	virtual ~XUIFiniteTimeAction();
 	virtual XUIFiniteTimeAction* Clone() const override { return NULL; }
 
-	xfloat32 GetDuration() const;
+	virtual xfloat32 GetDuration() const;
 	void SetDuration(const xfloat32& fDuration);
 
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
 
 
 protected:

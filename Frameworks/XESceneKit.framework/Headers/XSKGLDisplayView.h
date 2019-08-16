@@ -6,11 +6,12 @@
 //
 
 #import "XSKTouchView.h"
+#import "XSKEventDispatcher+Touch.h"
 #import <CoreMedia/CoreMedia.h>
 
 @protocol XSKGLDisplayViewDataOutputDelegate;
 
-@interface XSKGLDisplayView : XSKTouchView
+@interface XSKGLDisplayView : XSKTouchView <XSKFixTouchScale>
 
 - (instancetype)init NS_UNAVAILABLE;
 

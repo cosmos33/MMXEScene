@@ -14,9 +14,7 @@
 #ifndef _XE_MATERIAL_MANAGER_H_
 #define _XE_MATERIAL_MANAGER_H_
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
 
-class XEInstanceManagerMaterialFxRuntime;
 class XEInstanceManagerMaterialFx
 	: public XEInstanceManagerBase
 {
@@ -30,25 +28,25 @@ public:
 	virtual void                               SaveImpl() const override;
 	virtual void                               SaveAsImpl(const xchar* pPath) const override;
 	virtual xbool                              IsNodesModifiedImpl()const override;
-public:
-	//for lua side
-	static XEInstanceManagerMaterialFxRuntime* GetInstanceManagerMaterialFx();
+	virtual xbool						       IsMatchFileType(const XString& szPath) override;
 };
 
 
 //runtime only.
 class XEInstanceManagerMaterialFxRuntime
 	: public XEInstanceManagerMaterialFx
-	, public XESingleton<XEInstanceManagerMaterialFxRuntime>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerMaterialFxRuntime)
 };
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //edit for export.
 class XEInstanceManagerMaterialFxEditing
 	: public XEInstanceManagerMaterialFx
-	, public XESingleton<XEInstanceManagerMaterialFxEditing>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerMaterialFxEditing)
 };
 
 #endif

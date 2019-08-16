@@ -29,7 +29,7 @@ public:
 	// Called every frame
 	XEAnimCurveFlyController();
 	virtual ~XEAnimCurveFlyController(){}
-	enum eCanDriveObjectType{ AT_ACTOR, AT_COMPONENT, AT_CAMERA_BASE };
+	enum eCanDriveObjectType{ AT_ACTOR, AT_COMPONENT, AT_CAMERA_BASE, AT_USER_DATA };
 	enum eFlyAccelerationType{ FAT_LINEAR, FAT_ATAN };
 
 	X_CLASS_DEF(XEAnimCurveFlyController)

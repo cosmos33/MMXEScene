@@ -21,7 +21,7 @@
 class XEImgSequenceFrameActorBase : public XEMagicCoreActorBase
 {
 public:
-	XEImgSequenceFrameActorBase(){ m_szActorShortName = "SeqFrameBase"; }
+	XEImgSequenceFrameActorBase(){ }
 	virtual ~XEImgSequenceFrameActorBase(){}
 	X_EES_LINE virtual void         PostInitialized() override;//you may do something else later in this function. Elements in Array were ready.
 	virtual xfloat32                GetRenderOrderFactor()const override;
@@ -42,6 +42,10 @@ public:
 	static const XString ACTOR_TYPENAME;
 };
 
+/*
+* Note:此类Actor只能Attach到XEFaceTrackerActor 和 XEImg2DScreenSequenceFrameActor上，
+* 不支持附加到其他类型Actor.
+*/
 class XEImg2DScreenSequenceFrameActor : public XEImgSequenceFrameActorBase
 {
 public:
@@ -51,10 +55,15 @@ public:
 	XE_ACTOR_CAST(XEImg2DScreenSequenceFrameActor)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
 	X_CLASS_DEF(XEImg2DScreenSequenceFrameActor)
+	XE_ACTOR_SHORT_NAME_DEF(ACTOR_SHORT_NAME)
 	   
 	virtual void                Initialize(XEWorld* pWorld)override;
+	virtual const XArray<XString>&GetParentActorTypeFilterList()const override;
 public:
 	static const XString ACTOR_TYPENAME;
+	static const XString ACTOR_SHORT_NAME;
+protected:
+	static XArray<XString>		s_aFilterParentActorType;
 };
 
 

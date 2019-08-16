@@ -47,6 +47,7 @@ public:
 	virtual const XString&                  GetNodeName() const override{ return m_strNodeName; }
 	virtual void                            Release() override{}
 	virtual XEUserNodeInstance*             SpawnNodeInstance();//may be forbidden by instance.
+	virtual XEUserNodeInstance*             SpawnNodeInstance(const XString& szInsName);
 	virtual void                            ReverseRecover(){}//do something BEFORE detach from parent.
 	virtual void                            Recover(){}//do something AFTER attach to the parent.
 	virtual void                            Backup(){}//do something to backup datas.
@@ -151,6 +152,7 @@ private:
 	virtual void                            Deserialize(const XMLElement* pEleNode, XETreeNode::Manager* pNodeMgr = NULL) override{ return; }//forbid!
 	virtual XMLElement*                     Serialize(XMLElement* pEleParent) override{ return NULL; }//forbid!
 	virtual XEUserNodeInstance*             SpawnNodeInstance() override{ return NULL; }//forbid!
+	virtual XEUserNodeInstance*             SpawnNodeInstance(const XString& szInsName) override{ return NULL; }//forbid!
 protected:
 	XEUserNode*                             m_pNodeTemplate;
 	XEScriptContainerInstance*              m_pScriptContainerInstance;//script holder. itself is also a usernodeinstance.

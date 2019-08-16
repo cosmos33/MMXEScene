@@ -25,11 +25,12 @@ class XEMagicCoreActorBase
 	:public XEActor
 {
 public:
-	XEMagicCoreActorBase(){ m_szActorShortName = "MagicCoreActorBase"; }
-	~XEMagicCoreActorBase(){};
+	XEMagicCoreActorBase(){}
+	virtual ~XEMagicCoreActorBase(){};
 public:
 	XE_ACTOR_CAST(XEMagicCoreActorBase)
 	XE_ACTOR_TYPE_DEF(ACTOR_TYPENAME)
+	XE_ACTOR_SHORT_NAME_DEF(ACTOR_SHORT_NAME)
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 		virtual XEPropertyObjectSet GetPropertyObjectSet(XEPropertyObjectProxy* pPropertyObjectProxy)override;
@@ -40,6 +41,7 @@ private:
 #endif
 public:
 	static const XString ACTOR_TYPENAME;
+	static const XString ACTOR_SHORT_NAME;
 };
 
 #endif // XE_MAGIC_CORE_ACTOR_BASE_H

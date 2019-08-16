@@ -1,4 +1,4 @@
-#ifndef _XUIIMAGE_H_
+﻿#ifndef _XUIIMAGE_H_
 #define _XUIIMAGE_H_
 
 #include "XUIWidget.h"

@@ -26,8 +26,9 @@ X_EEB_BEGIN
 	extern const xchar* c_strTracking;
 	extern const xchar* c_strFilterPathOfFaceMaskInTrack;///custom/ do not show in custom.
 	extern xint32		g_nFacePointNum;//默认采用96点
+	extern const xint32	g_nJointPointNum;//14
+	extern const xchar* c_strFaceMakepFilterPath;//
 X_EEB_END
-
 
 	/*
 	* 此函数为了兼容SceneVer版本低于1.3的情况！！
@@ -64,10 +65,12 @@ X_EEB_END
 		XString strTexturePath;//序列帧纹理相对路径(相对于xscene文件的路径)
 		xint32  nCol;//切分此纹理的列数
 		xint32  nRow;//切分此纹理的行数
+		xint32  nTextureWidth;//width
+		xint32  nTextureHeight;//height
 		xbool operator==(const XE2DSequenceFrameSingleInfo& rl);
 		xbool operator==(const XE2DSequenceFrameSingleInfo& rl)const;
-		XE2DSequenceFrameSingleInfo() :strTexturePath(""), nCol(1), nRow(1){}
-		XE2DSequenceFrameSingleInfo(const XString& strPath) :strTexturePath(strPath), nCol(1), nRow(1){}
+		XE2DSequenceFrameSingleInfo() :strTexturePath(""), nCol(1), nRow(1), nTextureWidth(100), nTextureHeight(100){}
+		XE2DSequenceFrameSingleInfo(const XString& strPath) :strTexturePath(strPath), nCol(1), nRow(1), nTextureWidth(100), nTextureHeight(100){}
 	};
 	typedef XArray<XE2DSequenceFrameSingleInfo> Img2DSequenceFrameInfoList;
 	//一组序列帧信息
@@ -93,7 +96,7 @@ X_EEB_END
 
 	//////////////////////////////////////////////////////////////////////////
 	//Viewport的尺寸发生改变，同步到世界
-	bool						OnFrameSizeChangedForWorld(XEWorld* pWorld);
+//	bool						OnFrameSizeChangedForWorld(XEWorld* pWorld);
 
 	bool						ConvertScreenToWorld(XViewport* pViewPort, const XVECTOR3& vScreenPos, XVECTOR3& vWorld);
 	bool						ConvertWorldToScreen(XViewport* pViewPort, const XVECTOR3& vWorld, XVECTOR2& vScreenPos);
@@ -108,6 +111,42 @@ X_EEB_END
 	void                        SetDeviceRate(xfloat32 fWHRate, xfloat32 fDeviceScaleRate, xfloat32 fDeviceWidth, xfloat32 fDeviceHeight);//for editor
 	void                        UpdateFrameSequenceDeviceWH(XEWorld* pWorld);//for editor
 #endif
+
+	const XArray<XString>&		GetAllActorTypes();
+	const XArray<XString>&		GetXEMagicCoreActorTypes();
+	XString						GetTemplateSeqFrameAnimFileDir();
+
+	enum EFacePointNumType
+	{
+		EFPNT_96 = 96,
+		EFPNT_104 = 104,//104
+		EFPNT_137 = 137
+	};
+
+	void						InitFaceTrackActorBaseInfo();
+
+// #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
+// 	XString						CopyDefaultXfcFilteToProjAsset();//bin/FilterFaceDecoration/default_xft
+// #endif
+
+	enum EFrameLoopMode
+	{
+		ELM_NONE,
+		ELM_LOOP,
+		ELM_NUM
+	};
+
+	struct XESequenceFrameLoopInfo
+	{
+		EFrameLoopMode eMode;
+		xint32         nStartIndex;//from 1 start
+		xint32         nEndIndex;// from 1 start
+		XESequenceFrameLoopInfo() :eMode(ELM_NONE), nStartIndex(X_INDEX_NONE), nEndIndex(X_INDEX_NONE){}
+		xbool			operator==(const XESequenceFrameLoopInfo& rh);
+	};
+	XArray<XString>&			GetAllLoopModeName();
+	EFrameLoopMode				GetLoopModeByName(const XString& strModeName);
+	XBaseCamera*				GetWorkCameraFromWorld(XEWorld* pWorld);
 };
 
 #endif

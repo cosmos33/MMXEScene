@@ -1,4 +1,4 @@
-#ifndef _UI_SPAWN_H_
+ï»¿#ifndef _UI_SPAWN_H_
 #define _UI_SPAWN_H_
 
 #include "XArray.h"
@@ -9,12 +9,19 @@ class XUISpawn : public XUIActionInterval
 {
 public:
 
+	X_CLASS_DEF(XUISpawn)
+
 	static XUISpawn* Create(const XArray<XUIFiniteTimeAction*>& vActions);
 	virtual XUISpawn* Clone() const override;
 
 	virtual xbool IsDone() const override;
 
 	virtual ~XUISpawn() {};
+
+	// ÄÚ²¿Ê¹ÓÃ
+	virtual xbool					SerilizeXML(XXMLExtendTool& outXmlArchive) override;
+
+	virtual void ActionUpdate(const xfloat32& fProgress) override;
 protected:
 
 	XUISpawn();

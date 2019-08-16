@@ -90,4 +90,6 @@ private:
 
 XESCENE_NAMESPACE_END
 
+//typedef XESCENE_NAMESPACE::World XEControllerRootWorld;
+
 #endif /* XESWORLD_H_ */

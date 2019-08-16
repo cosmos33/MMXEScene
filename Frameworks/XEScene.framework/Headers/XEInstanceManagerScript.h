@@ -14,9 +14,7 @@
 #ifndef _XE_SCRIPT_MANAGER_H_
 #define _XE_SCRIPT_MANAGER_H_
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
 
-class XEInstanceManagerScriptRuntime;
 class XEInstanceManagerScript
 	: public XEInstanceManagerBase
 {
@@ -30,25 +28,25 @@ public:
 	virtual void                           SaveImpl() const override;
 	virtual void                           SaveAsImpl(const xchar* pPath) const override;
 	virtual xbool                          IsNodesModifiedImpl()const override;
-public:
-	//for lua side
-	static XEInstanceManagerScriptRuntime* GetInstanceManagerScript();
+	virtual xbool						   IsMatchFileType(const XString& szPath) override;
 };
 
 
 //runtime only.
 class XEInstanceManagerScriptRuntime
 	: public XEInstanceManagerScript
-	, public XESingleton<XEInstanceManagerScriptRuntime>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerScriptRuntime)
 };
 
 #if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
 //editing only.
 class XEInstanceManagerScriptEditing
 	: public XEInstanceManagerScript
-	, public XESingleton<XEInstanceManagerScriptEditing>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerScriptEditing)
 };
 #endif
 

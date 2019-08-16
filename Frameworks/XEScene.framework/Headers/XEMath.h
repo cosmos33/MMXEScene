@@ -21,9 +21,12 @@
 
 // Aux constants.
 #undef  PI
-#define PI 			    (3.1415926535897932f)
-#define INV_PI			(0.31830988618f)
-#define HALF_PI			(1.57079632679f)
+#define PI 			        (3.1415926535897932f)
+#define INV_PI			    (0.31830988618f)
+#define HALF_PI			    (1.57079632679f)
+#define SMALL_NUMBER	    (1.e-8f)//small enough
+#define KINDA_SMALL_NUMBER	(1.e-4f)//a kind of small number
+#define DELTA			    (0.00001f)// Magic numbers for numerical precision.
 
 template <class T>
 inline bool Equals(T lhs, T rhs) { return lhs + std::numeric_limits<T>::epsilon() >= rhs && lhs - std::numeric_limits<T>::epsilon() <= rhs; }
@@ -57,6 +60,18 @@ namespace XEMath
 	xfloat32    Xmod(xfloat32 X, xfloat32 Y);
 	xfloat32    Atan2(xfloat32 Y, xfloat32 X);// y/x
 	xfloat32    AreaOfTriangle(XVECTOR2 v1, XVECTOR2 v2, XVECTOR2 v3);//return 0 if can't be a triangle.
+	xbool       IsNegativeFloat(const xfloat32& A);
+	xbool       IsNaN(xfloat32 A);
+	/** Return true if value is finite (not NaN and not Infinity). */
+	xbool       IsFinite(xfloat32 A);
+	/**
+	*	Checks if a floating point number is nearly zero.
+	*	@param Value			Number to compare
+	*	@param ErrorTolerance	Maximum allowed difference for considering Value as 'nearly zero'
+	*	@return					true if Value is nearly zero
+	*/
+	xbool		IsNearlyZero(xfloat32 Value, xfloat32 ErrorTolerance = SMALL_NUMBER);
+
 	void        SinCos(xfloat32* ScalarSin, xfloat32* ScalarCos, xfloat32  Value);
 	void        QuaternionToEuler(const XQUATERNION& quat, xfloat32& fRoll, xfloat32& fYaw, xfloat32& fPitch);
 	void        EulerToMatrix(xfloat32 fRoll, xfloat32 fYaw, xfloat32 fPitch, XMATRIX4& mat);

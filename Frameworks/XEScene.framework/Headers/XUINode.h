@@ -21,6 +21,7 @@ enum UITypeID
 	UIID_IMAGE = 2,
 	UIID_IMAGEARRAY = 3,
 	UIID_LABEL = 4,
+	UIID_FX    = 5
 };
 
 class XUINode : public XRefCount, public XMemBase, public XClass

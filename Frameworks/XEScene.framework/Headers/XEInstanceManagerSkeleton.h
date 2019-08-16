@@ -15,12 +15,6 @@
 #define _XE_INSTANCE_MANAGER_SKELETON_H
 
 #include "XEInstanceManagerBase.h"
-#include "XESingleton.h"
-
-class XESkeleton;
-class XESkeletonInstance;
-class XEInstanceManagerSkeleton;
-
 class XEInstanceManagerSkeletonBase
 	: public XEInstanceManagerBase
 {
@@ -31,17 +25,16 @@ public:
 	virtual XEUserNode*               CreateTemplate(const xchar* szAssetFile, XEWorld* pOwnerWorld) override;
 	virtual XEUserNode*               GetTemplate(const xchar* szAssetFile, XEWorld* pOwnerWorld, xbool bReload = xfalse) override;
 	virtual void                      Reload(const xchar* szAssetFile = NULL) override;
-public:
-	//for lua side
-	static XEInstanceManagerSkeleton* GetInstanceManagerSkeleton();
+	virtual xbool					  IsMatchFileType(const XString& szPath) override;
 };
 
 
 //runtime only.
 class XEInstanceManagerSkeleton
 	: public XEInstanceManagerSkeletonBase
-	, public XESingleton<XEInstanceManagerSkeleton>
 {
+public:
+	INSTANCE_MANAGER_IMPL(XEInstanceManagerSkeleton)
 };
 
 //#if X_PLATFORM_WIN_DESKTOP | X_PLATFORM_MAC
